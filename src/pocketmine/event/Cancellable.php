@@ -28,5 +28,5 @@ namespace pocketmine\event;
 interface Cancellable{
 	public function isCancelled();
 
-	public function setCancelled($value = true);
+	public function setCancelled($forceCancel = false);
 }

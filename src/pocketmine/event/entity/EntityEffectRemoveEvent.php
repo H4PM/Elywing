@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  *
  *  ____            _        _   __  __ _                  __  __ ____
  * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
@@ -14,37 +14,34 @@
  * (at your option) any later version.
  *
  * @author PocketMine Team
- * @link http://www.pocketmine.net/
+ * @link   http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 namespace pocketmine\event\entity;
 
-use pocketmine\block\Block;
 use pocketmine\entity\Entity;
+use pocketmine\Event;
 use pocketmine\event\Cancellable;
-use pocketmine\item\FoodSource;
+use pocketmine\entity\Effect;
 
-class EntityEatBlockEvent extends EntityEatEvent implements Cancellable{
-	public function __construct(Entity $entity, FoodSource $foodSource){
-		if(!($foodSource instanceof Block)){
-			throw new \InvalidArgumentException("Food source must be a block");
-		}
-		parent::__construct($entity, $foodSource);
+class EntityEffectRemoveEvent extends EntityEvent implements Cancellable{
+
+	public static $handlerList = null;
+
+	/** @var Effect */
+	protected $effect;
+
+	public function __construct(Entity $entity, int $effect){
+		$this->entity = $entity;
+		$this->effect = $effect;
 	}
 
 	/**
-	 * @return Block
+	 * @return Effect
 	 */
-	public function getResidue(){
-		return parent::getResidue();
-	}
-
-	public function setResidue($residue){
-		if(!($residue instanceof Block)){
-			throw new \InvalidArgumentException("Eating a Block can only result in a Block residue");
-		}
-		parent::setResidue($residue);
+	public function getEffect(){
+		return $this->effect;
 	}
 }

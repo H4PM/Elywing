@@ -21,34 +21,43 @@
 
 namespace pocketmine\event\player;
 
+use pocketmine\entity\FishingHook;
 use pocketmine\event\Cancellable;
+use pocketmine\item\Item;
 use pocketmine\Player;
 
 /**
- * Called when a player does an animation
+ * Called when a player uses the fishing rod
  */
-class PlayerAnimationEvent extends PlayerEvent implements Cancellable{
+class PlayerFishEvent extends PlayerEvent implements Cancellable{
+
 	public static $handlerList = null;
 
-	const ARM_SWING = 1;
-	const WAKE_UP = 3;
+	/** @var Item */
+	private $item;
 
-	private $animationType;
+	/** @var FishingHook */
+	private $hook;
 
 	/**
 	 * @param Player $player
-	 * @param int    $animation
+	 * @param Item   $item
+	 * @param        $fishingHook
 	 */
-	public function __construct(Player $player, $animation = self::ARM_SWING){
+	public function __construct(Player $player, Item $item, $fishingHook = null){
 		$this->player = $player;
-		$this->animationType = $animation;
+		$this->item = $item;
+		$this->hook = $fishingHook;
 	}
 
 	/**
-	 * @return int
+	 * @return Item
 	 */
-	public function getAnimationType(){
-		return $this->animationType;
+	public function getItem(){
+		return clone $this->item;
 	}
 
+	public function getHook(){
+		return $this->hook;
+	}
 }
