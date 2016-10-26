@@ -45,7 +45,7 @@ class VersionCommand extends VanillaCommand{
 		}
 
 		if(count($args) === 0){
-			$sender->sendMessage("This server is using Elywing 1.0 (0.16 BETA), a fork of PocketMine-MP, made by H4PM Team and");
+			$sender->sendMessage("This server is using Elywing 1.0 (0.16 BETA), a fork of PocketMine-MP, made by H4PM Team");
             $sender->sendMessage("Download it here: www.github.com/H4PM/Elywing"); 
 		}else{
 			$pluginName = implode(" ", $args);
