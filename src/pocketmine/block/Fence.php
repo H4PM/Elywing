@@ -26,7 +26,8 @@ use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Vector3;
 
 class Fence extends Transparent{
-	const FENCE_OAK = 0;
+	
+	const FENCE_OAK = 0;  
 	const FENCE_SPRUCE = 1;
 	const FENCE_BIRCH = 2;
 	const FENCE_JUNGLE = 3;
@@ -39,7 +40,7 @@ class Fence extends Transparent{
 		$this->meta = $meta;
 	}
 
-	public function getHardness(){
+	public function getHardness() {
 		return 2;
 	}
 
@@ -47,22 +48,29 @@ class Fence extends Transparent{
 		return Tool::TYPE_AXE;
 	}
 
+	public function getBurnChance() : int{
+		return 5;
+	}
 
-	public function getName(){
+	public function getBurnAbility() : int{
+		return 20;
+	}
+
+	public function getName() : string{
 		static $names = [
-			self::FENCE_OAK => "Oak Fence",
-			self::FENCE_SPRUCE => "Spruce Fence",
-			self::FENCE_BIRCH => "Birch Fence",
-			self::FENCE_JUNGLE => "Jungle Fence",
-			self::FENCE_ACACIA => "Acacia Fence",
-			self::FENCE_DARKOAK => "Dark Oak Fence",
+			0 => "Oak Fence",
+			1 => "Spruce Fence",
+			2 => "Birch Fence",
+			3 => "Jungle Fence",
+			4 => "Acacia Fence",
+			5 => "Dark Oak Fence",
 			"",
 			""
 		];
 		return $names[$this->meta & 0x07];
 	}
 
-	protected function recalculateBoundingBox(){
+	protected function recalculateBoundingBox() {
 
 		$north = $this->canConnect($this->getSide(Vector3::SIDE_NORTH));
 		$south = $this->canConnect($this->getSide(Vector3::SIDE_SOUTH));

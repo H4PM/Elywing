@@ -24,10 +24,15 @@ namespace pocketmine\block;
 use pocketmine\inventory\AnvilInventory;
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
+use pocketmine\level\sound\AnvilFallSound;
 use pocketmine\Player;
 
 class Anvil extends Fallable{
-
+	
+	const NORMAL = 0;
+	const SLIGHTLY_DAMAGED = 4;
+	const VERY_DAMAGED = 8;
+	
 	protected $id = self::ANVIL;
 
 	public function isSolid(){
@@ -38,11 +43,11 @@ class Anvil extends Fallable{
 		$this->meta = $meta;
 	}
 
-	public function canBeActivated(){
+	public function canBeActivated() : bool {
 		return true;
 	}
 
-	public function getHardness(){
+	public function getHardness() {
 		return 5;
 	}
 
@@ -50,8 +55,14 @@ class Anvil extends Fallable{
 		return 6000;
 	}
 
-	public function getName(){
-		return "Anvil";
+	public function getName() : string{
+		$names = [
+			self::NORMAL => "Anvil",
+			self::SLIGHTLY_DAMAGED => "Slightly Damaged Anvil",
+			self::VERY_DAMAGED => "Very Damaged Anvil",
+			12 => "Anvil" //just in case somebody uses /give to get an anvil with damage 12 or higher, to prevent crash
+		];
+		return $names[$this->meta & 0x0c];
 	}
 
 	public function getToolType(){
@@ -59,17 +70,31 @@ class Anvil extends Fallable{
 	}
 
 	public function onActivate(Item $item, Player $player = null){
+		if(!$this->getLevel()->getServer()->anvilEnabled){
+			return true;
+		}
 		if($player instanceof Player){
+			if($player->isCreative() and $player->getServer()->limitedCreative){
+				return true;
+			}
+
 			$player->addWindow(new AnvilInventory($this));
+			$player->craftingType = Player::CRAFTING_ANVIL;
 		}
 
 		return true;
 	}
+	
+	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
+		$direction = ($player !== null? $player->getDirection(): 0) & 0x03;
+		$this->meta = ($this->meta & 0x0c) | $direction;
+		$this->getLevel()->setBlock($block, $this, true, true);
+	}
 
-	public function getDrops(Item $item){
-		if($item->isPickaxe() >= Tool::TIER_WOODEN){
+	public function getDrops(Item $item) : array {
+		if($item->isPickaxe() >= 1){
 			return [
-				[$this->id, 0, 1], //TODO break level
+				[$this->id, $this->meta & 0x0c, 1],
 			];
 		}else{
 			return [];

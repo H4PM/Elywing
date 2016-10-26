@@ -26,8 +26,8 @@ use pocketmine\item\Tool;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
 use pocketmine\tile\Chest as TileChest;
@@ -41,15 +41,15 @@ class Chest extends Transparent{
 		$this->meta = $meta;
 	}
 
-	public function canBeActivated(){
+	public function canBeActivated() : bool {
 		return true;
 	}
 
-	public function getHardness(){
+	public function getHardness() {
 		return 2.5;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "Chest";
 	}
 
@@ -57,7 +57,7 @@ class Chest extends Transparent{
 		return Tool::TYPE_AXE;
 	}
 
-	protected function recalculateBoundingBox(){
+	protected function recalculateBoundingBox() {
 		return new AxisAlignedBB(
 			$this->x + 0.0625,
 			$this->y,
@@ -86,7 +86,7 @@ class Chest extends Transparent{
 				continue;
 			}
 			$c = $this->getSide($side);
-			if($c->getId() === $this->id and $c->getDamage() === $this->meta){
+			if($c instanceof Chest and $c->getDamage() === $this->meta){
 				$tile = $this->getLevel()->getTile($c);
 				if($tile instanceof TileChest and !$tile->isPaired()){
 					$chest = $tile;
@@ -164,13 +164,16 @@ class Chest extends Transparent{
 				}
 			}
 
+			if($player->isCreative() and $player->getServer()->limitedCreative){
+				return true;
+			}
 			$player->addWindow($chest->getInventory());
 		}
 
 		return true;
 	}
 
-	public function getDrops(Item $item){
+	public function getDrops(Item $item) : array {
 		return [
 			[$this->id, 0, 1],
 		];

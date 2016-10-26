@@ -22,22 +22,14 @@
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
+use pocketmine\Player;
 
-class DoubleRedSandstoneSlab extends DoubleSlab{
+class DaylightDetectorInverted extends DaylightDetector{
+	protected $id = self::DAYLIGHT_SENSOR_INVERTED;
 
-	protected $id = Block::DOUBLE_RED_SANDSTONE_SLAB;
-
-	public function getName() : string{
-		return "Double Red Sandstone Slab";
-	}
-
-	public function getDrops(Item $item) : array {
-		if($item->isPickaxe() >= 1){
-			return [
-				[Item::RED_SANDSTONE_SLAB, $this->meta, 2],
-			];
-		}else{
-			return [];
-		}
+	public function onActivate(Item $item, Player $player = null){
+		$this->getLevel()->setBlock($this, new DaylightDetector(), true, true);
+		$this->getTile()->onUpdate();
+		return true;
 	}
 }

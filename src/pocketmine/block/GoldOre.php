@@ -32,11 +32,11 @@ class GoldOre extends Solid{
 
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "Gold Ore";
 	}
 
-	public function getHardness(){
+	public function getHardness() {
 		return 3;
 	}
 
@@ -44,8 +44,8 @@ class GoldOre extends Solid{
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getDrops(Item $item){
-		if($item->isPickaxe() >= Tool::TIER_IRON){
+	public function getDrops(Item $item) : array {
+		if($item->isPickaxe() >= 4){
 			return [
 				[Item::GOLD_ORE, 0, 1],
 			];

@@ -23,11 +23,11 @@ namespace pocketmine\block;
 
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
-use pocketmine\level\sound\DoorSound;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\Player;
+use pocketmine\level\sound\DoorSound;
 
-class FenceGate extends Transparent{
+class FenceGate extends Transparent implements ElectricalAppliance{
 
 	protected $id = self::FENCE_GATE;
 
@@ -35,15 +35,15 @@ class FenceGate extends Transparent{
 		$this->meta = $meta;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "Oak Fence Gate";
 	}
 
-	public function getHardness(){
+	public function getHardness() {
 		return 2;
 	}
 
-	public function canBeActivated(){
+	public function canBeActivated() : bool {
 		return true;
 	}
 
@@ -52,7 +52,7 @@ class FenceGate extends Transparent{
 	}
 
 
-	protected function recalculateBoundingBox(){
+	protected function recalculateBoundingBox() {
 
 		if(($this->getDamage() & 0x04) > 0){
 			return null;
@@ -93,16 +93,25 @@ class FenceGate extends Transparent{
 		return true;
 	}
 
-	public function getDrops(Item $item){
+	public function isOpened(){
+		return (($this->getDamage() & 0x04) > 0);
+	}
+
+	public function getDrops(Item $item) : array {
 		return [
 			[$this->id, 0, 1],
 		];
 	}
 
 	public function onActivate(Item $item, Player $player = null){
-		$this->meta ^= 0x04; //Flip open/close state
-		//TODO: Face player when opened
-
+		$faces = [
+			0 => 3,
+			1 => 0,
+			2 => 1,
+			3 => 2,
+		];
+		if($player !== null) $this->meta = ($faces[$player instanceof Player ? $player->getDirection() : 0] & 0x03) | ((~$this->meta) & 0x04);
+		else $this->meta ^= 0x04;
 		$this->getLevel()->setBlock($this, $this, true);
 		$this->level->addSound(new DoorSound($this));
 		return true;

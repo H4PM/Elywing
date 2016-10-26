@@ -21,13 +21,14 @@
 
 namespace pocketmine\block;
 
-use pocketmine\entity\Effect;
+use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityEatBlockEvent;
 use pocketmine\item\FoodSource;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\Player;
+
 
 class Cake extends Transparent implements FoodSource{
 
@@ -37,19 +38,19 @@ class Cake extends Transparent implements FoodSource{
 		$this->meta = $meta;
 	}
 
-	public function canBeActivated(){
+	public function canBeActivated() : bool {
 		return true;
 	}
 
-	public function getHardness(){
+	public function getHardness() {
 		return 0.5;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "Cake Block";
 	}
 
-	protected function recalculateBoundingBox(){
+	protected function recalculateBoundingBox() {
 
 		$f = (1 + $this->getDamage() * 2) / 16;
 
@@ -86,21 +87,25 @@ class Cake extends Transparent implements FoodSource{
 		return false;
 	}
 
-	public function getDrops(Item $item){
+	public function getDrops(Item $item) : array {
 		return [];
 	}
 
-	public function onActivate(Item $item, Player $player = null){
-		if($player instanceof Player and $player->getHealth() < $player->getMaxHealth()){
-			$ev = new EntityEatBlockEvent($player, $this);
+	public function canBeConsumed() : bool{
+		return true;
+	}
 
-			if(!$ev->isCancelled()){
-				$this->getLevel()->setBlock($this, $ev->getResidue());
-				return true;
-			}
-		}
+	public function canBeConsumedBy(Entity $entity) : bool{
+		return $entity instanceof Player and ($entity->getFood() < $entity->getMaxFood()) and $this->canBeConsumed();
+	}
 
-		return false;
+	public function getResidue(){
+		$new = clone $this;
+		return $new;
+	}
+
+	public function getAdditionalEffects() : array{
+		return [];
 	}
 
 	public function getFoodRestore() : int{
@@ -111,19 +116,24 @@ class Cake extends Transparent implements FoodSource{
 		return 0.4;
 	}
 
-	public function getResidue(){
-		$clone = clone $this;
-		$clone->meta++;
-		if($clone->meta >= 0x06){
-			$clone = new Air();
+	public function onActivate(Item $item, Player $player = null){
+		if($player instanceof Player and $player->getFood() < 20){
+			$player->getServer()->getPluginManager()->callEvent($ev = new EntityEatBlockEvent($player, $this));
+			if(!$ev->isCancelled()){
+				$player->setFood($player->getFood() + 2);
+				++$this->meta;
+
+				if($this->meta >= 0x06){
+					$this->getLevel()->setBlock($this, new Air(), true);
+				}else{
+					$this->getLevel()->setBlock($this, $this, true);
+				}
+
+				return true;
+			}
 		}
-		return $clone;
+
+		return false;
 	}
 
-	/**
-	 * @return Effect[]
-	 */
-	public function getAdditionalEffects() : array{
-		return [];
-	}
 }

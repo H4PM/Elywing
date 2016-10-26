@@ -42,18 +42,22 @@ class Lava extends Liquid{
 		return 15;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "Lava";
 	}
 
 	public function onEntityCollide(Entity $entity){
 		$entity->fallDistance *= 0.5;
+		$ProtectL = 0;
 		if(!$entity->hasEffect(Effect::FIRE_RESISTANCE)){
 			$ev = new EntityDamageByBlockEvent($this, $entity, EntityDamageEvent::CAUSE_LAVA, 4);
-			$entity->attack($ev->getFinalDamage(), $ev);
+			if($entity->attack($ev->getFinalDamage(), $ev) === true){
+				$ev->useArmors();
+			}
+			$ProtectL = $ev->getFireProtectL();
 		}
 
-		$ev = new EntityCombustByBlockEvent($this, $entity, 15);
+		$ev = new EntityCombustByBlockEvent($this, $entity, 15, $ProtectL);
 		Server::getInstance()->getPluginManager()->callEvent($ev);
 		if(!$ev->isCancelled()){
 			$entity->setOnFire($ev->getDuration());

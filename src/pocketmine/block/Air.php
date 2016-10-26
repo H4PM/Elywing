@@ -36,7 +36,7 @@ class Air extends Transparent{
 
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "Air";
 	}
 
@@ -68,8 +68,8 @@ class Air extends Transparent{
 		return null;
 	}
 
-	public function getHardness(){
-		return -1;
+	public function getHardness() {
+		return 0;
 	}
 
 	public function getResistance(){

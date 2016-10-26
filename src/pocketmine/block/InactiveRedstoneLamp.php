@@ -21,23 +21,32 @@
 
 namespace pocketmine\block;
 
-use pocketmine\item\Item;
+class InactiveRedstoneLamp extends ActiveRedstoneLamp{
+	protected $id = self::INACTIVE_REDSTONE_LAMP;
 
-class DoubleRedSandstoneSlab extends DoubleSlab{
-
-	protected $id = Block::DOUBLE_RED_SANDSTONE_SLAB;
-
-	public function getName() : string{
-		return "Double Red Sandstone Slab";
+	public function getLightLevel(){
+		return 0;
 	}
 
-	public function getDrops(Item $item) : array {
-		if($item->isPickaxe() >= 1){
-			return [
-				[Item::RED_SANDSTONE_SLAB, $this->meta, 2],
-			];
-		}else{
-			return [];
-		}
+	public function getName() : string{
+		return "Inactive Redstone Lamp";
+	}
+
+	public function isLightedByAround(){
+		return false;
+	}
+
+	public function turnOn(){
+		//if($isLightedByAround){
+		$this->getLevel()->setBlock($this, new ActiveRedstoneLamp(), true, true);
+		/*}else{
+			$this->getLevel()->setBlock($this, new ActiveRedstoneLamp(), true, false);
+			//$this->lightAround();
+		}*/
+		return true;
+	}
+
+	public function turnOff(){
+		return true;
 	}
 }
