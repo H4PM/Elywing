@@ -62,7 +62,6 @@ use pocketmine\Server;
 
 abstract class Entity extends Location implements Metadatable{
 
-
 	const NETWORK_ID = -1;
 
 
@@ -75,19 +74,19 @@ abstract class Entity extends Location implements Metadatable{
 	const DATA_TYPE_POS = 6;
 	const DATA_TYPE_LONG = 7;
 	const DATA_TYPE_VECTOR3F = 8;
-
 	const DATA_FLAGS = 0;
 	//1 (int)
 	const DATA_VARIANT = 2; //int
 	const DATA_COLOUR = 3; //byte
 	const DATA_NAMETAG = 4; //string
 	const DATA_OWNER_EID = 5; //long
-
 	const DATA_AIR = 7; //short
+	const DATA_POTION_COLOR = 8; //int (ARGB!)
+	const DATA_POTION_AMBIENT = 9; //byte
 	/* 8 (int)
 	 * 9 (int)
-	 * 27 (byte) something to do with beds
-	 * 28 (int) 
+	 * 27 (byte) player-specific flags
+	 * 28 (int) player "index"? 
 	 * 29 (block coords) bed position */
 	const DATA_LEAD_HOLDER_EID = 38; //long
 	const DATA_SCALE = 39; //float
@@ -108,43 +107,52 @@ abstract class Entity extends Location implements Metadatable{
 	 * 57 (byte)
 	 * 58 (float)
 	 * 59 (float) */
-	
-	 /*
-	const DATA_SILENT = 4;
-	const DATA_POTION_COLOR = 7;
-	const DATA_POTION_AMBIENT = 8;
-	*/
-
-
 	const DATA_FLAG_ONFIRE = 0;
 	const DATA_FLAG_SNEAKING = 1;
 	const DATA_FLAG_RIDING = 2;
 	const DATA_FLAG_SPRINTING = 3;
 	const DATA_FLAG_ACTION = 4;
 	const DATA_FLAG_INVISIBLE = 5;
-	
+	const DATA_FLAG_TEMPTED = 6; //???
+	const DATA_FLAG_INLOVE = 7;
+	const DATA_FLAG_SADDLED = 8;
+	const DATA_FLAG_POWERED = 9;
+	const DATA_FLAG_IGNITED = 10; //for creepers?
+	const DATA_FLAG_BABY = 11;
+	const DATA_FLAG_CONVERTING = 12; //???
+	const DATA_FLAG_CRITICAL = 13;
 	const DATA_FLAG_CAN_SHOW_NAMETAG = 14;
 	const DATA_FLAG_ALWAYS_SHOW_NAMETAG = 15;
-	const DATA_FLAG_IMMOBILE = 16;
+	const DATA_FLAG_IMMOBILE = 16, DATA_FLAG_NO_AI = 16;
+	const DATA_FLAG_SILENT = 17;
+	const DATA_FLAG_WALLCLIMBING = 18;
+	const DATA_FLAG_RESTING = 19; //for bats?
+	const DATA_FLAG_SITTING = 20;
+	const DATA_FLAG_ANGRY = 21;
+	const DATA_FLAG_INTERESTED = 22; //for mobs following players with food?
+	const DATA_FLAG_CHARGED = 23;
+	const DATA_FLAG_TAMED = 24;
+	const DATA_FLAG_LEASHED = 25;
+	const DATA_FLAG_SHEARED = 26; //for sheep
+	const DATA_FLAG_FALL_FLYING = 27; //???
+	const DATA_FLAG_ELDER = 28; //elder guardian
+	const DATA_FLAG_MOVING = 29;
+	const DATA_FLAG_BREATHING = 30; //hides bubbles if true
+	const DATA_FLAG_CHESTED = 31; //for mules?
+	const DATA_FLAG_STACKABLE = 32; //???
 
-	const DATA_FLAG_NOT_UNDERWATER = 30; //Hide bubbles if not underwater
-
-
+	
 	public static $entityCount = 1;
 	/** @var Entity[] */
 	private static $knownEntities = [];
 	private static $shortNames = [];
-
 	/**
 	 * @var Player[]
 	 */
 	protected $hasSpawned = [];
-
 	/** @var Effect[] */
 	protected $effects = [];
-
 	protected $id;
-
 	protected $dataFlags = 0;
 	protected $dataProperties = [
 		self::DATA_FLAGS => [self::DATA_TYPE_LONG, 0],
