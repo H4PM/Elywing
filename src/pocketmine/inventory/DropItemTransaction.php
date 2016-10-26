@@ -64,7 +64,7 @@ class DropItemTransaction extends BaseTransaction{
 
 	public function execute(Player $source): bool{
 		$droppedItem = $this->getTargetItem();
-		if(!$source->isCreative()){
+		if(!$source->getServer()->allowInventoryCheats and !$source->isCreative()){
 			if(!$source->getFloatingInventory()->contains($droppedItem)){
 				return false;
 			}

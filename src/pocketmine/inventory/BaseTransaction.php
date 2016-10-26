@@ -23,7 +23,6 @@ namespace pocketmine\inventory;
 
 use pocketmine\item\Item;
 use pocketmine\Player;
-use pocketmine\inventory\FloatingInventory;
 
 class BaseTransaction implements Transaction{
 	/** @var Inventory */
@@ -190,7 +189,7 @@ class BaseTransaction implements Transaction{
 
 	public function execute(Player $source): bool{
 		if($this->getInventory()->processSlotChange($this)){ //This means that the transaction should be handled the normal way
-			if(!$source->isCreative()){
+			if(!$source->getServer()->allowInventoryCheats and !$source->isCreative()){
 				$change = $this->getChange();
 
 				if($change === null){ //No changes to make, ignore this transaction

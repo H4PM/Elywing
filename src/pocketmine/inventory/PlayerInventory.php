@@ -100,7 +100,7 @@ class PlayerInventory extends BaseInventory{
 	 */
 	public function setHotbarSlotIndex($index, $slot){
 		if($this->getHolder()->getServer()->getProperty("settings.deprecated-verbose") !== false){
-			
+			trigger_error("Do not attempt to change hotbar links in plugins!", E_USER_DEPRECATED);
 		}
 	}
 
@@ -512,17 +512,6 @@ class PlayerInventory extends BaseInventory{
 			$pk->windowid = $id;
 			$player->dataPacket(clone $pk);
 		}
-	}
-
-	public function sendCreativeContents(){
-		$pk = new ContainerSetContentPacket();
-		$pk->windowid = ContainerSetContentPacket::SPECIAL_CREATIVE;
-		if($this->getHolder()->getGamemode() === Player::CREATIVE){
-			foreach(Item::getCreativeItems() as $i => $item){
-				$pk->slots[$i] = clone $item;
-			}
-		}
-		$this->getHolder()->dataPacket($pk);
 	}
 
 	/**

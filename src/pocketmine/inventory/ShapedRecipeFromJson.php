@@ -26,7 +26,7 @@ use pocketmine\Server;
 use pocketmine\utils\UUID;
 use pocketmine\math\Vector2;
 
-class ShapedRecipe implements Recipe{
+class ShapedRecipeFromJson extends ShapedRecipe{
 	/** @var Item */
 	private $output;
 
@@ -42,32 +42,17 @@ class ShapedRecipe implements Recipe{
 
 	/**
 	 * @param Item     $result
-	 * @param string[] $shape
+	 * @param int      $height
+	 * @param int      $width
 	 *
-	 * @throws \Throwable
+	 * @throws \Exception
 	 */
-	public function __construct(Item $result, ...$shape){
-		if(count($shape) === 0){
-			throw new \InvalidArgumentException("Must provide a shape");
-		}
-		if(count($shape) > 3){
-			throw new \InvalidStateException("Crafting recipes should be 1, 2, 3 rows, not " . count($shape));
-		}
-		foreach($shape as $y => $row){
-			if(strlen($row) === 0 or strlen($row) > 3){
-				throw new \InvalidStateException("Crafting rows should be 1, 2, 3 characters, not " . count($row));
+	public function __construct(Item $result, $height, $width){
+		for($h = 0; $h < $height; $h++){
+			if($width === 0 or $width > 3){
+				throw new \InvalidStateException("Crafting rows should be 1, 2, 3 wide, not $width");
 			}
-			$this->ingredients[] = array_fill(0, strlen($row), null);
-			$len = strlen($row);
-			for($i = 0; $i < $len; ++$i){
-				$this->shape[$row{$i}] = null;
-
-				if(!isset($this->shapeItems[$row{$i}])){
-					$this->shapeItems[$row{$i}] = [new Vector2($i, $y)];
-				}else{
-					$this->shapeItems[$row{$i}][] = new Vector2($i, $y);
-				}
-			}
+			$this->ingredients[] = array_fill(0, $width, null);
 		}
 
 		$this->output = clone $result;
@@ -97,6 +82,11 @@ class ShapedRecipe implements Recipe{
 		$this->id = $id;
 	}
 
+	public function addIngredient($x, $y, Item $item){
+		$this->ingredients[$y][$x] = clone $item;
+		return $this;
+	}
+
 	/**
 	 * @param string $key
 	 * @param Item   $item
@@ -109,7 +99,6 @@ class ShapedRecipe implements Recipe{
 			throw new \Exception("Symbol does not appear in the shape: " . $key);
 		}
 
-		$item->setCount(1);
 		$this->fixRecipe($key, $item);
 
 		return $this;
@@ -139,23 +128,6 @@ class ShapedRecipe implements Recipe{
 
 		return $ingredients;
 	}
-
-	/**
- 	 * @return Item[]
- 	 */
- 	public function getIngredientList(){
- 		$ingredients = [];
- 		for ($x = 0; $x < 3; ++$x){
- 			for ($y = 0; $y < 3; ++$y){
- 				if (!empty($this->ingredients[$x][$y])){
- 					if ($this->ingredients[$x][$y]->getId() !== Item::AIR){
- 						$ingredients[] = clone $this->ingredients[$x][$y];
- 					}
- 				}
- 			}
- 		}
- 		return $ingredients;
- 	}
 
 	/**
 	 * @param $x
