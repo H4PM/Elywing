@@ -76,7 +76,7 @@ abstract class BaseLevelProvider implements LevelProvider{
 		return $this->level;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return $this->levelData["LevelName"];
 	}
 
@@ -93,11 +93,11 @@ abstract class BaseLevelProvider implements LevelProvider{
 	}
 
 	public function setSeed($value){
-		$this->levelData->RandomSeed = new LongTag("RandomSeed", $value);
+		$this->levelData->RandomSeed = new LongTag("RandomSeed", (int) $value);
 	}
 
 	public function getSpawn(){
-		return new Vector3((float) $this->levelData["SpawnX"], (float) $this->levelData["SpawnY"], (float) $this->levelData["SpawnZ"]);
+		return new Vector3((float) $this->levelData["SpawnX"] + 0.5, (float) $this->levelData["SpawnY"], (float) $this->levelData["SpawnZ"] + 0.5);
 	}
 
 	public function setSpawn(Vector3 $pos){

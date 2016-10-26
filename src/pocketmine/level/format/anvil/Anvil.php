@@ -25,13 +25,14 @@ use pocketmine\level\format\FullChunk;
 use pocketmine\level\format\mcregion\McRegion;
 use pocketmine\level\Level;
 use pocketmine\nbt\NBT;
-use pocketmine\nbt\tag\ByteArrayTag;
 use pocketmine\nbt\tag\ByteTag;
+use pocketmine\nbt\tag\ByteArrayTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\protocol\FullChunkDataPacket;
 use pocketmine\tile\Spawnable;
 use pocketmine\utils\BinaryStream;
 use pocketmine\utils\ChunkException;
+
 
 class Anvil extends McRegion{
 
@@ -75,37 +76,42 @@ class Anvil extends McRegion{
 			throw new ChunkException("Invalid Chunk sent");
 		}
 
-		$tiles = "";
+		if($this->getServer()->asyncChunkRequest){
+			$task = new ChunkRequestTask($this->getLevel(), $chunk);
+			$this->getServer()->getScheduler()->scheduleAsyncTask($task);
+		}else{
+			$tiles = "";
 
-		if(count($chunk->getTiles()) > 0){
-			$nbt = new NBT(NBT::LITTLE_ENDIAN);
-			$list = [];
-			foreach($chunk->getTiles() as $tile){
-				if($tile instanceof Spawnable){
-					$list[] = $tile->getSpawnCompound();
+			if(count($chunk->getTiles()) > 0){
+				$nbt = new NBT(NBT::LITTLE_ENDIAN);
+				$list = [];
+				foreach($chunk->getTiles() as $tile){
+					if($tile instanceof Spawnable){
+						$list[] = $tile->getSpawnCompound();
+					}
 				}
+				$nbt->setData($list);
+				$tiles = $nbt->write(true);
 			}
-			$nbt->setData($list);
-			$tiles = $nbt->write(true);
+
+			$extraData = new BinaryStream();
+			$extraData->putLInt(count($chunk->getBlockExtraDataArray()));
+			foreach($chunk->getBlockExtraDataArray() as $key => $value){
+				$extraData->putLInt($key);
+				$extraData->putLShort($value);
+			}
+
+			$ordered = $chunk->getBlockIdArray() .
+				$chunk->getBlockDataArray() .
+				$chunk->getBlockSkyLightArray() .
+				$chunk->getBlockLightArray() .
+				pack("C*", ...$chunk->getHeightMapArray()) .
+				pack("N*", ...$chunk->getBiomeColorArray()) .
+				$extraData->getBuffer() .
+				$tiles;
+
+			$this->getLevel()->chunkRequestCallback($x, $z, $ordered, FullChunkDataPacket::ORDER_LAYERED);
 		}
-
-		$extraData = new BinaryStream();
-		$extraData->putLInt(count($chunk->getBlockExtraDataArray()));
-		foreach($chunk->getBlockExtraDataArray() as $key => $value){
-			$extraData->putLInt($key);
-			$extraData->putLShort($value);
-		}
-
-		$ordered = $chunk->getBlockIdArray() .
-			$chunk->getBlockDataArray() .
-			$chunk->getBlockSkyLightArray() .
-			$chunk->getBlockLightArray() .
-			pack("C*", ...$chunk->getHeightMapArray()) .
-			pack("N*", ...$chunk->getBiomeColorArray()) .
-			$extraData->getBuffer() .
-			$tiles;
-
-		$this->getLevel()->chunkRequestCallback($x, $z, $ordered, FullChunkDataPacket::ORDER_LAYERED);
 
 		return null;
 	}

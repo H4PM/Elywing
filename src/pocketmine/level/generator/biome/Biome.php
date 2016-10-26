@@ -23,6 +23,7 @@ namespace pocketmine\level\generator\biome;
 
 use pocketmine\block\Block;
 use pocketmine\level\ChunkManager;
+use pocketmine\level\generator\normal\biome\SwampBiome;
 use pocketmine\level\generator\normal\biome\DesertBiome;
 use pocketmine\level\generator\normal\biome\ForestBiome;
 use pocketmine\level\generator\normal\biome\IcePlainsBiome;
@@ -31,10 +32,12 @@ use pocketmine\level\generator\normal\biome\OceanBiome;
 use pocketmine\level\generator\normal\biome\PlainBiome;
 use pocketmine\level\generator\normal\biome\RiverBiome;
 use pocketmine\level\generator\normal\biome\SmallMountainsBiome;
-use pocketmine\level\generator\normal\biome\SwampBiome;
 use pocketmine\level\generator\normal\biome\TaigaBiome;
+use pocketmine\level\generator\hell\HellBiome;
 use pocketmine\level\generator\populator\Populator;
 use pocketmine\utils\Random;
+
+use pocketmine\level\generator\populator\Flower;
 
 abstract class Biome{
 
@@ -81,6 +84,20 @@ abstract class Biome{
 		self::$biomes[(int) $id] = $biome;
 		$biome->setId((int) $id);
 		$biome->grassColor = self::generateBiomeColor($biome->getTemperature(), $biome->getRainfall());
+
+		$flowerPopFound = false;
+
+		foreach($biome->getPopulators() as $populator){
+			if($populator instanceof Flower){
+				$flowerPopFound = true;
+				break;
+			}
+		}
+
+		if($flowerPopFound === false){
+			$flower = new Flower();
+			$biome->addPopulator($flower);
+		}
 	}
 
 	public static function init(){
@@ -97,6 +114,7 @@ abstract class Biome{
 
 
 		self::register(self::SMALL_MOUNTAINS, new SmallMountainsBiome());
+		self::register(self::HELL, new HellBiome());
 
 		self::register(self::BIRCH_FOREST, new ForestBiome(ForestBiome::TYPE_BIRCH));
 	}

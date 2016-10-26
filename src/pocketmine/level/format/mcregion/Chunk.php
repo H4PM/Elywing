@@ -24,12 +24,12 @@ namespace pocketmine\level\format\mcregion;
 use pocketmine\level\format\generic\BaseFullChunk;
 use pocketmine\level\format\LevelProvider;
 use pocketmine\nbt\NBT;
-use pocketmine\nbt\tag\ByteArrayTag;
 use pocketmine\nbt\tag\ByteTag;
+use pocketmine\nbt\tag\ByteArrayTag;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\IntArrayTag;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\IntArrayTag;
 use pocketmine\nbt\tag\LongTag;
 use pocketmine\Player;
 use pocketmine\utils\Binary;
@@ -46,7 +46,7 @@ class Chunk extends BaseFullChunk{
 			$this->nbt = new CompoundTag("Level", []);
 			return;
 		}
-
+		
 		$this->nbt = $nbt;
 
 		if(isset($this->nbt->Entities) and $this->nbt->Entities instanceof ListTag){
@@ -97,7 +97,7 @@ class Chunk extends BaseFullChunk{
 			$count = $stream->getInt();
 			for($i = 0; $i < $count; ++$i){
 				$key = $stream->getInt();
-				$extraData[$key] = $stream->getShort(false);
+				$extraData[$key] = $stream->getShort();
 			}
 		}
 
@@ -118,7 +118,8 @@ class Chunk extends BaseFullChunk{
 	}
 
 	public function getBlockId($x, $y, $z){
-		return ord($this->blocks{($x << 11) | ($z << 7) | $y});
+		if(isset($this->blocks{($x << 11) | ($z << 7) | $y})) return ord($this->blocks{($x << 11) | ($z << 7) | $y});
+		else return 0;
 	}
 
 	public function setBlockId($x, $y, $z, $id){
@@ -313,7 +314,7 @@ class Chunk extends BaseFullChunk{
 			return null;
 		}
 	}
-
+	
 	public static function fromFastBinary($data, LevelProvider $provider = null){
 
 		try{
@@ -351,7 +352,7 @@ class Chunk extends BaseFullChunk{
 			return null;
 		}
 	}
-
+	
 	public function toFastBinary(){
 		return
 			Binary::writeInt($this->x) .

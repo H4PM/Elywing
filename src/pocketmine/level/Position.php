@@ -45,6 +45,14 @@ class Position extends Vector3{
 	public static function fromObject(Vector3 $pos, Level $level = null){
 		return new Position($pos->x, $pos->y, $pos->z, $level);
 	}
+	
+	public function add($x, $y = 0, $z = 0){
+		if($x instanceof Vector3){
+			return new Position($this->x + $x->x, $this->y + $x->y, $this->z + $x->z, $this->level);
+		}else{
+			return new Position($this->x + $x, $this->y + $y, $this->z + $z, $this->level);
+		}
+	}
 
 	/**
 	 * @return Level
@@ -78,7 +86,9 @@ class Position extends Vector3{
 	 * @throws LevelException
 	 */
 	public function getSide($side, $step = 1){
-		assert($this->isValid());
+		if(!$this->isValid()){
+			throw new LevelException("Undefined Level reference");
+		}
 
 		return Position::fromObject(parent::getSide($side, $step), $this->level);
 	}
@@ -98,6 +108,14 @@ class Position extends Vector3{
 		$this->x = $x;
 		$this->y = $y;
 		$this->z = $z;
+		return $this;
+	}
+
+	public function fromObjectAdd(Vector3 $pos, $x, $y, $z){
+		if($pos instanceof Position){
+			$this->level = $pos->level;
+		}
+		parent::fromObjectAdd($pos, $x, $y, $z);
 		return $this;
 	}
 

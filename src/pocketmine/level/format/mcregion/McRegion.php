@@ -32,6 +32,7 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\tile\Spawnable;
+
 use pocketmine\utils\BinaryStream;
 use pocketmine\utils\ChunkException;
 
@@ -118,37 +119,42 @@ class McRegion extends BaseLevelProvider{
 			throw new ChunkException("Invalid Chunk sent");
 		}
 
-		$tiles = "";
+		if($this->getServer()->asyncChunkRequest){
+			$task = new ChunkRequestTask($this->getLevel(), $chunk);
+			$this->getServer()->getScheduler()->scheduleAsyncTask($task);
+		}else{
+			$tiles = "";
 
-		if(count($chunk->getTiles()) > 0){
-			$nbt = new NBT(NBT::LITTLE_ENDIAN);
-			$list = [];
-			foreach($chunk->getTiles() as $tile){
-				if($tile instanceof Spawnable){
-					$list[] = $tile->getSpawnCompound();
+			if(count($chunk->getTiles()) > 0){
+				$nbt = new NBT(NBT::LITTLE_ENDIAN);
+				$list = [];
+				foreach($chunk->getTiles() as $tile){
+					if($tile instanceof Spawnable){
+						$list[] = $tile->getSpawnCompound();
+					}
 				}
+				$nbt->setData($list);
+				$tiles = $nbt->write(true);
 			}
-			$nbt->setData($list);
-			$tiles = $nbt->write(true);
+
+			$extraData = new BinaryStream();
+			$extraData->putLInt(count($chunk->getBlockExtraDataArray()));
+			foreach($chunk->getBlockExtraDataArray() as $key => $value){
+				$extraData->putLInt($key);
+				$extraData->putLShort($value);
+			}
+
+			$ordered = $chunk->getBlockIdArray() .
+				$chunk->getBlockDataArray() .
+				$chunk->getBlockSkyLightArray() .
+				$chunk->getBlockLightArray() .
+				pack("C*", ...$chunk->getHeightMapArray()) .
+				pack("N*", ...$chunk->getBiomeColorArray()) .
+				$extraData->getBuffer() .
+				$tiles;
+
+			$this->getLevel()->chunkRequestCallback($x, $z, $ordered);
 		}
-
-		$extraData = new BinaryStream();
-		$extraData->putLInt(count($chunk->getBlockExtraDataArray()));
-		foreach($chunk->getBlockExtraDataArray() as $key => $value){
-			$extraData->putLInt($key);
-			$extraData->putLShort($value);
-		}
-
-		$ordered = $chunk->getBlockIdArray() .
-			$chunk->getBlockDataArray() .
-			$chunk->getBlockSkyLightArray() .
-			$chunk->getBlockLightArray() .
-			pack("C*", ...$chunk->getHeightMapArray()) .
-			pack("N*", ...$chunk->getBiomeColorArray()) .
-			$extraData->getBuffer() .
-			$tiles;
-
-		$this->getLevel()->chunkRequestCallback($x, $z, $ordered);
 
 		return null;
 	}
