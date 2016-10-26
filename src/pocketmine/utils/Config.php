@@ -20,7 +20,6 @@
 */
 
 namespace pocketmine\utils;
-
 use pocketmine\scheduler\FileWriteTask;
 use pocketmine\Server;
 
@@ -210,7 +209,7 @@ class Config{
 			}catch(\Throwable $e){
 				$logger = Server::getInstance()->getLogger();
 				$logger->critical("Could not save Config " . $this->file . ": " . $e->getMessage());
-				if(\pocketmine\DEBUG > 1){
+				if(\pocketmine\DEBUG > 1 and $logger instanceof MainLogger){
 					$logger->logException($e);
 				}
 			}
@@ -330,7 +329,7 @@ class Config{
 		foreach($this->nestedCache as $nestedKey => $nvalue){
 			if(substr($nestedKey, 0, strlen($k) + 1) === ($k . ".")){
 				unset($this->nestedCache[$nestedKey]);
-			}
+  			}
 		}
 	}
 

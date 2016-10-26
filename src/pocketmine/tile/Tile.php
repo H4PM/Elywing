@@ -32,6 +32,7 @@ use pocketmine\level\Position;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
+use pocketmine\utils\ChunkException;
 
 abstract class Tile extends Position{
 	const SIGN = "Sign";
@@ -40,8 +41,14 @@ abstract class Tile extends Position{
 	const FLOWER_POT = "FlowerPot";
 	const MOB_SPAWNER = "MobSpawner";
 	const SKULL = "Skull";
-	const BREWING_STAND = "Cauldron";
+	const BREWING_STAND = "BrewingStand";
 	const ENCHANT_TABLE = "EnchantTable";
+	const ITEM_FRAME = "ItemFrame";
+	const DISPENSER = "Dispenser";
+	const DROPPER = "Dropper";
+	const DAY_LIGHT_DETECTOR = "DLDetector";
+	const CAULDRON = "Cauldron";
+	const HOPPER = "Hopper";
 
 	public static $tileCount = 1;
 
@@ -67,10 +74,10 @@ abstract class Tile extends Position{
 	public $tickTimer;
 
 	/**
-	 * @param string      $type
-	 * @param FullChunk   $chunk
-	 * @param CompoundTag $nbt
-	 * @param             $args
+	 * @param string    $type
+	 * @param FullChunk $chunk
+	 * @param CompoundTag  $nbt
+	 * @param           $args
 	 *
 	 * @return Tile
 	 */
@@ -109,7 +116,9 @@ abstract class Tile extends Position{
 	}
 
 	public function __construct(FullChunk $chunk, CompoundTag $nbt){
-		assert($chunk !== null and $chunk->getProvider() !== null);
+		if($chunk === null or $chunk->getProvider() === null){
+			throw new ChunkException("Invalid garbage Chunk given to Tile");
+		}
 
 		$this->timings = Timings::getTileEntityTimings($this);
 
@@ -173,7 +182,7 @@ abstract class Tile extends Position{
 		}
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return $this->name;
 	}
 

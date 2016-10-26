@@ -31,36 +31,37 @@ use pocketmine\utils\Utils;
 class Installer{
 	const DEFAULT_NAME = "Minecraft: PE Server";
 	const DEFAULT_PORT = 19132;
-	const DEFAULT_MEMORY = 256;
+	const DEFAULT_MEMORY = 512;
 	const DEFAULT_PLAYERS = 20;
 	const DEFAULT_GAMEMODE = 0;
+	const DEFAULT_LEVEL_NAME = "world";
+	const DEFAULT_LEVEL_TYPE = "DEFAULT";
+	
+	const LEVEL_TYPES = [
+		"DEFAULT",
+		"FLAT",
+		"NORMAL",
+		"NORMAL2",
+		"HELL", //nether type, in case anyone wants to generate a blue-skies nether, which actually does look pretty awesome
+		"VOID"
+	];
 
-	private $lang;
+	private $defaultLang;
 
-       public function __construct(){
-		echo "      ########:'##:::::::'##:::'##:'##:::::'##:'####:'##::: ##::'######:::
-      ##.....:: ##:::::::. ##:'##:: ##:'##: ##:. ##:: ###:: ##:'##... ##::
-      ##::::::: ##::::::::. ####::: ##: ##: ##:: ##:: ####: ##: ##:::..:::
-      ######::: ##:::::::::. ##:::: ##: ##: ##:: ##:: ## ## ##: ##::'####:
-      ##...:::: ##:::::::::: ##:::: ##: ##: ##:: ##:: ##. ####: ##::: ##::
-      ##::::::: ##:::::::::: ##:::: ##: ##: ##:: ##:: ##:. ###: ##::: ##::
-      ########: ########:::: ##::::. ###. ###::'####: ##::. ##:. ######:::
-     ........::........:::::..::::::...::...:::....::..::::..:::......::::! \n";// Fully Updated ! ?
-		echo " >>Alpha Stage  \n";//
-		echo " >>--------------------------------\n";//
-   		echo " >>Pulsed By : @SuperMaXAleX_  @ReskillDEV @Misteboss_mcpe @Pab45O \n"; //TODO: Add @xiranoMC If you acccept this update !
-		echo " >>MCPE Version : 0.16.0.5 Alpha Beta: $version   \n";// Yeay
-		echo " >>Please select a language:\n";//TODO: Add A Auth For MCPC // Soon ?
+	public function __construct(){
+		echo "[*] Genisys set-up wizard\n";
+		echo "[*] Please select a language:\n";
 		foreach(InstallerLang::$languages as $short => $native){
-	               echo " $native => $short\n";
+			echo " $native => $short\n";
 		}
 		do{
-			echo "[?] Language (en): ";
-			$lang = strtolower($this->getInput("en"));
+			echo "[?] Language (eng): ";
+			$lang = strtolower($this->getInput("eng"));
 			if(!isset(InstallerLang::$languages[$lang])){
 				echo "[!] Couldn't find the language\n";
 				$lang = false;
 			}
+			$this->defaultLang = $lang;
 		}while($lang == false);
 		$this->lang = new InstallerLang($lang);
 
@@ -68,7 +69,7 @@ class Installer{
 		echo "[*] " . $this->lang->language_has_been_selected . "\n";
 
 		if(!$this->showLicense()){
-			\pocketmine\kill(getmypid());
+			@\pocketmine\kill(getmypid());
 			exit(-1);
 		}
 
@@ -84,6 +85,10 @@ class Installer{
 		$this->networkFunctions();
 
 		$this->endWizard();
+	}
+
+	public function getDefaultLang(){
+		return $this->defaultLang;
 	}
 
 	private function showLicense(){
@@ -117,7 +122,9 @@ LICENSE;
 	private function generateBaseConfig(){
 		$config = new Config(\pocketmine\DATA . "server.properties", Config::PROPERTIES);
 		echo "[?] " . $this->lang->name_your_server . " (" . self::DEFAULT_NAME . "): ";
-		$config->set("server-name", $this->getInput(self::DEFAULT_NAME));
+		$server_name = $this->getInput(self::DEFAULT_NAME);
+		$config->set("server-name", $server_name);
+		$config->set("motd", $server_name); //MOTD is now used as server name
 		echo "[*] " . $this->lang->port_warning . "\n";
 		do{
 			echo "[?] " . $this->lang->server_port . " (" . self::DEFAULT_PORT . "): ";
@@ -127,6 +134,23 @@ LICENSE;
 			}
 		}while($port <= 0 or $port > 65535);
 		$config->set("server-port", $port);
+		
+		echo "[*] " . $this->lang->online_mode_info . "\n";
+		echo "[?] " . $this->lang->online_mode . " (y/N): ";
+		$config->set("online-mode", strtolower($this->getInput("y")) == "y");
+		
+		echo "[?] " . $this->lang->level_name . " (" . self::DEFAULT_LEVEL_NAME . "): ";
+		$config->set("level-name", $this->getInput(self::DEFAULT_LEVEL_NAME));
+		
+		do{
+			echo "[?] " . $this->lang->level_type . " (" . self::DEFAULT_LEVEL_TYPE . "): ";
+			$type = strtoupper((string) $this->getInput(self::DEFAULT_LEVEL_TYPE));
+			if(!in_array($type, self::LEVEL_TYPES)){
+				echo "[!] " . $this->lang->invalid_level_type . "\n";
+			}
+		}while(!in_array($type, self::LEVEL_TYPES));
+		$config->set("level-type", $type);
+		
 		/*echo "[*] " . $this->lang->ram_warning . "\n";
 		echo "[?] " . $this->lang->server_ram . " (" . self::DEFAULT_MEMORY . "): ";
 		$config->set("memory-limit", ((int) $this->getInput(self::DEFAULT_MEMORY)) . "M");*/
@@ -144,6 +168,13 @@ LICENSE;
 			$config->set("spawn-protection", -1);
 		}else{
 			$config->set("spawn-protection", 16);
+		}
+		
+		echo "[?] " . $this->lang->announce_player_achievements . " (y/N): ";
+		if(strtolower($this->getInput("n")) === "y"){
+			$config->set("announce-player-achievements", "on");
+		}else{
+			$config->set("announce-player-achievements", "off");
 		}
 		$config->save();
 	}

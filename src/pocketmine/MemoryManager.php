@@ -26,6 +26,7 @@ use pocketmine\event\Timings;
 use pocketmine\scheduler\GarbageCollectionTask;
 use pocketmine\utils\Utils;
 
+
 class MemoryManager{
 
 	/** @var Server */
@@ -53,6 +54,13 @@ class MemoryManager{
 
 	private $chunkCache;
 	private $cacheTrigger;
+
+	/** @var \WeakRef[] */
+	private $leakWatch = [];
+
+	private $leakInfo = [];
+
+	private $leakSeed = 0;
 
 	public function __construct(Server $server){
 		$this->server = $server;
@@ -127,8 +135,8 @@ class MemoryManager{
 	}
 
 	public function trigger($memory, $limit, $global = false, $triggerCount = 0){
-		$this->server->getLogger()->debug(sprintf("[Memory Manager] %sLow memory triggered, limit %gMB, using %gMB",
-			$global ? "Global " : "", round(($limit / 1024) / 1024, 2), round(($memory / 1024) / 1024, 2)));
+		$this->server->getLogger()->debug("[Memory Manager] ".($global ? "Global " : "") ."Low memory triggered, limit ". round(($limit / 1024) / 1024, 2)."MB, using ". round(($memory / 1024) / 1024, 2)."MB");
+
 		if($this->cacheTrigger){
 			foreach($this->server->getLevels() as $level){
 				$level->clearCache(true);
@@ -149,7 +157,7 @@ class MemoryManager{
 			$cycles = $this->triggerGarbageCollector();
 		}
 
-		$this->server->getLogger()->debug(sprintf("[Memory Manager] Freed %gMB, $cycles cycles", round(($ev->getMemoryFreed() / 1024) / 1024, 2)));
+		$this->server->getLogger()->debug("[Memory Manager] Freed " . round(($ev->getMemoryFreed() / 1024) / 1024, 2)."MB, $cycles cycles");
 	}
 
 	public function check(){
@@ -201,19 +209,103 @@ class MemoryManager{
 
 		$cycles = gc_collect_cycles();
 
+		foreach($this->server->getLevels() as $level){
+			$level->doChunkGarbageCollection();
+		}
+
 		Timings::$garbageCollectorTimer->stopTiming();
 
 		return $cycles;
 	}
 
+	/**
+	 * @param object $object
+	 *
+	 * @return string Object identifier for future checks
+	 */
+	public function addObjectWatcher($object){
+		if(!is_object($object)){
+			throw new \InvalidArgumentException("Not an object!");
+		}
+
+
+		$identifier = spl_object_hash($object) . ":" . get_class($object);
+
+		if(isset($this->leakInfo[$identifier])){
+			return $this->leakInfo["id"];
+		}
+
+		$this->leakInfo[$identifier] = [
+			"id" => $id = md5($identifier . ":" . $this->leakSeed++),
+			"class" => get_class($object),
+			"hash" => $identifier
+		];
+		$this->leakInfo[$id] = $this->leakInfo[$identifier];
+
+		$this->leakWatch[$id] = new \WeakRef($object);
+
+		return $id;
+	}
+
+	public function isObjectAlive($id){
+		if(isset($this->leakWatch[$id])){
+			return $this->leakWatch[$id]->valid();
+		}
+
+		return false;
+	}
+
+	public function removeObjectWatch($id){
+		if(!isset($this->leakWatch[$id])){
+			return;
+		}
+		unset($this->leakInfo[$this->leakInfo[$id]["hash"]]);
+		unset($this->leakInfo[$id]);
+		unset($this->leakWatch[$id]);
+	}
+
+	public function doObjectCleanup(){
+		foreach($this->leakWatch as $id => $w){
+			if(!$w->valid()){
+				$this->removeObjectWatch($id);
+			}
+		}
+	}
+
+	public function getObjectInformation($id, $includeObject = false){
+		if(!isset($this->leakWatch[$id])){
+			return null;
+		}
+
+		$valid = false;
+		$references = 0;
+		$object = null;
+
+		if($this->leakWatch[$id]->acquire()){
+			$object = $this->leakWatch[$id]->get();
+			$this->leakWatch[$id]->release();
+
+			$valid = true;
+			$references = getReferenceCount($object, false);
+		}
+
+		return [
+			"id" => $id,
+			"class" => $this->leakInfo[$id]["class"],
+			"hash" => $this->leakInfo[$id]["hash"],
+			"valid" => $valid,
+			"references" => $references,
+			"object" => $includeObject ? $object : null
+		];
+	}
+
 	public function dumpServerMemory($outputFolder, $maxNesting, $maxStringSize){
 		gc_disable();
-
+		ini_set("memory_limit",-1);
 		if(!file_exists($outputFolder)){
 			mkdir($outputFolder, 0777, true);
 		}
-
-		$this->server->getLogger()->notice("[Dump] After the memory dump is done, the server might crash");
+		$this->server->getLogger()->notice("[Dump] After the memory dump is done, the server will shut down");
 
 		$obData = fopen($outputFolder . "/objects.js", "wb+");
 
@@ -265,7 +357,7 @@ class MemoryManager{
 					$this->continueDump($property->getValue($object), $info["properties"][$property->getName()], $objects, $refCounts, 0, $maxNesting, $maxStringSize);
 				}
 
-				fwrite($obData, "$hash@$className: " . json_encode($info, JSON_UNESCAPED_SLASHES) . "\n");
+				fwrite($obData, "$hash@$className: ". json_encode($info, JSON_UNESCAPED_SLASHES) . "\n");
 
 				if(!isset($objects["staticProperties"][$className])){
 					$staticProperties[$className] = [];
@@ -323,7 +415,7 @@ class MemoryManager{
 				$this->continueDump($value, $data[$key], $objects, $refCounts, $recursion + 1, $maxNesting, $maxStringSize);
 			}
 		}elseif(is_string($from)){
-			$data = sprintf("(string) len(%d) " . substr(Utils::printable($from), 0, $maxStringSize), strlen($from));
+			$data = "(string) len(".strlen($from).") " . substr(Utils::printable($from), 0, $maxStringSize);
 		}elseif(is_resource($from)){
 			$data = "(resource) " . print_r($from, true);
 		}else{

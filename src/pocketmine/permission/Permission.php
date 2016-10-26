@@ -109,7 +109,7 @@ class Permission{
 	/**
 	 * @return string
 	 */
-	public function getName(){
+	public function getName() : string{
 		return $this->name;
 	}
 
@@ -216,7 +216,7 @@ class Permission{
 	 *
 	 * @return Permission
 	 *
-	 * @throws \Exception
+	 * @throws \Throwable
 	 */
 	public static function loadPermission($name, array $data, $default = self::DEFAULT_OP, &$output = []){
 		$desc = null;

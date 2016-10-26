@@ -21,8 +21,9 @@
 
 namespace pocketmine;
 
-use pocketmine\metadata\Metadatable;
+
 use pocketmine\metadata\MetadataValue;
+use pocketmine\metadata\Metadatable;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\plugin\Plugin;
 
@@ -50,7 +51,7 @@ class OfflinePlayer implements IPlayer, Metadatable{
 		return $this->getPlayer() !== null;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return $this->name;
 	}
 

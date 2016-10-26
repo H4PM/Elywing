@@ -1,0 +1,139 @@
+#Genisys Advanced Configuration File
+
+#Version of this file
+config:
+ version: 20
+
+level:
+ #Set if turn on the weather system
+ weather: true
+ #Weather random duration
+ weather-random-duration-min: 6000
+ weather-random-duration-max: 12000
+ #Random lightning interval，default as 10s, 0 = disable
+ lightning-time: 200
+ #Set if enable lightning with fire
+ lightning-fire: false
+ #Set if enable fire spread
+ fire-spread: false
+ 
+player:
+ #the switch of hunger system
+ hunger: true
+ #Minimum health when someone is attacking by being hungry
+ hunger-health: 10
+ #Hunger Time-Counter, Default: 80=4sec
+ hunger-timer: 3000
+ #Choose if turn on the experience system
+ experience: true
+ #Choose if keep inventory when a player died
+ keep-inventory: false
+ #Clear the inventory automatically when change the gamemode into creative
+ auto-clear-inventory : true
+ #Choose if keep experience when a player died
+ keep-experience: false
+ #If players get crash when join, set this below 10. disable=-1
+ chunk-radius: -1
+
+nether:
+ #Choose if the nether's allowed,the level of nether will generate automatically
+ allow-nether: true
+ #The name of nether's level
+ level-name: "nether"
+ 
+server:
+ #Pregenerate the experience data，0=disabled
+ experience-cache: 65535
+ #Choose if spawning iron golem is allowed
+ allow-iron-golem: false
+ #Choose if spawning snow golem is allowed
+ allow-snow-golem: false
+ #Choose if disable server.log
+ disable-log: false
+ #Choose if enable auto anti fly
+ anti-fly: true
+ #Choose if enable async chunks request
+ async-chunk-request: true
+ #Choose how to remind player when a player join
+ #0 = Message, 1 = Tip, 2 = Popup
+ player-msg-type: 0
+ login-msg: "§3@player joined the game"
+ logout-msg: "§3@player left the game"
+ #Choose if read recipes from json
+ recipes-from-json: false
+ #Choose if read creative item from json
+ creative-items-from-json: false
+ #Choose if enable movement check (no more pull back)
+ check-movement: true
+ #Set if enable limited creative (cannot drop item, cannot interact Chests and so on)
+ limited-creative: true
+ #Set if add DestroyBlockParticle
+ destroy-block-particle: true
+ #Set if enable splash potion
+ allow-splash-potion: true
+ #Set if enable advanced Command Selector
+ advanced-command-selector: false
+
+enchantment:
+ #Choose if anvil is allowed
+ enable-anvil: true
+ #Choose if EnchantingTable is allowed
+ enable-enchanting-table: true
+ #Choose if to count bookshelves, may cause server lag.
+ #If this option is false, server will use a random count (0~15)
+ count-bookshelf: false
+
+redstone:
+ ##########################################
+ ###Choose if redstone system is allowed###
+ ##########################################
+ #If not true then the redstone won't work#
+ ##########################################
+ enable: false
+ #Choose if allow frequancy pulse
+ frequency-pulse: false
+ #Set the frequency of pulse, Default: 1s
+ pulse-frequency: 1
+
+synapse:
+ #If you want to use Synapse API or connect to a synapse server, enable this
+ enabled: false
+ server-ip: 127.0.0.1
+ server-port: 10305
+ #If this client is the lobby or the main server
+ is-main-server: true
+ server-password: 32bitlongkey
+ #Description of this client is the identifier of this client
+ description: "A Synapse client"
+ #Disable RakLib means that players can only join via Synapse
+ disable-rak: false
+
+dserver:
+ #The count of all multi-server unified
+ enable: false
+ #Query update automatically
+ query-auto-update: false
+ #Query update periodical
+ query-tick-update: true
+ #The max players' number of Motd
+ motd-max-players: 0
+ #The max players' number of query，0=Default
+ query-max-players: 0
+ #Show the number of all players on motd
+ motd-all-players: false
+ #Show the number of all players on Query
+ query-all-players: false
+ #Show the number of online players on motd
+ motd-players: false
+ #Show the number of online players on Query
+ query-players: false
+ #Update Frequency ,20=1s
+ time: 40
+ #Auto-retry times when failed
+ retry-times: 3
+ #the server list，Separate by ';'，e.g. 1.example.com:19132;2.example.com:19133
+ server-list: ""
+
+inventory:
+ #Set this to true if you have problems with anvils. Will process inventory transactions in a vanilla fashion with no anti-cheats or verification.
+ allow-cheats: false

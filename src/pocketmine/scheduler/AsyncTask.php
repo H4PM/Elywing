@@ -21,7 +21,6 @@
 
 namespace pocketmine\scheduler;
 
-use pocketmine\Collectable;
 use pocketmine\Server;
 
 /**
@@ -29,7 +28,7 @@ use pocketmine\Server;
  *
  * WARNING: Do not call PocketMine-MP API methods, or save objects from/on other Threads!!
  */
-abstract class AsyncTask extends Collectable{
+abstract class AsyncTask extends \Threaded implements \Collectable{
 
 	/** @var AsyncWorker $worker */
 	public $worker = null;
@@ -42,8 +41,25 @@ abstract class AsyncTask extends Collectable{
 
 	private $crashed = false;
 
+	private $isGarbage = false;
+
+	private $isFinished = false;
+
+	public function isGarbage() : bool{
+		return $this->isGarbage;
+	}
+
+	public function setGarbage(){
+		$this->isGarbage = true;
+	}
+
+	public function isFinished() : bool{
+		return $this->isFinished;
+	}
+
 	public function run(){
 		$this->result = null;
+		$this->isGarbage = false;
 
 		if($this->cancelRun !== true){
 			try{
@@ -54,7 +70,8 @@ abstract class AsyncTask extends Collectable{
 			}
 		}
 
-		$this->setGarbage();
+		$this->isFinished = true;
+		//$this->setGarbage();
 	}
 
 	public function isCrashed(){
@@ -147,7 +164,7 @@ abstract class AsyncTask extends Collectable{
 
 	public function cleanObject(){
 		foreach($this as $p => $v){
-			if(!($v instanceof \Threaded)){
+			if(!($v instanceof \Threaded) and !in_array($p, ["isFinished", "isGarbage", "cancelRun"])){
 				$this->{$p} = null;
 			}
 		}
