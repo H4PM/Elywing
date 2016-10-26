@@ -27,6 +27,7 @@ namespace pocketmine\network\protocol;
 use pocketmine\inventory\FurnaceRecipe;
 use pocketmine\inventory\ShapedRecipe;
 use pocketmine\inventory\ShapelessRecipe;
+use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\enchantment\EnchantmentList;
 use pocketmine\utils\BinaryStream;
 
@@ -75,8 +76,8 @@ class CraftingDataPacket extends DataPacket{
 		$stream->putVarInt($recipe->getWidth());
 		$stream->putVarInt($recipe->getHeight());
 
-		for($z = 0; $z < $recipe->getHeight(); ++$z){
-			for($x = 0; $x < $recipe->getWidth(); ++$x){
+		for($z = 0; $z < $recipe->getWidth(); ++$z){
+			for($x = 0; $x < $recipe->getHeight(); ++$x){
 				$stream->putSlot($recipe->getIngredient($x, $z));
 			}
 		}
@@ -90,7 +91,7 @@ class CraftingDataPacket extends DataPacket{
 	}
 
 	private static function writeFurnaceRecipe(FurnaceRecipe $recipe, BinaryStream $stream){
-		if($recipe->getInput()->getDamage() !== 0){ //Data recipe
+		if($recipe->getInput()->getDamage() !== null){ //Data recipe
 			$stream->putVarInt($recipe->getInput()->getDamage());
 			$stream->putVarInt($recipe->getInput()->getId());
 			$stream->putSlot($recipe->getResult());
@@ -105,8 +106,8 @@ class CraftingDataPacket extends DataPacket{
 	}
 
 	private static function writeEnchantList(EnchantmentList $list, BinaryStream $stream){
-		//TODO: check this works on 0.16 (cannot currently test)
-		$stream->putByte($list->getSize());
+
+		$stream->putUnsignedVarInt($list->getSize());
 		for($i = 0; $i < $list->getSize(); ++$i){
 			$entry = $list->getSlot($i);
 			$stream->putUnsignedVarInt($entry->getCost());
@@ -163,7 +164,7 @@ class CraftingDataPacket extends DataPacket{
 			$writer->reset();
 		}
 
-		$this->putBool($this->cleanRecipes);
+		$this->putByte($this->cleanRecipes ? 1 : 0);
 	}
 
 }

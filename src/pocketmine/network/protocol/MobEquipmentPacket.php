@@ -31,23 +31,23 @@ class MobEquipmentPacket extends DataPacket{
 	public $item;
 	public $slot;
 	public $selectedSlot;
-	public $unknownByte;
+	public $unknown; //byte
 
 	public function decode(){
-		$this->eid = $this->getEntityId(); //EntityRuntimeID
+		$this->eid = $this->getEntityId();
 		$this->item = $this->getSlot();
 		$this->slot = $this->getByte();
 		$this->selectedSlot = $this->getByte();
-		$this->unknownByte = $this->getByte();
+		$this->unknown = $this->getByte();
 	}
 
 	public function encode(){
 		$this->reset();
-		$this->putEntityId($this->eid); //EntityRuntimeID
+		$this->putEntityId($this->eid);
 		$this->putSlot($this->item);
 		$this->putByte($this->slot);
 		$this->putByte($this->selectedSlot);
-		$this->putByte($this->unknownByte);
+		$this->putByte($this->unknown);
 	}
 
 }

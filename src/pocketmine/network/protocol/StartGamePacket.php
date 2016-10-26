@@ -34,21 +34,22 @@ class StartGamePacket extends DataPacket{
 	public $z;
 	public $seed;
 	public $dimension;
-	public $generator = 1; //default infinite - 0 old, 1 infinite, 2 flat
+	public $generator = 1; //default infinite
 	public $gamemode;
+	public $worldGamemode;
 	public $difficulty;
 	public $spawnX;
 	public $spawnY;
 	public $spawnZ;
-	public $hasAchievementsDisabled = 1;
+	public $hasBeenLoadedInCreative = 1;
 	public $dayCycleStopTime = -1; //-1 = not stopped, any positive value = stopped at that time
 	public $eduMode = 0;
-	public $rainLevel;
-	public $lightningLevel;
-	public $commandsEnabled;
-	public $isTexturePacksRequired = 0;
-	public $unknown;
+	public $rainLevel = 0;
+	public $lightningLevel = 0;
+	public $commandsEnabled = 1; //disabled for now to prevent crash
+	public $unknown; //still no idea what this is for
 	public $worldName;
+	public $isTexturePacksRequired = 0;
 
 	public function decode(){
 
@@ -57,22 +58,23 @@ class StartGamePacket extends DataPacket{
 	public function encode(){
 		$this->reset();
 		$this->putEntityId($this->entityUniqueId); //EntityUniqueID
-		$this->putEntityId($this->entityRuntimeId); //EntityRuntimeID
+		$this->putEntityId($this->entityRuntimeId); //EntityRuntimeID (basically just the normal entityID)
 		$this->putVector3f($this->x, $this->y, $this->z);
 		$this->putLFloat(0); //TODO: find out what these are (yaw/pitch?)
 		$this->putLFloat(0);
-		$this->putVarInt($this->seed);
-		$this->putVarInt($this->dimension);
-		$this->putVarInt($this->generator);
+		$this->putVarInt($this->seed); //seed (varint)
+		$this->putVarInt($this->dimension); //dimension (varint)
+		$this->putVarInt($this->generator); //generator (varint)
 		$this->putVarInt($this->gamemode);
-		$this->putVarInt($this->difficulty);
+		$this->putVarInt($this->worldGamemode);
+		$this->putVarInt($this->difficulty); //Difficulty (TODO)
 		$this->putBlockCoords($this->spawnX, $this->spawnY, $this->spawnZ);
-		$this->putBool($this->hasAchievementsDisabled);
-		$this->putVarInt($this->dayCycleStopTime);
-		$this->putBool($this->eduMode);
-		$this->putLFloat($this->rainLevel);
-		$this->putLFloat($this->lightningLevel);
-		$this->putBool($this->commandsEnabled);
+		$this->putBool($this->hasBeenLoadedInCreative); //has been loaded in creative (no Xbox achievements (well, this is impossible anyway))
+		$this->putVarInt($this->dayCycleStopTime); //dayCycleStopTime - NOTE: This is the TIME that the world is stopped at. If this is set to a positive number, client will not update world time automatically.
+		$this->putBool($this->eduMode); //edu mode
+		$this->putLFloat($this->rainLevel); //rain level
+		$this->putLFloat($this->lightningLevel); //lightning level
+		$this->putBool($this->commandsEnabled); //commands enabled
 		$this->putBool($this->isTexturePacksRequired);
 		$this->putString($this->unknown);
 		$this->putString($this->worldName);

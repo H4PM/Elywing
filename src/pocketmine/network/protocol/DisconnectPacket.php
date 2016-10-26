@@ -33,6 +33,10 @@ class DisconnectPacket extends DataPacket{
 	public function decode(){
 		$this->hideDisconnectionScreen = $this->getBool();
 		$this->message = $this->getString();
+		if(!$this->feof()){
+			var_dump(strlen($this->buffer) - $this->offset);
+			var_dump($buffer);
+		}
 	}
 
 	public function encode(){

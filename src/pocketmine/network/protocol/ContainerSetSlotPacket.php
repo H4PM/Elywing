@@ -30,9 +30,9 @@ class ContainerSetSlotPacket extends DataPacket{
 
 	public $windowid;
 	public $slot;
-	public $hotbarSlot;
 	/** @var Item */
 	public $item;
+	public $hotbarSlot;
 
 	public function decode(){
 		$this->windowid = $this->getByte();

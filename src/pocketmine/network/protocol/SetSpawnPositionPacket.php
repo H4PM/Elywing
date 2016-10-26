@@ -27,10 +27,11 @@ namespace pocketmine\network\protocol;
 class SetSpawnPositionPacket extends DataPacket{
 	const NETWORK_ID = Info::SET_SPAWN_POSITION_PACKET;
 
-	public $unknown;
+	public $unknownVarInt;
 	public $x;
 	public $y;
 	public $z;
+	public $unknown;
 	public $unknownBool;
 
 	public function decode(){
@@ -39,7 +40,7 @@ class SetSpawnPositionPacket extends DataPacket{
 
 	public function encode(){
 		$this->reset();
-		$this->putVarInt($this->unknown);
+		$this->putVarInt($this->unknownVarInt);
 		$this->putBlockCoords($this->x, $this->y, $this->z);
 		$this->putBool($this->unknownBool);
 	}

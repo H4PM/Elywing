@@ -25,20 +25,21 @@
 namespace pocketmine\nbt;
 
 use pocketmine\item\Item;
-use pocketmine\nbt\tag\ByteArrayTag;
 use pocketmine\nbt\tag\ByteTag;
+use pocketmine\nbt\tag\ByteArrayTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\EndTag;
-use pocketmine\nbt\tag\FloatTag;
-use pocketmine\nbt\tag\IntArrayTag;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\IntArrayTag;
 use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\NamedTAG;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\Tag;
+use pocketmine\utils\Utils;
 
 #ifndef COMPILE
 use pocketmine\utils\Binary;
@@ -108,7 +109,7 @@ class NBT{
 		}
 
 		$item = Item::get($tag->id->getValue(), !isset($tag->Damage) ? 0 : $tag->Damage->getValue(), $tag->Count->getValue());
-
+		
 		if(isset($tag->tag) and $tag->tag instanceof CompoundTag){
 			$item->setNamedTag($tag->tag);
 		}
@@ -178,6 +179,19 @@ class NBT{
 		}
 
 		return true;
+	}
+
+	public static function combineCompoundTags(CompoundTag $tag1, CompoundTag $tag2, bool $override = false) : CompoundTag{
+		$tag1 = clone $tag1;
+		foreach($tag2 as $k => $v){
+			if(!($v instanceof Tag)){
+				continue;
+			}
+			if(!isset($tag1->{$k}) or (isset($tag1->{$k}) and $override)){
+				$tag1->{$k} = clone $v;
+			}
+		}
+		return $tag1;
 	}
 
 	public static function parseJSON($data, &$offset = 0){
@@ -469,13 +483,12 @@ class NBT{
 	}
 
 	public function readCompressed($buffer, $compression = ZLIB_ENCODING_GZIP){
-		$this->read(zlib_decode($buffer));
+		$this->read(zlib_decode($buffer), false, false);
 	}
 
 	public function readNetworkCompressed($buffer, $compression = ZLIB_ENCODING_GZIP){
 		$this->read(zlib_decode($buffer), false, true);
 	}
-
 
 	/**
 	 * @return string|bool
@@ -499,13 +512,13 @@ class NBT{
 	}
 
 	public function writeCompressed($compression = ZLIB_ENCODING_GZIP, $level = 7){
-		if(($write = $this->write()) !== false){
+		if(($write = $this->write(false)) !== false){
 			return zlib_encode($write, $compression, $level);
 		}
 
 		return false;
 	}
-
+	
 	public function writeNetworkCompressed($compression = ZLIB_ENCODING_GZIP, $level = 7){
 		if(($write = $this->write(true)) !== false){
 			return zlib_encode($write, $compression, $level);
@@ -516,7 +529,7 @@ class NBT{
 
 	public function readTag(bool $network = false){
 		if($this->feof()){
-			$tagType = -1; //prevent crashes for empty tags
+			$tagType = -1; //prevent crashes for empty tags -_-
 		}else{
 			$tagType = $this->getByte();
 		}
@@ -611,6 +624,7 @@ class NBT{
 		}else{
 			$this->buffer .= $this->endianness === self::BIG_ENDIAN ? Binary::writeInt($v) : Binary::writeLInt($v);
 		}
+		
 	}
 
 	public function getLong(){
@@ -638,7 +652,12 @@ class NBT{
 	}
 
 	public function getString(bool $network = false){
-		$len = $network ? $this->getByte() : $this->getShort();
+		if($network === true){
+			$len = $this->getByte();
+		}else{
+			$len = $this->getShort();
+		}
+	
 		return $this->get($len);
 	}
 

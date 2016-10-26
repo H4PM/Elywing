@@ -47,19 +47,19 @@ class EntityEventPacket extends DataPacket{
 
 	public $eid;
 	public $event;
-	public $unknown;
+	public $unknownVarInt;
 
 	public function decode(){
 		$this->eid = $this->getEntityId();
 		$this->event = $this->getByte();
-		$this->unknown = $this->getVarInt();
+		$this->unknownVarInt = $this->getVarInt();
 	}
 
 	public function encode(){
 		$this->reset();
 		$this->putEntityId($this->eid);
 		$this->putByte($this->event);
-		$this->putVarInt($this->unknown);
+		$this->putVarInt($this->unknownVarInt);
 	}
 
 }

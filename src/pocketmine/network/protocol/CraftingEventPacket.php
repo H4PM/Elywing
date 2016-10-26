@@ -49,7 +49,7 @@ class CraftingEventPacket extends DataPacket{
 			$this->input[] = $this->getSlot();
 		}
 
-		$size = $this->getUnsignedVarInt();
+		$size = $this->getUnsignedInt();
 		for($i = 0; $i < $size and $i < 128; ++$i){
 			$this->output[] = $this->getSlot();
 		}

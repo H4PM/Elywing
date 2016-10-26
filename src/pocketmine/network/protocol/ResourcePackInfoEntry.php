@@ -19,23 +19,29 @@
  *
 */
 
-namespace pocketmine\nbt\tag;
+namespace pocketmine\resourcepacks;
 
-use pocketmine\nbt\NBT;
+class ResourcePackInfoEntry{
+	protected $packId; //UUID
+	protected $version;
+	protected $uint64; // unknown
 
-#include <rules/NBT.h>
-
-class StringTag extends NamedTag{
-	
-	public function getType(){
-		return NBT::TAG_String;
+	public function __construct(string $packId, string $version, $uint64){
+		$this->packId = $packId;
+		$this->version = $version;
+		$this->uint64 = $uint64;
 	}
 
-	public function read(NBT $nbt, bool $network = false){
-		$this->value = $nbt->getString($network);
+	public function getPackId() : string{
+		return $this->packId;
 	}
 
-	public function write(NBT $nbt, bool $network = false){
-		$nbt->putString($this->value, $network);
+	public function getVersion() : string{
+		return $this->version;
 	}
+
+	public function getUint64(){
+		return $this->uint64;
+	}
+
 }

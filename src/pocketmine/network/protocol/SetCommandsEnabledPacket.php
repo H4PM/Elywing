@@ -21,9 +21,6 @@
 
 namespace pocketmine\network\protocol;
 
-#include <rules/DataPacket.h>
-
-
 class SetCommandsEnabledPacket extends DataPacket{
 	const NETWORK_ID = Info::SET_COMMANDS_ENABLED_PACKET;
 	
@@ -37,5 +34,4 @@ class SetCommandsEnabledPacket extends DataPacket{
 		$this->reset();
 		$this->putBool($this->enabled);
 	}
-
 }

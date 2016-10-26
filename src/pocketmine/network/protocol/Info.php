@@ -2,11 +2,11 @@
 
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
+ *  ____            _        _   __  __ _                  __  __ ____
+ * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
  * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
+ * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
+ * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  *
  * @author PocketMine Team
  * @link http://www.pocketmine.net/
- * 
+ *
  *
 */
 
@@ -31,6 +31,7 @@ interface Info{
 	 * Actual Minecraft: PE protocol version
 	 */
 	const CURRENT_PROTOCOL = 91;
+	const ACCEPTED_PROTOCOLS = [91];
 
 	const LOGIN_PACKET = 0x01;
 	const PLAY_STATUS_PACKET = 0x02;
@@ -49,7 +50,7 @@ interface Info{
 	const REMOVE_ENTITY_PACKET = 0x0f;
 	const ADD_ITEM_ENTITY_PACKET = 0x10;
 	const ADD_HANGING_ENTITY_PACKET = 0x11;
-	const TAKE_ITEM_ENTITY_PACKET = 0x12;
+	const TAKE_ITEM_ENTITY_PACKET = 0x02;
 	const MOVE_ENTITY_PACKET = 0x13;
 	const MOVE_PLAYER_PACKET = 0x14;
 	const RIDER_JUMP_PACKET = 0x15;
@@ -57,7 +58,7 @@ interface Info{
 	const UPDATE_BLOCK_PACKET = 0x17;
 	const ADD_PAINTING_PACKET = 0x18;
 	const EXPLODE_PACKET = 0x19;
-	const LEVEL_SOUND_EVENT_PACKET = 0x1a;
+	const LEVEL_SOUND_EVENT_PACKET = 0x1a; //About time!
 	const LEVEL_EVENT_PACKET = 0x1b;
 	const BLOCK_EVENT_PACKET = 0x1c;
 	const ENTITY_EVENT_PACKET = 0x1d;
@@ -94,7 +95,7 @@ interface Info{
 	const CHANGE_DIMENSION_PACKET = 0x3c;
 	const SET_PLAYER_GAME_TYPE_PACKET = 0x3d;
 	const PLAYER_LIST_PACKET = 0x3e;
-	const EVENT_PACKET = 0x3f;
+	const TELEMETRY_EVENT_PACKET = 0x3f; //EventPacket... what?
 	const SPAWN_EXPERIENCE_ORB_PACKET = 0x40;
 	const CLIENTBOUND_MAP_ITEM_DATA_PACKET = 0x41;
 	const MAP_INFO_REQUEST_PACKET = 0x42;
