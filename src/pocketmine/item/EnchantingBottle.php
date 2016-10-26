@@ -10,7 +10,7 @@
  * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
@@ -21,29 +21,8 @@
 
 namespace pocketmine\item;
 
-
-class IronBoots extends Armor{
+class EnchantingBottle extends Item{
 	public function __construct($meta = 0, $count = 1){
-		parent::__construct(self::IRON_BOOTS, $meta, $count, "Iron Boots");
-	}
-
-	public function getArmorTier(){
-		return Armor::TIER_IRON;
-	}
-
-	public function getArmorType(){
-		return Armor::TYPE_BOOTS;
-	}
-
-	public function getMaxDurability(){
-		return 196;
-	}
-
-	public function getArmorValue(){
-		return 2;
-	}
-
-	public function isBoots(){
-		return true;
+		parent::__construct(self::ENCHANTING_BOTTLE, $meta, $count, "Bottle o' Enchanting");
 	}
 }

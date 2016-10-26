@@ -18,32 +18,21 @@
  * @link https://itxtech.org
  *
  */
-
+ 
 namespace pocketmine\item;
 
-
-class IronBoots extends Armor{
+class CookedMutton extends Food{
 	public function __construct($meta = 0, $count = 1){
-		parent::__construct(self::IRON_BOOTS, $meta, $count, "Iron Boots");
+		parent::__construct(self::COOKED_MUTTON, $meta, $count, "Cooked Mutton");
+	}
+	
+	public function getFoodRestore() : int{
+		return 6;
 	}
 
-	public function getArmorTier(){
-		return Armor::TIER_IRON;
+	public function getSaturationRestore() : float{
+		return 9.6;
 	}
 
-	public function getArmorType(){
-		return Armor::TYPE_BOOTS;
-	}
-
-	public function getMaxDurability(){
-		return 196;
-	}
-
-	public function getArmorValue(){
-		return 2;
-	}
-
-	public function isBoots(){
-		return true;
-	}
 }
+
