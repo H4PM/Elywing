@@ -1,5 +1,4 @@
-# ![PocketMine-MP](http://cdn.pocketmine.net/img/PocketMine-MP-h.png)
-[![Build Status](https://travis-ci.org/pmmp/PocketMine-MP.svg?branch=master)](https://travis-ci.org/pmmp/PocketMine-MP)
+# ![PocketMine-MP](http://image.noelshack.com/fichiers/2016/43/1477490625-elybanner.png)
 
 
 	This program is free software: you can redistribute it and/or modify
@@ -16,10 +15,10 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-__PocketMine-MP is a free, open-source software that creates Minecraft: Pocket Edition servers and allows extending its functionalities__
+__Elywing is a free, open-source software that creates Minecraft: Pocket Edition servers and allows extending its functionalities__
 
 
-### PocketMine-MP modified by
+### Elywing, a fork of PocketMine-MP, modified by
 
 ### [Twitter @SuperMaXAleX_](https://twitter.com/SuperMaXAleX_/)
 
@@ -40,8 +39,6 @@ __PocketMine-MP is a free, open-source software that creates Minecraft: Pocket E
 ### [Plugin Repository](http://plugins.pocketmine.net/)
 
 <!--## [FAQ: Frequently Asked Questions](https://github.com/PocketMine/PocketMine-MP/wiki/Frequently-Asked-Questions)-->
-
-### [Official Jenkins server](http://jenkins.pmmp.gq/)
 
 ### API Documentation
  * [Official Doxygen-generated documentation](http://docs.pocketmine.net/)
