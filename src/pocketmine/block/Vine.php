@@ -40,11 +40,11 @@ class Vine extends Transparent{
 		return false;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "Vines";
 	}
 
-	public function getHardness(){
+	public function getHardness() {
 		return 0.2;
 	}
 
@@ -60,7 +60,7 @@ class Vine extends Transparent{
 		$entity->resetFallDistance();
 	}
 
-	protected function recalculateBoundingBox(){
+	protected function recalculateBoundingBox() {
 
 		$f1 = 1;
 		$f2 = 1;
@@ -154,7 +154,7 @@ class Vine extends Transparent{
 		return false;
 	}
 
-	public function getDrops(Item $item){
+	public function getDrops(Item $item) : array {
 		if($item->isShears()){
 			return [
 				[$this->id, 0, 1],
@@ -165,6 +165,6 @@ class Vine extends Transparent{
 	}
 
 	public function getToolType(){
-		return Tool::TYPE_AXE;
+		return Tool::TYPE_SHEARS;
 	}
 }

@@ -23,8 +23,8 @@ namespace pocketmine\block;
 
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
+use pocketmine\item\enchantment\enchantment;
 use pocketmine\level\Level;
-use pocketmine\Player;
 
 class RedstoneOre extends Solid{
 
@@ -34,16 +34,12 @@ class RedstoneOre extends Solid{
 
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "Redstone Ore";
 	}
 
-	public function getHardness(){
+	public function getHardness() {
 		return 3;
-	}
-
-	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
-		return $this->getLevel()->setBlock($this, $this, true, false);
 	}
 
 	public function onUpdate($type){
@@ -60,11 +56,19 @@ class RedstoneOre extends Solid{
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getDrops(Item $item){
+	public function getDrops(Item $item) : array {
 		if($item->isPickaxe() >= Tool::TIER_IRON){
-			return [
-				[Item::REDSTONE_DUST, 0, mt_rand(4, 5)],
-			];
+			if($item->getEnchantmentLevel(Enchantment::TYPE_MINING_SILK_TOUCH) > 0){
+				return [
+					[Item::REDSTONE_ORE, 0, 1],
+				];
+			}else{
+				$fortuneL = $item->getEnchantmentLevel(Enchantment::TYPE_MINING_FORTUNE);
+				$fortuneL = $fortuneL > 3 ? 3 : $fortuneL;
+				return [
+					[Item::REDSTONE_DUST, 0, mt_rand(4, 5 + $fortuneL)],
+				];
+			}
 		}else{
 			return [];
 		}

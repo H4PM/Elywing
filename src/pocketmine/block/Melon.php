@@ -23,6 +23,7 @@ namespace pocketmine\block;
 
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
+use pocketmine\item\enchantment\enchantment;
 
 class Melon extends Transparent{
 
@@ -32,11 +33,11 @@ class Melon extends Transparent{
 
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "Melon Block";
 	}
 
-	public function getHardness(){
+	public function getHardness() {
 		return 1;
 	}
 
@@ -44,9 +45,17 @@ class Melon extends Transparent{
 		return Tool::TYPE_AXE;
 	}
 
-	public function getDrops(Item $item){
-		return [
-			[Item::MELON_SLICE, 0, mt_rand(3, 7)],
-		];
+	public function getDrops(Item $item) : array {
+		if($item->getEnchantmentLevel(Enchantment::TYPE_MINING_SILK_TOUCH) > 0){
+			return [
+				[Item::MELON_BLOCK, 0, 1],
+			];
+		}else{
+			$fortunel = $item->getEnchantmentLevel(Enchantment::TYPE_MINING_FORTUNE);
+			$fortunel = $fortunel > 2 ? 2 : $fortunel; //Note: for Melon level 2 is the same 3 So highest is 2
+			return [
+				[Item::MELON_SLICE, 0, mt_rand(3, 7 + $fortunel)],
+			];
+		}
 	}
 }

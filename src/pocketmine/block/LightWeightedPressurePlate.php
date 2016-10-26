@@ -18,19 +18,13 @@
  * @link https://itxtech.org
  *
  */
- 
+
 namespace pocketmine\block;
 
-class RedSandstone extends Sandstone{
-	protected $id = Block::RED_SANDSTONE;
-	
+class LightWeightedPressurePlate extends PressurePlate{
+	protected $id = self::LIGHT_WEIGHTED_PRESSURE_PLATE;
+
 	public function getName() : string{
-		static $names = [
-			0 => "Red Sandstone",
-			1 => "Chiseled Red Sandstone",
-			2 => "Smooth Red Sandstone",
-			3 => "",
-		];
-		return $names[$this->meta & 0x03];
+		return "Light Weighted Pressure Plate";
 	}
 }

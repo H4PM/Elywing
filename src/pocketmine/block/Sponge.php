@@ -26,20 +26,16 @@ class Sponge extends Solid{
 
 	protected $id = self::SPONGE;
 
-	public function __construct($meta = 0){
-		$this->meta = $meta;
+	public function __construct(){
+
 	}
 
-	public function getHardness(){
+	public function getHardness() {
 		return 0.6;
 	}
 
-	public function getName(){
-		static $names = [
-			0 => "Sponge",
-			1 => "Wet Sponge",
-		];
-		return $names[$this->meta & 0x0f];
+	public function getName() : string{
+		return "Sponge";
 	}
 
 }

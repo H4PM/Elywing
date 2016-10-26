@@ -21,7 +21,9 @@
 
 namespace pocketmine\block;
 
+
 use pocketmine\item\Item;
+
 use pocketmine\level\Level;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Vector3;
@@ -35,22 +37,34 @@ class WaterLily extends Flowable{
 		$this->meta = $meta;
 	}
 
-	public function getName(){
+	public function isSolid(){
+		return false;
+	}
+
+	public function getName() : string{
 		return "Lily Pad";
 	}
 
-	public function getHardness(){
-		return 0.6;
+	public function getHardness() {
+		return 0;
 	}
 
-	protected function recalculateBoundingBox(){
+	public function getResistance(){
+		return 0;
+	}
+
+	public function canPassThrough(){
+		return true;
+	}
+
+	protected function recalculateBoundingBox() {
 		return new AxisAlignedBB(
-			$this->x + 0.0625,
+			$this->x,
 			$this->y,
-			$this->z + 0.0625,
-			$this->x + 0.9375,
-			$this->y + 0.015625,
-			$this->z + 0.9375
+			$this->z,
+			$this->x,
+			$this->y + 0.0625,
+			$this->z
 		);
 	}
 
@@ -78,7 +92,7 @@ class WaterLily extends Flowable{
 		return false;
 	}
 
-	public function getDrops(Item $item){
+	public function getDrops(Item $item) : array {
 		return [
 			[$this->id, 0, 1]
 		];

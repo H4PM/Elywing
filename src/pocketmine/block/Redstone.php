@@ -24,7 +24,7 @@ namespace pocketmine\block;
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
 
-class Redstone extends Solid{
+class Redstone extends RedstoneSource{
 
 	protected $id = self::REDSTONE_BLOCK;
 
@@ -32,7 +32,23 @@ class Redstone extends Solid{
 
 	}
 
-	public function getHardness(){
+	public function getBoundingBox() {
+		return Block::getBoundingBox();
+	}
+
+	public function canBeFlowedInto(){
+		return false;
+	}
+
+	public function isSolid(){
+		return true;
+	}
+
+	public function isActivated(Block $from = null){
+		return true;
+	}
+
+	public function getHardness() {
 		return 5;
 	}
 
@@ -40,12 +56,12 @@ class Redstone extends Solid{
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getName(){
-		return "Redstone Block";
+	public function getName() : string{
+		return "Block of Redstone";
 	}
 
-	public function getDrops(Item $item){
-		if($item->isPickaxe() >= Tool::TIER_WOODEN){
+	public function getDrops(Item $item) : array {
+		if($item->isPickaxe() >= 1){
 			return [
 				[Item::REDSTONE_BLOCK, 0, 1],
 			];

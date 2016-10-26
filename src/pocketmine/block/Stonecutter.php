@@ -23,6 +23,7 @@ namespace pocketmine\block;
 
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
+use pocketmine\Player;
 
 //TODO: check orientation
 class Stonecutter extends Solid{
@@ -33,7 +34,7 @@ class Stonecutter extends Solid{
 		$this->meta = $meta;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "Stonecutter";
 	}
 
@@ -41,8 +42,8 @@ class Stonecutter extends Solid{
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getDrops(Item $item){
-		if($item->isPickaxe() >= Tool::TIER_WOODEN){
+	public function getDrops(Item $item) : array {
+		if($item->isPickaxe() >= 1){
 			return [
 				[Item::STONECUTTER, 0, 1],
 			];

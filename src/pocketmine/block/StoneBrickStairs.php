@@ -21,6 +21,7 @@
 
 namespace pocketmine\block;
 
+
 use pocketmine\item\Tool;
 
 class StoneBrickStairs extends Stair{
@@ -35,11 +36,11 @@ class StoneBrickStairs extends Stair{
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getHardness(){
+	public function getHardness() {
 		return 1.5;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "Stone Brick Stairs";
 	}
 

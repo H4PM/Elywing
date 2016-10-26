@@ -21,6 +21,7 @@
 
 namespace pocketmine\block;
 
+
 use pocketmine\item\Tool;
 
 class Planks extends Solid{
@@ -37,7 +38,7 @@ class Planks extends Solid{
 		$this->meta = $meta;
 	}
 
-	public function getHardness(){
+	public function getHardness() {
 		return 2;
 	}
 
@@ -45,7 +46,15 @@ class Planks extends Solid{
 		return Tool::TYPE_AXE;
 	}
 
-	public function getName(){
+	public function getBurnChance() : int{
+		return 5;
+	}
+
+	public function getBurnAbility() : int{
+		return 20;
+	}
+
+	public function getName() : string{
 		static $names = [
 			self::OAK => "Oak Wood Planks",
 			self::SPRUCE => "Spruce Wood Planks",
@@ -53,8 +62,8 @@ class Planks extends Solid{
 			self::JUNGLE => "Jungle Wood Planks",
 			self::ACACIA => "Acacia Wood Planks",
 			self::DARK_OAK => "Dark Oak Wood Planks",
-			"",
-			""
+			6 => "Unknown Planks",
+			7 => "Unknown Planks"
 		];
 		return $names[$this->meta & 0x07];
 	}

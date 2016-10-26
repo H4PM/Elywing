@@ -18,19 +18,27 @@
  * @link https://itxtech.org
  *
  */
- 
+
 namespace pocketmine\block;
 
-class RedSandstone extends Sandstone{
-	protected $id = Block::RED_SANDSTONE;
-	
+use pocketmine\item\Item;
+
+class UnpoweredRepeater extends PoweredRepeater{
+	protected $id = self::UNPOWERED_REPEATER_BLOCK;
+
 	public function getName() : string{
-		static $names = [
-			0 => "Red Sandstone",
-			1 => "Chiseled Red Sandstone",
-			2 => "Smooth Red Sandstone",
-			3 => "",
-		];
-		return $names[$this->meta & 0x03];
+		return "Unpowered Repeater";
+	}
+
+	public function getStrength(){
+		return 0;
+	}
+
+	public function isActivated(Block $from = null){
+		return false;
+	}
+
+	public function onBreak(Item $item){
+		$this->getLevel()->setBlock($this, new Air(), true);
 	}
 }

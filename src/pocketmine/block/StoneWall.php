@@ -21,11 +21,13 @@
 
 namespace pocketmine\block;
 
+
 use pocketmine\item\Tool;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Vector3;
 
 class StoneWall extends Transparent{
+	
 	const NONE_MOSSY_WALL = 0;
 	const MOSSY_WALL = 1;
 
@@ -43,11 +45,11 @@ class StoneWall extends Transparent{
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getHardness(){
+	public function getHardness() {
 		return 2;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		if($this->meta === 0x01){
 			return "Mossy Cobblestone Wall";
 		}
@@ -55,7 +57,7 @@ class StoneWall extends Transparent{
 		return "Cobblestone Wall";
 	}
 
-	protected function recalculateBoundingBox(){
+	protected function recalculateBoundingBox() {
 
 		$north = $this->canConnect($this->getSide(Vector3::SIDE_NORTH));
 		$south = $this->canConnect($this->getSide(Vector3::SIDE_SOUTH));
