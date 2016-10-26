@@ -45,7 +45,7 @@ class ReloadCommand extends VanillaCommand{
 		//Command::broadcastCommandMessage($sender, new TranslationContainer(TextFormat::YELLOW . "%pocketmine.command.reload.reloading"));
 
 		
-		$sender->sendMessage(TextFormat::RED."/reload est déconseiller avec Elywing, vous pouvez redémarré eteindre ou allumer votre serveur pour une meilleur performance.");
+		$sender->sendMessage(TextFormat::RED."/reload is not supported by Elywing, Could avoid it.");
                 $sender->getServer()->broadcastMessage(TextFormat::YELLOW."An administrator has to reload the server.");
 		$sender->getServer()->reload();
 		$sender->getServer()->broadcastMessage(TextFormat::YELLOW."The server is now reload");
