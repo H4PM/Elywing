@@ -37,11 +37,22 @@ class Installer{
 
 	private $lang;
 
-	public function __construct(){
-		echo "[*] PocketMine-MP set-up wizard\n";
-		echo "[*] Please select a language:\n";
+       public function __construct(){
+		echo "      ########:'##:::::::'##:::'##:'##:::::'##:'####:'##::: ##::'######:::
+      ##.....:: ##:::::::. ##:'##:: ##:'##: ##:. ##:: ###:: ##:'##... ##::
+      ##::::::: ##::::::::. ####::: ##: ##: ##:: ##:: ####: ##: ##:::..:::
+      ######::: ##:::::::::. ##:::: ##: ##: ##:: ##:: ## ## ##: ##::'####:
+      ##...:::: ##:::::::::: ##:::: ##: ##: ##:: ##:: ##. ####: ##::: ##::
+      ##::::::: ##:::::::::: ##:::: ##: ##: ##:: ##:: ##:. ###: ##::: ##::
+      ########: ########:::: ##::::. ###. ###::'####: ##::. ##:. ######:::
+     ........::........:::::..::::::...::...:::....::..::::..:::......::::! \n";// Fully Updated ! ?
+		echo " >>Alpha Stage  \n";//
+		echo " >>--------------------------------\n";//
+   		echo " >>Pulsed By : @SuperMaXAleX_  @ReskillDEV @Misteboss_mcpe @Pab45O \n"; //TODO: Add @xiranoMC If you acccept this update !
+		echo " >>MCPE Version : 0.16.0.5 Alpha Beta: $version   \n";// Yeay
+		echo " >>Please select a language:\n";//TODO: Add A Auth For MCPC // Soon ?
 		foreach(InstallerLang::$languages as $short => $native){
-			echo " $native => $short\n";
+	               echo " $native => $short\n";
 		}
 		do{
 			echo "[?] Language (en): ";
