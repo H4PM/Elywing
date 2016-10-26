@@ -30,6 +30,7 @@ use raklib\protocol\OPEN_CONNECTION_REPLY_2;
 use raklib\protocol\OPEN_CONNECTION_REQUEST_1;
 use raklib\protocol\OPEN_CONNECTION_REQUEST_2;
 use raklib\protocol\Packet;
+use raklib\protocol\PacketReliability;
 use raklib\protocol\PING_DataPacket;
 use raklib\protocol\PONG_DataPacket;
 use raklib\protocol\SERVER_HANDSHAKE_DataPacket;
@@ -56,7 +57,7 @@ class Session{
 	private $address;
 	private $port;
 	private $state = self::STATE_UNCONNECTED;
-	private $mtuSize = 548; //Min size
+	private $mtuSize = 508; //(Max IP Header Size) — (UDP Header Size) = 576 — 60 — 8 = 508
 	private $id = 0;
 	private $splitID = 0;
 
@@ -268,15 +269,15 @@ class Session{
 		}
 
 		if(
-			$packet->reliability === 2 or
-			$packet->reliability === 3 or
-			$packet->reliability === 4 or
-			$packet->reliability === 6 or
-			$packet->reliability === 7
+			$packet->reliability === PacketReliability::RELIABLE or
+			$packet->reliability === PacketReliability::RELIABLE_ORDERED or
+			$packet->reliability === PacketReliability::RELIABLE_SEQUENCED or
+			$packet->reliability === PacketReliability::RELIABLE_WITH_ACK_RECEIPT or
+			$packet->reliability === PacketReliability::RELIABLE_ORDERED_WITH_ACK_RECEIPT
 		){
 			$packet->messageIndex = $this->messageIndex++;
 
-			if($packet->reliability === 3){
+			if($packet->reliability === PacketReliability::RELIABLE_ORDERED){
 				$packet->orderIndex = $this->channelIndex[$packet->orderChannel]++;
 			}
 		}
@@ -297,7 +298,7 @@ class Session{
 				}else{
 					$pk->messageIndex = $packet->messageIndex;
 				}
-				if($pk->reliability === 3){
+				if($pk->reliability === PacketReliability::RELIABLE_ORDERED){
 					$pk->orderChannel = $packet->orderChannel;
 					$pk->orderIndex = $packet->orderIndex;
 				}
@@ -307,7 +308,7 @@ class Session{
 			$this->addToQueue($packet, $flags);
 		}
 	}
-	
+
 	private function handleSplit(EncapsulatedPacket $packet){
 		if($packet->splitCount >= self::MAX_SPLIT_SIZE or $packet->splitIndex >= self::MAX_SPLIT_SIZE or $packet->splitIndex < 0){
 			return;
@@ -407,7 +408,7 @@ class Session{
 					$pk->encode();
 
 					$sendPacket = new EncapsulatedPacket();
-					$sendPacket->reliability = 0;
+					$sendPacket->reliability = PacketReliability::UNRELIABLE;
 					$sendPacket->buffer = $pk->buffer;
 					$this->addToQueue($sendPacket, RakLib::PRIORITY_IMMEDIATE);
 				}elseif($id === CLIENT_HANDSHAKE_DataPacket::$ID){
@@ -433,7 +434,7 @@ class Session{
 				$pk->encode();
 
 				$sendPacket = new EncapsulatedPacket();
-				$sendPacket->reliability = 0;
+				$sendPacket->reliability = PacketReliability::UNRELIABLE;
 				$sendPacket->buffer = $pk->buffer;
 				$this->addToQueue($sendPacket);
 			}//TODO: add PING/PONG (0x00/0x03) automatic latency measure
@@ -518,8 +519,8 @@ class Session{
 			}elseif($this->state === self::STATE_CONNECTING_1 and $packet instanceof OPEN_CONNECTION_REQUEST_2){
 				$this->id = $packet->clientID;
 				if($packet->serverPort === $this->sessionManager->getPort() or !$this->sessionManager->portChecking){
-					$this->mtuSize = min(abs($packet->mtuSize), 1464); //Max size, do not allow creating large buffers to fill server memory
-					$pk = new OPEN_CONNECTION_REPLY_2();
+ 					$this->mtuSize = min(abs($packet->mtuSize), 1432);  //MTU — (Max IP Header Size) — (UDP Header Size) = 1500 — 60 — 8 = 1432 
+ 					$pk = new OPEN_CONNECTION_REPLY_2();
 					$pk->mtuSize = $this->mtuSize;
 					$pk->serverID = $this->sessionManager->getID();
 					$pk->clientAddress = $this->address;
@@ -532,8 +533,7 @@ class Session{
 	}
 
 	public function close(){
-		$data = "\x60\x00\x08\x00\x00\x00\x00\x00\x00\x00\x15";
-		$this->addEncapsulatedToQueue(EncapsulatedPacket::fromBinary($data)); //CLIENT_DISCONNECT packet 0x15
+		$this->addEncapsulatedToQueue(EncapsulatedPacket::fromBinary("\x60\x00\x08\x00\x00\x00\x00\x00\x00\x00\x15")); //CLIENT_DISCONNECT packet 0x15
 		$this->sessionManager = null;
 	}
 }

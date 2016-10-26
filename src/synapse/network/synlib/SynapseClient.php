@@ -1,62 +1,56 @@
 <?php
 
 /*
- * RakLib network library
  *
- *
- * This project is not affiliated with Jenkins Software LLC nor RakNet.
+ *  _____   _____   __   _   _   _____  __    __  _____
+ * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
+ * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
+ * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
+ * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
+ * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
+ * @author iTX Technologies
+ * @link https://itxtech.org
+ *
  */
 
-namespace raklib\server;
+namespace synapse\network\synlib;
 
+use pocketmine\Thread;
 
-class RakLibServer extends \Thread{
-	protected $port;
-	protected $interface;
+class SynapseClient extends Thread{
+	const VERSION = "0.2.0";
+
 	/** @var \ThreadedLogger */
-	protected $logger;
-	protected $loader;
-
-	public $loadPaths;
-
-	protected $shutdown;
-
+	private $logger;
+	/** @var string */
+	private $interface;
+	/** @var int */
+	private $port;
+	private $shutdown = true;
 	/** @var \Threaded */
-	protected $externalQueue;
-	/** @var \Threaded */
-	protected $internalQueue;
+	private $externalQueue, $internalQueue;
+	private $mainPath;
+	private $needAuth = false;
+	private $connected = true;
+	public $needReconnect = false;
 
-	protected $mainPath;
-
-	/**
-	 * @param \ThreadedLogger $logger
-	 * @param \ClassLoader    $loader
-	 * @param int             $port
-	 * @param string          $interface
-	 *
-	 * @throws \Throwable
-	 */
-	public function __construct(\ThreadedLogger $logger, \ClassLoader $loader, $port, $interface = "0.0.0.0"){
+	public function __construct(\ThreadedLogger $logger, \ClassLoader $loader, $port, $interface = "127.0.0.1"){
+		$this->logger = $logger;
+		$this->interface = $interface;
 		$this->port = (int) $port;
 		if($port < 1 or $port > 65536){
 			throw new \Exception("Invalid port range");
 		}
 
-		$this->interface = $interface;
-		$this->logger = $logger;
-		$this->loader = $loader;
-		$loadPaths = [];
-		$this->addDependency($loadPaths, new \ReflectionClass($logger));
-		$this->addDependency($loadPaths, new \ReflectionClass($loader));
-		$this->loadPaths = array_reverse($loadPaths);
-		$this->shutdown = false;
+		$this->setClassLoader($loader);
 
+		$this->shutdown = false;
 		$this->externalQueue = new \Threaded;
 		$this->internalQueue = new \Threaded;
 
@@ -65,79 +59,56 @@ class RakLibServer extends \Thread{
 		}else{
 			$this->mainPath = \getcwd() . DIRECTORY_SEPARATOR;
 		}
+
 		$this->start();
 	}
 
-	protected function addDependency(array &$loadPaths, \ReflectionClass $dep){
-		if($dep->getFileName() !== false){
-			$loadPaths[$dep->getName()] = $dep->getFileName();
+	public function reconnect(){
+		$this->needReconnect = true;
+	}
+
+	public function isNeedAuth() : bool{
+		return $this->needAuth;
+	}
+
+	public function setNeedAuth(bool $need){
+		$this->needAuth = $need;
+	}
+
+	public function isConnected() : bool{
+		return $this->connected;
+	}
+
+	public function setConnected(bool $con){
+		$this->connected = $con;
+	}
+
+	public function quit(){
+		$this->shutdown();
+		parent::quit();
+	}
+
+	public function run(){
+		$this->registerClassLoader();
+		gc_enable();
+		error_reporting(-1);
+		ini_set("display_errors", 1);
+		ini_set("display_startup_errors", 1);
+
+		set_error_handler([$this, "errorHandler"], E_ALL);
+		register_shutdown_function([$this, "shutdownHandler"]);
+
+		try{
+			$socket = new SynapseSocket($this->getLogger(), $this->port, $this->interface);
+			new ServerConnection($this, $socket);
+		}catch(\Throwable $e){
+			$this->logger->logException($e);
 		}
-
-		if($dep->getParentClass() instanceof \ReflectionClass){
-			$this->addDependency($loadPaths, $dep->getParentClass());
-		}
-
-		foreach($dep->getInterfaces() as $interface){
-			$this->addDependency($loadPaths, $interface);
-		}
-	}
-
-	public function isShutdown(){
-		return $this->shutdown === true;
-	}
-
-	public function shutdown(){
-		$this->shutdown = true;
-	}
-
-	public function getPort(){
-		return $this->port;
-	}
-
-	public function getInterface(){
-		return $this->interface;
-	}
-
-	/**
-	 * @return \ThreadedLogger
-	 */
-	public function getLogger(){
-		return $this->logger;
-	}
-
-	/**
-	 * @return \Threaded
-	 */
-	public function getExternalQueue(){
-		return $this->externalQueue;
-	}
-
-	/**
-	 * @return \Threaded
-	 */
-	public function getInternalQueue(){
-		return $this->internalQueue;
-	}
-
-	public function pushMainToThreadPacket($str){
-		$this->internalQueue[] = $str;
-	}
-
-	public function readMainToThreadPacket(){
-		return $this->internalQueue->shift();
-	}
-
-	public function pushThreadToMainPacket($str){
-		$this->externalQueue[] = $str;
-	}
-
-	public function readThreadToMainPacket(){
-		return $this->externalQueue->shift();
 	}
 
 	public function shutdownHandler(){
 		if($this->shutdown !== true){
-			$this->getLogger()->emergency("RakLib crashed!");
+			$this->getLogger()->emergency("SynLib crashed!");
 		}
 	}
 
@@ -166,7 +137,6 @@ class RakLibServer extends \Thread{
 		if(($pos = strpos($errstr, "\n")) !== false){
 			$errstr = substr($errstr, 0, $pos);
 		}
-		$oldFile = $errfile;
 		$errfile = $this->cleanPath($errfile);
 
 		$this->getLogger()->debug("An $errno error happened: \"$errstr\" in \"$errfile\" at line $errline");
@@ -212,26 +182,63 @@ class RakLibServer extends \Thread{
 		return rtrim(str_replace(["\\", ".php", "phar://", rtrim(str_replace(["\\", "phar://"], ["/", ""], $this->mainPath), "/")], ["/", "", "", ""], $path), "/");
 	}
 
-	public function run(){
-		//Load removed dependencies, can't use require_once()
-		foreach($this->loadPaths as $name => $path){
-			if(!class_exists($name, false) and !interface_exists($name, false)){
-				require($path);
-			}
-		}
-		$this->loader->register(true);
+	public function getExternalQueue(){
+		return $this->externalQueue;
+	}
 
-		gc_enable();
-		error_reporting(-1);
-		ini_set("display_errors", 1);
-		ini_set("display_startup_errors", 1);
+	public function getInternalQueue(){
+		return $this->internalQueue;
+	}
 
-		set_error_handler([$this, "errorHandler"], E_ALL);
-		register_shutdown_function([$this, "shutdownHandler"]);
+	public function pushMainToThreadPacket($str){
+		$this->internalQueue[] = $str;
+	}
 
+	public function readMainToThreadPacket(){
+		return $this->internalQueue->shift();
+	}
 
-		$socket = new UDPServerSocket($this->getLogger(), $this->port, $this->interface);
-		new SessionManager($this, $socket);
+	public function pushThreadToMainPacket($str){
+		$this->externalQueue[] = $str;
+	}
+
+	public function getInternalQueueSize(){
+		return count($this->internalQueue);
+	}
+
+	public function readThreadToMainPacket(){
+		return $this->externalQueue->shift();
+	}
+
+	public function isShutdown(){
+		return $this->shutdown === true;
+	}
+
+	public function shutdown(){
+		$this->shutdown = true;
+	}
+
+	public function getPort(){
+		return $this->port;
+	}
+
+	public function getInterface(){
+		return $this->interface;
+	}
+
+	/**
+	 * @return \ThreadedLogger
+	 */
+	public function getLogger(){
+		return $this->logger;
+	}
+
+	public function isGarbage() : bool{
+		parent::isGarbage();
+	}
+
+	public function getThreadName(){
+		return "SynapseClient";
 	}
 
 }
