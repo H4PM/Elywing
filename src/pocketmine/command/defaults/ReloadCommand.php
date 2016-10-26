@@ -42,13 +42,11 @@ class ReloadCommand extends VanillaCommand{
 			return true;
 		}
 
-		//Command::broadcastCommandMessage($sender, new TranslationContainer(TextFormat::YELLOW . "%pocketmine.command.reload.reloading"));
+		Command::broadcastCommandMessage($sender, new TranslationContainer(TextFormat::YELLOW . "%pocketmine.command.reload.reloading"));
 
-		
-		$sender->sendMessage(TextFormat::RED."/reload is not supported by Elywing, Could avoid it.");
-                $sender->getServer()->broadcastMessage(TextFormat::YELLOW."An administrator has to reload the server.");
 		$sender->getServer()->reload();
-		$sender->getServer()->broadcastMessage(TextFormat::YELLOW."The server is now reload");
+		Command::broadcastCommandMessage($sender, new TranslationContainer(TextFormat::YELLOW . "%pocketmine.command.reload.reloaded"));
+
 		return true;
 	}
 }

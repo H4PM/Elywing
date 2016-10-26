@@ -37,6 +37,7 @@ abstract class Command{
 
 	/** @var string */
 	private $name;
+
 	/** @var \stdClass */
 	protected $commandData = null;
 
@@ -97,7 +98,6 @@ abstract class Command{
 	public function getDefaultCommandData() : \stdClass{
 		return $this->commandData;
 	}
-
 	/**
 	 * Generates modified command data for the specified player
 	 * for AvailableCommandsPacket.
@@ -119,7 +119,6 @@ abstract class Command{
 		}
 		return $customData;
 	}
-
 	public function getOverloads(): \stdClass{
 		return $this->commandData->overloads;
 	}
@@ -136,7 +135,7 @@ abstract class Command{
 	/**
 	 * @return string
 	 */
-	public function getName(){
+	public function getName() : string{
 		return $this->name;
 	}
 
@@ -146,7 +145,6 @@ abstract class Command{
 	public function getPermission(){
 		return $this->commandData->pocketminePermission ?? null;
 	}
-	
 
 	/**
 	 * @param string|null $permission
@@ -187,13 +185,11 @@ abstract class Command{
 		if(($perm = $this->getPermission()) === null or $perm === ""){
 			return true;
 		}
-
 		foreach(explode(";", $perm) as $permission){
 			if($target->hasPermission($permission)){
 				return true;
 			}
 		}
-
 		return false;
 	}
 
@@ -340,7 +336,7 @@ abstract class Command{
 	public static function broadcastCommandMessage(CommandSender $source, $message, $sendToSource = true){
 		if($message instanceof TextContainer){
 			$m = clone $message;
-			$result = "[" . $source->getName() . ": " . ($source->getServer()->getLanguage()->get($m->getText()) !== $m->getText() ? "%" : "") . $m->getText() . "]";
+			$result = "[".$source->getName().": ".($source->getServer()->getLanguage()->get($m->getText()) !== $m->getText() ? "%" : "") . $m->getText() ."]";
 
 			$users = $source->getServer()->getPluginManager()->getPermissionSubscriptions(Server::BROADCAST_CHANNEL_ADMINISTRATIVE);
 			$colored = TextFormat::GRAY . TextFormat::ITALIC . $result;

@@ -25,6 +25,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\event\TranslationContainer;
 use pocketmine\Player;
 
+
 class ListCommand extends VanillaCommand{
 
 	public function __construct($name){

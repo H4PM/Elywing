@@ -25,6 +25,7 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\event\TranslationContainer;
 
+
 class StopCommand extends VanillaCommand{
 
 	public function __construct($name){
@@ -40,10 +41,18 @@ class StopCommand extends VanillaCommand{
 		if(!$this->testPermission($sender)){
 			return true;
 		}
-
+		$restart = false;
+		if(isset($args[0])){
+			if($args[0] == 'force'){
+				$restart = true;
+				array_shift($args);
+			}else{
+				$restart = false;
+			}
+		}
 		Command::broadcastCommandMessage($sender, new TranslationContainer("commands.stop.start"));
-
-		$sender->getServer()->shutdown();
+		$msg = implode(" ", $args);
+		$sender->getServer()->shutdown($restart, $msg);
 
 		return true;
 	}

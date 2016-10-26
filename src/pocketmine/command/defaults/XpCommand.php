@@ -24,19 +24,19 @@ namespace pocketmine\command\defaults;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\TranslationContainer;
+use pocketmine\level\sound\ExpPickupSound;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 
-class SayCommand extends VanillaCommand{
+class XpCommand extends VanillaCommand{
 
 	public function __construct($name){
 		parent::__construct(
 			$name,
-			"%pocketmine.command.say.description",
-			"%commands.say.usage",
-			["broadcast", "announce"]
+			"%pocketmine.command.xp.description",
+			"%commands.xp.usage"
 		);
-		$this->setPermission("pocketmine.command.say");
+		$this->setPermission("pocketmine.command.xp");
 	}
 
 	public function execute(CommandSender $sender, $currentAlias, array $args){
@@ -44,13 +44,33 @@ class SayCommand extends VanillaCommand{
 			return true;
 		}
 
-		if(count($args) === 0){
+		if(count($args) != 2){
 			$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
-
 			return false;
+		}else{
+			$player = $sender->getServer()->getPlayer($args[1]);
+			if($player instanceof Player){
+				$name = $player->getName();
+				if(strcasecmp(substr($args[0], -1), "L") == 0){			//Set Experience Level(with "L" after args[0])
+					$level = rtrim($args[0], "Ll");
+					if(is_numeric($level)){
+						$player->addExpLevel($level);
+						$player->getLevel()->addSound(new ExpPickupSound($player, mt_rand(0, 1000))); //TODO: Find the level-up sound
+						$sender->sendMessage("Successfully added $level Level of experience to $name");
+					}
+				}elseif(is_numeric($args[0])){											//Set Experience
+					$player->addExperience($args[0]);
+					$player->getLevel()->addSound(new ExpPickupSound($player, mt_rand(0, 1000)));
+					$sender->sendMessage("Successfully added $args[0] of experience to $name");
+				}else{
+					$sender->sendMessage("Argument error");
+					return false;
+				}
+			}else{
+				$sender->sendMessage(new TranslationContainer(TextFormat::RED . "%commands.generic.player.notFound"));
+				return false;
+			}
 		}
-
-		$sender->getServer()->broadcastMessage(new TranslationContainer(TextFormat::LIGHT_PURPLE . "%chat.type.announcement", [$sender instanceof Player ? $sender->getDisplayName() : ($sender instanceof ConsoleCommandSender ? "Server" : $sender->getName()), TextFormat::LIGHT_PURPLE . implode(" ", $args)]));
-		return true;
+		return false;
 	}
 }
