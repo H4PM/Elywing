@@ -1,5 +1,4 @@
 <?php
-
 /*
  *
  *  ____            _        _   __  __ _                  __  __ ____  
@@ -18,26 +17,30 @@
  * 
  *
 */
-
 namespace pocketmine\entity;
+
 
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 
+
 class Villager extends Creature implements NPC, Ageable{
+
+
 	const PROFESSION_FARMER = 0;
 	const PROFESSION_LIBRARIAN = 1;
 	const PROFESSION_PRIEST = 2;
 	const PROFESSION_BLACKSMITH = 3;
 	const PROFESSION_BUTCHER = 4;
 	const PROFESSION_GENERIC = 5;
-
 	const NETWORK_ID = 15;
+
 
 	public $width = 0.6;
 	public $length = 0.6;
 	public $height = 1.8;
+
 
 	public function getName(){
 		return "Villager";
@@ -64,7 +67,6 @@ class Villager extends Creature implements NPC, Ageable{
 		$pk->pitch = $this->pitch;
 		$pk->metadata = $this->dataProperties;
 		$player->dataPacket($pk);
-
 		parent::spawnTo($player);
 	}
 
@@ -80,8 +82,8 @@ class Villager extends Creature implements NPC, Ageable{
 	public function getProfession(){
 		return $this->namedtag["Profession"];
 	}
-
+	
 	public function isBaby(){
-		return $this->getDataFlag(self::DATA_AGEABLE_FLAGS, self::DATA_FLAG_BABY);
+		return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_BABY);
 	}
 }

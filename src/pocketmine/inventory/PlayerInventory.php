@@ -100,7 +100,7 @@ class PlayerInventory extends BaseInventory{
 	 */
 	public function setHotbarSlotIndex($index, $slot){
 		if($this->getHolder()->getServer()->getProperty("settings.deprecated-verbose") !== false){
-			trigger_error("Do not attempt to change hotbar links in plugins!", E_USER_DEPRECATED);
+			
 		}
 	}
 

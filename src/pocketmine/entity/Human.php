@@ -110,7 +110,7 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		$this->skinId = $skinId;
 	}
 
-	/*public function getFood() : float{
+	public function getFood() : float{
 		return $this->attributeMap->getAttribute(Attribute::HUNGER)->getValue();
 	}
 
@@ -121,7 +121,7 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 	 * @param float $new
 	 *
 	 * @throws \InvalidArgumentException
-	 *
+	 */
 	public function setFood(float $new){
 		$attr = $this->attributeMap->getAttribute(Attribute::HUNGER);
 		$old = $attr->getValue();
@@ -147,7 +147,7 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		$amount += $attr->getValue();
 		$amount = max(min($amount, $attr->getMaxValue()), $attr->getMinValue());
 		$this->setFood($amount);
-	}*/
+	}
 
 	public function getSaturation() : float{
 		return $this->attributeMap->getAttribute(Attribute::SATURATION)->getValue();

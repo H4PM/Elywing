@@ -27,11 +27,8 @@ namespace pocketmine\network\protocol;
 class InteractPacket extends DataPacket{
 	const NETWORK_ID = Info::INTERACT_PACKET;
 
-	const ACTION_RIGHT_CLICK = 1;
-	const ACTION_LEFT_CLICK = 2;
-	const ACTION_LEAVE_VEHICLE = 3;
-	/** @deprecated Do NOT use this. This constant is misleading and will be removed in the future */
-	const ACTION_JUMP = 3;
+	const ACTION_DAMAGE = 2;
+	const ACTION_SEE = 4;
 
 	public $action;
 	public $eid;
