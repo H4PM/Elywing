@@ -45,14 +45,8 @@ class VersionCommand extends VanillaCommand{
 		}
 
 		if(count($args) === 0){
-			$sender->sendMessage(new TranslationContainer("pocketmine.server.info.extended", [
-				$sender->getServer()->getName(),
-				$sender->getServer()->getPocketMineVersion(),
-				$sender->getServer()->getCodename(),
-				$sender->getServer()->getApiVersion(),
-				$sender->getServer()->getVersion(),
-				Info::CURRENT_PROTOCOL
-			]));
+			$sender->sendMessage("This server use Elywing 1.0 (0.16 BETA) make by H4PM Team);
+                        $sender->sendMessage("Download it: www.github.com/H4PM/Elywing"); 
 		}else{
 			$pluginName = implode(" ", $args);
 			$exactPlugin = $sender->getServer()->getPluginManager()->getPlugin($pluginName);
