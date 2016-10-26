@@ -21,29 +21,11 @@
 
 namespace pocketmine\item;
 
+use pocketmine\block\Block;
 
-class LeatherTunic extends Armor{
+class ItemFrame extends Item{
 	public function __construct($meta = 0, $count = 1){
-		parent::__construct(self::LEATHER_TUNIC, $meta, $count, "Leather Tunic");
-	}
-
-	public function getArmorTier(){
-		return Armor::TIER_LEATHER;
-	}
-
-	public function getArmorType(){
-		return Armor::TYPE_CHESTPLATE;
-	}
-
-	public function getMaxDurability(){
-		return 81;
-	}
-
-	public function getArmorValue(){
-		return 3;
-	}
-
-	public function isChestplate(){
-		return true;
+		$this->block = Block::get(Item::ITEM_FRAME_BLOCK);
+		parent::__construct(self::ITEM_FRAME, 0, $count, "Item Frame");
 	}
 }

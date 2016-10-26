@@ -21,29 +21,19 @@
 
 namespace pocketmine\item;
 
-
-class LeatherTunic extends Armor{
+class SplashPotion extends Item{
+	
 	public function __construct($meta = 0, $count = 1){
-		parent::__construct(self::LEATHER_TUNIC, $meta, $count, "Leather Tunic");
+		parent::__construct(self::SPLASH_POTION, $meta, $count, $this->getNameByMeta($meta));
 	}
 
-	public function getArmorTier(){
-		return Armor::TIER_LEATHER;
+	public function getMaxStackSize() : int{
+		return 1;
+	}
+	
+	public function getNameByMeta(int $meta){
+		return "Splash ".Potion::getNameByMeta($meta);
 	}
 
-	public function getArmorType(){
-		return Armor::TYPE_CHESTPLATE;
-	}
-
-	public function getMaxDurability(){
-		return 81;
-	}
-
-	public function getArmorValue(){
-		return 3;
-	}
-
-	public function isChestplate(){
-		return true;
-	}
+	
 }

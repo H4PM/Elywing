@@ -18,32 +18,21 @@
  * @link https://itxtech.org
  *
  */
-
+ 
 namespace pocketmine\item;
 
-
-class LeatherTunic extends Armor{
+class RawRabbit extends Food{
 	public function __construct($meta = 0, $count = 1){
-		parent::__construct(self::LEATHER_TUNIC, $meta, $count, "Leather Tunic");
+		parent::__construct(self::RAW_RABBIT, $meta, $count, "Raw Rabbit");
 	}
-
-	public function getArmorTier(){
-		return Armor::TIER_LEATHER;
-	}
-
-	public function getArmorType(){
-		return Armor::TYPE_CHESTPLATE;
-	}
-
-	public function getMaxDurability(){
-		return 81;
-	}
-
-	public function getArmorValue(){
+	
+	public function getFoodRestore() : int{
 		return 3;
 	}
 
-	public function isChestplate(){
-		return true;
+	public function getSaturationRestore() : float{
+		return 1.8;
 	}
+
 }
+
