@@ -35,6 +35,7 @@ class InventoryType{
 	const BREWING_STAND = 7;
 	const ANVIL = 8;
 	const ENCHANT_TABLE = 9;
+	const BEACON = 30;
 
 	const PLAYER_FLOATING = 254;
 
@@ -67,6 +68,8 @@ class InventoryType{
 		static::$default[static::ENCHANT_TABLE] = new InventoryType(2, "Enchant", 3); //1 INPUT/OUTPUT, 1 LAPIS
 		static::$default[static::BREWING_STAND] = new InventoryType(4, "Brewing", 4); //1 INPUT, 3 POTION
 		static::$default[static::ANVIL] = new InventoryType(3, "Anvil", 5); //2 INPUT, 1 OUTPUT
+		//static::$default[static::BEACON] = new InventoryType(27, "Beacon", 3); crash player/server ok = 27 cases for player inventory and 1 cases for items and 2 case for accept or refuse
+		static::$default[static::BEACON] = new InventoryType(3, "Beacon", 5); //2 INPUT, 1 OUTPUT
 		//TODO: add the below
 		//6: dispenser
 		//7: dropper

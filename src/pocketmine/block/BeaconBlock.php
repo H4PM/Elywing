@@ -21,6 +21,10 @@
 
 namespace pocketmine\block;
 
+use pocketmine\inventory\BeaconInventory;
+use pocketmine\item\Item;
+use pocketmine\Player;
+
 class BeaconBlock extends Solid{
 
 	protected $id = self::BEACON_BLOCK;
@@ -29,8 +33,24 @@ class BeaconBlock extends Solid{
 		$this->meta = $meta;
 	}
 
+	public function canBeActivated(){
+		return true;
+	}
+
+	public function getHardness(){
+		return 3;
+	}
+
 	public function getName(){
         return "Beacon Block";
+	}
+
+	public function onActivate(Item $item, Player $player = null){
+		if($player instanceof Player){
+			$player->addWindow(new BeaconInventory($this));
+		}
+
+		return true;
 	}
 
 }
