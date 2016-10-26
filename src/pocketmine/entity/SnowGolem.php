@@ -21,54 +21,37 @@
 
 namespace pocketmine\entity;
 
-use pocketmine\level\format\FullChunk;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\Player;
 use pocketmine\network\protocol\AddEntityPacket;
+use pocketmine\Player;
 
-class Egg extends Projectile{
-	const NETWORK_ID = 82;
+class SnowGolem extends Animal{
+	const NETWORK_ID = 21;
 
-	public $width = 0.25;
-	public $length = 0.25;
-	public $height = 0.25;
-
-	protected $gravity = 0.03;
-	protected $drag = 0.01;
-
-	public function __construct(FullChunk $chunk, CompoundTag $nbt, Entity $shootingEntity = null){
-		parent::__construct($chunk, $nbt, $shootingEntity);
+	public $width = 0.3;
+	public $length = 0.9;
+	public $height = 1.8;
+	
+	public function initEntity(){
+		$this->setMaxHealth(4);
+		parent::initEntity();
 	}
-
-	public function onUpdate($currentTick){
-		if($this->closed){
-			return false;
-		}
-
-		$this->timings->startTiming();
-
-		$hasUpdate = parent::onUpdate($currentTick);
-
-		if($this->age > 1200 or $this->isCollided){
-			$this->kill();
-			$hasUpdate = true; //Chance to spawn chicken
-		}
-
-		$this->timings->stopTiming();
-
-		return $hasUpdate;
+	
+	public function getName() {
+		return "Snow Golem";
 	}
-
-	public function spawnTo(Player $player){
+	
+	public function spawnTo(Player $player) {
 		$pk = new AddEntityPacket();
-		$pk->type = Egg::NETWORK_ID;
 		$pk->eid = $this->getId();
+		$pk->type = self::NETWORK_ID;
 		$pk->x = $this->x;
 		$pk->y = $this->y;
 		$pk->z = $this->z;
 		$pk->speedX = $this->motionX;
 		$pk->speedY = $this->motionY;
 		$pk->speedZ = $this->motionZ;
+		$pk->yaw = $this->yaw;
+		$pk->pitch = $this->pitch;
 		$pk->metadata = $this->dataProperties;
 		$player->dataPacket($pk);
 

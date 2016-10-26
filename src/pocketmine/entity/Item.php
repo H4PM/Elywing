@@ -22,13 +22,17 @@
 namespace pocketmine\entity;
 
 use pocketmine\event\entity\EntityDamageEvent;
+
 use pocketmine\event\entity\ItemDespawnEvent;
 use pocketmine\event\entity\ItemSpawnEvent;
 use pocketmine\item\Item as ItemItem;
+
 use pocketmine\nbt\NBT;
-use pocketmine\nbt\tag\CompoundTag;
+
+
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
+use pocketmine\network\Network;
 use pocketmine\network\protocol\AddItemEntityPacket;
 use pocketmine\Player;
 
@@ -66,16 +70,15 @@ class Item extends Entity{
 		if(isset($this->namedtag->Thrower)){
 			$this->thrower = $this->namedtag["Thrower"];
 		}
-
-
 		if(!isset($this->namedtag->Item)){
 			$this->close();
 			return;
 		}
-
-		assert($this->namedtag->Item instanceof CompoundTag);
-
 		$this->item = NBT::getItemHelper($this->namedtag->Item);
+		if($this->item->getId() <= 0){
+			$this->close();
+			return;
+		}
 
 
 		$this->server->getPluginManager()->callEvent(new ItemSpawnEvent($this));
@@ -96,7 +99,9 @@ class Item extends Entity{
 		if($this->closed){
 			return false;
 		}
-
+		
+		$this->age++;
+		
 		$tickDiff = $currentTick - $this->lastUpdate;
 		if($tickDiff <= 0 and !$this->justCreated){
 			return true;
@@ -139,9 +144,10 @@ class Item extends Entity{
 				$this->motionY *= -0.5;
 			}
 
-			$this->updateMovement();
+			if($currentTick % 5 ==0)
+				$this->updateMovement();
 
-			if($this->age > 6000){
+			if($this->age > 2000){
 				$this->server->getPluginManager()->callEvent($ev = new ItemDespawnEvent($this));
 				if($ev->isCancelled()){
 					$this->age = 0;

@@ -10,7 +10,7 @@
  * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
+ * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
@@ -22,22 +22,53 @@
 namespace pocketmine\entity;
 
 use pocketmine\level\format\FullChunk;
+use pocketmine\level\particle\SpellParticle;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\Player;
+use pocketmine\nbt\tag\ShortTag;
 use pocketmine\network\protocol\AddEntityPacket;
+use pocketmine\Player;
+use pocketmine\item\Potion;
 
-class Egg extends Projectile{
-	const NETWORK_ID = 82;
+class ThrownPotion extends Projectile{
+	const NETWORK_ID = 86;
+
+	const DATA_POTION_ID = 16;
 
 	public $width = 0.25;
 	public $length = 0.25;
 	public $height = 0.25;
 
-	protected $gravity = 0.03;
-	protected $drag = 0.01;
+	protected $gravity = 0.1;
+	protected $drag = 0.05;
 
 	public function __construct(FullChunk $chunk, CompoundTag $nbt, Entity $shootingEntity = null){
+		if(!isset($nbt->PotionId)){
+			$nbt->PotionId = new ShortTag("PotionId", Potion::AWKWARD);
+		}
+
 		parent::__construct($chunk, $nbt, $shootingEntity);
+
+		unset($this->dataProperties[self::DATA_SHOOTER_ID]);
+		$this->setDataProperty(self::DATA_POTION_ID, self::DATA_TYPE_SHORT, $this->getPotionId());
+	}
+	
+	public function getPotionId() : int{
+		return (int) $this->namedtag["PotionId"];
+	}
+	
+	public function kill(){
+		$color = Potion::getColor($this->getPotionId());
+		$this->getLevel()->addParticle(new SpellParticle($this, $color[0], $color[1], $color[2]));
+		$players = $this->getViewers();
+		foreach($players as $p) {
+			if($p->distance($this) <= 6){
+				foreach(Potion::getEffectsById($this->getPotionId()) as $effect){
+					$p->addEffect($effect);
+				}
+			}
+		}
+		
+		parent::kill();
 	}
 
 	public function onUpdate($currentTick){
@@ -49,9 +80,17 @@ class Egg extends Projectile{
 
 		$hasUpdate = parent::onUpdate($currentTick);
 
+		$this->age++;
+
 		if($this->age > 1200 or $this->isCollided){
 			$this->kill();
-			$hasUpdate = true; //Chance to spawn chicken
+			$this->close();
+			$hasUpdate = true;
+		}
+		
+		if($this->onGround) {
+			$this->kill();
+			$this->close();
 		}
 
 		$this->timings->stopTiming();
@@ -61,7 +100,7 @@ class Egg extends Projectile{
 
 	public function spawnTo(Player $player){
 		$pk = new AddEntityPacket();
-		$pk->type = Egg::NETWORK_ID;
+		$pk->type = ThrownPotion::NETWORK_ID;
 		$pk->eid = $this->getId();
 		$pk->x = $this->x;
 		$pk->y = $this->y;

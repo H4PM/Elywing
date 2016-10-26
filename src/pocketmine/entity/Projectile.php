@@ -21,11 +21,14 @@
 
 namespace pocketmine\entity;
 
+
 use pocketmine\event\entity\EntityCombustByEntityEvent;
 use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+
 use pocketmine\event\entity\ProjectileHitEvent;
+use pocketmine\item\Potion;
 use pocketmine\level\format\FullChunk;
 use pocketmine\level\MovingObjectPosition;
 use pocketmine\math\Vector3;
@@ -149,7 +152,14 @@ abstract class Projectile extends Entity{
 						$ev = new EntityDamageByChildEntityEvent($this->shootingEntity, $this, $movingObjectPosition->entityHit, EntityDamageEvent::CAUSE_PROJECTILE, $damage);
 					}
 
-					$movingObjectPosition->entityHit->attack($ev->getFinalDamage(), $ev);
+					if($movingObjectPosition->entityHit->attack($ev->getFinalDamage(), $ev) === true){
+						if($this instanceof Arrow and $this->getPotionId() != 0){
+							foreach(Potion::getEffectsById($this->potionId - 1) as $effect){
+								$movingObjectPosition->entityHit->addEffect($effect->setDuration($effect->getDuration() / 8));
+							}
+						}
+						$ev->useArmors();
+					}
 
 					$this->hadCollision = true;
 
