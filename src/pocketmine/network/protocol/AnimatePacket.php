@@ -32,7 +32,7 @@ class AnimatePacket extends DataPacket{
 	public $unknownFloat; //TODO: find out what this is for (maybe an amplifier?)
 
 	public function decode(){
-		$this->action = $this->getByte();
+		$this->action = $this->getVarInt();
 		$this->eid = $this->getEntityId();
 		if(!$this->feof()){
 			$this->unknownFloat = $this->getLFloat(); //TODO: find out when this is sent (not always! >:-[)
@@ -41,7 +41,7 @@ class AnimatePacket extends DataPacket{
 
 	public function encode(){
 		$this->reset();
-		$this->putByte($this->action);
+		$this->getVarInt($this->action);
 		$this->putEntityId($this->eid);
 		$this->putLFloat($this->unknownFloat);
 	}
