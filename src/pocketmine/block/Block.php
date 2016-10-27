@@ -168,6 +168,7 @@ class Block extends Position implements BlockIds, Metadatable{
 			self::$list[self::TRAPDOOR] = Trapdoor::class;
 			self::$list[self::IRON_TRAPDOOR] = IronTrapdoor::class;
 
+			self::$list[self::MONSTER_EGG_BLOCK] = MonsterEggBlock::class;
 			self::$list[self::STONE_BRICKS] = StoneBricks::class;
 			
 			self::$list[self::BROWN_MUSHROOM_BLOCK] = BrownMushroomBlock::class;
@@ -202,8 +203,9 @@ class Block extends Position implements BlockIds, Metadatable{
 			self::$list[self::SPRUCE_WOOD_STAIRS] = SpruceWoodStairs::class;
 			self::$list[self::BIRCH_WOOD_STAIRS] = BirchWoodStairs::class;
 			self::$list[self::JUNGLE_WOOD_STAIRS] = JungleWoodStairs::class;
-			self::$list[self::STONE_WALL] = StoneWall::class;
 
+			self::$list[self::BEACON_BLOCK] = BeaconBlock::class;
+			self::$list[self::STONE_WALL] = StoneWall::class;
 			self::$list[self::FLOWER_POT_BLOCK] = FlowerPot::class;
 			self::$list[self::CARROT_BLOCK] = Carrot::class;
 			self::$list[self::POTATO_BLOCK] = Potato::class;
@@ -224,6 +226,8 @@ class Block extends Position implements BlockIds, Metadatable{
 			self::$list[self::DARK_OAK_WOOD_STAIRS] = DarkOakWoodStairs::class;
 
 			self::$list[self::SLIME_BLOCK] = SlimeBlock::class;
+			self::$list[self::PRISMARINE_BLOCK] = PrismarineBlock::class;
+			self::$list[self::SEA_LANTERN_BLOCK] = SeaLanternBlock::class;
 			self::$list[self::HAY_BALE] = HayBale::class;
 			self::$list[self::CARPET] = Carpet::class;
 			self::$list[self::HARDENED_CLAY] = HardenedClay::class;
@@ -262,6 +266,8 @@ class Block extends Position implements BlockIds, Metadatable{
 			self::$list[self::WOODEN_BUTTON] = WoodenButton::class;
 			self::$list[self::STONE_BUTTON] = StoneButton::class;
 			self::$list[self::LEVER] = Lever::class;
+			self::$list[self::COMPARATOR_BLOCK] = ComparatorBlock::class;
+			self::$list[self::POWERED_COMPARATOR_BLOCK] = PoweredComparatorBlock::class;
 			self::$list[self::DAYLIGHT_SENSOR] = DaylightDetector::class;
 			self::$list[self::DAYLIGHT_SENSOR_INVERTED] = DaylightDetectorInverted::class;
 			self::$list[self::NOTEBLOCK] = Noteblock::class;

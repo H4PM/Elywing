@@ -29,8 +29,8 @@ class PrismarineBlock extends Solid{
 		$this->meta = $meta;
 	}
 
-	public function getName(){
-        static $names = [
+	public function getName() : string{
+		static $names = [
 			0 => "Prismarine Block",
 			1 => "Dark Prismarine Block",
 			2 => "Prismarine Bricks Block",

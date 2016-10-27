@@ -29,7 +29,7 @@ class PoweredComparatorBlock extends Solid{
 		$this->meta = $meta;
 	}
 
-	public function getName(){
+	public function getName() : string{
         return "Powered Comparator Block";
 	}
 

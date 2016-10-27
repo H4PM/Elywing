@@ -33,7 +33,7 @@ class BeaconBlock extends Solid{
 		$this->meta = $meta;
 	}
 
-	public function canBeActivated(){
+	public function canBeActivated() : bool{
 		return true;
 	}
 
@@ -41,7 +41,7 @@ class BeaconBlock extends Solid{
 		return 3;
 	}
 
-	public function getName(){
+	public function getName() : string{
         return "Beacon Block";
 	}
 
