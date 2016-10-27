@@ -168,7 +168,7 @@
 	const GOLDEN_CARROT = 396;
 	const MOB_HEAD = 397; const SKULL = 397;
 	const CARROT_ON_A_STICK = 398;
-	
+	const NETHER_STAR = 399;
 	const PUMPKIN_PIE = 400;
 
 	const ENCHANTED_BOOK = 403;
@@ -178,7 +178,7 @@
 	const NETHER_QUARTZ = 406;
 	const MINECART_WITH_TNT = 407;
 	const MINECART_WITH_HOPPER = 408;
-	
+	const PRISMARINE_SHARD = 409;
 	const HOPPER = 410;
 	const RAW_RABBIT = 411;
 	const COOKED_RABBIT = 412;
@@ -191,7 +191,7 @@
 	const DIAMOND_HORSE_ARMOR = 419;
 	const LEAD = 420; const LEASH = 420;
 	const NAMETAG = 421;
-	
+	const PRISMARINE_CRYSTALS = 422;
 	const RAW_MUTTON = 423;
 	const COOKED_MUTTON = 424;
 	

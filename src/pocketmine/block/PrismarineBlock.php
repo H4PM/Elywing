@@ -21,6 +21,9 @@
 
 namespace pocketmine\block;
 
+use pocketmine\item\Item;
+use pocketmine\item\Tool;
+
 class PrismarineBlock extends Solid{
 
 	protected $id = self::PRISMARINE_BLOCK;
@@ -37,5 +40,24 @@ class PrismarineBlock extends Solid{
 		];
 		return $names[$this->meta & 0x0f];
 	}
+
+	public function getHardness(){
+		return 1.5;
+	}
+
+	public function getToolType(){
+		return Tool::TYPE_PICKAXE;
+	}
+
+	public function getDrops(Item $item) : array {
+		if($item->isPickaxe() >= Tool::TIER_WOODEN){
+			return [
+				[$this->id, $this->meta & 0x0f, 1],
+			];
+		}else{
+			return [];
+		}
+	}
+}
 
 }

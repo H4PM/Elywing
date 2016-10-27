@@ -150,6 +150,9 @@ class CreativeItems{
 			["id" => Item::QUARTZ_BLOCK],
 			["id" => Item::QUARTZ_BLOCK, "meta" => Quartz::QUARTZ_PILLAR],
 			["id" => Item::QUARTZ_BLOCK, "meta" => Quartz::QUARTZ_CHISELED],
+			["id" => Item::PRISMARINE_BLOCK, "meta" => 0], //Prismarine Block
+			["id" => Item::PRISMARINE_BLOCK, "meta" => 2], //Prismarine Bricks Block
+			["id" => Item::PRISMARINE_BLOCK, "meta" => 1], //Dark Prismarine Block
 			["id" => Item::COAL_ORE],
 			["id" => Item::IRON_ORE],
 			["id" => Item::GOLD_ORE],
@@ -165,9 +168,11 @@ class CreativeItems{
 			["id" => Item::END_STONE],
 		],
 		self::CATEGORY_DECORATION => [
+			["id" => Item::BEACON_BLOCK],
 			["id" => Item::COBBLESTONE_WALL],
 			["id" => Item::COBBLESTONE_WALL, "meta" => StoneWall::MOSSY_WALL],
 			["id" => Item::LILY_PAD],
+			["id" => Item::SEA_LANTERN_BLOCK],
 			["id" => Item::GOLD_BLOCK],
 			["id" => Item::IRON_BLOCK],
 			["id" => Item::DIAMOND_BLOCK],
@@ -181,6 +186,7 @@ class CreativeItems{
 			["id" => Item::VINES],
 			["id" => Item::LADDER],
 			["id" => Item::SPONGE],
+			["id" => Item::SPONGE, "meta" => 1], //Wet Sponge
 			["id" => Item::GLASS_PANE],
 			["id" => Item::OAK_DOOR],
 			["id" => Item::SPRUCE_DOOR],
@@ -533,6 +539,7 @@ class CreativeItems{
 			["id" => Item::RAW_RABBIT],
 			["id" => Item::COOKED_RABBIT],
 			["id" => Item::RABBIT_STEW],
+			["id" => Item::NETHER_STAR],
 			["id" => Item::MAGMA_CREAM],
 			["id" => Item::BLAZE_ROD],
 			["id" => Item::GOLD_NUGGET],
@@ -549,6 +556,8 @@ class CreativeItems{
 			["id" => Item::FERMENTED_SPIDER_EYE],
 			["id" => Item::CARROT_ON_A_STICK],
 			["id" => Item::BOTTLE_O_ENCHANTING],
+			["id" => Item::PRISMARINE_SHARD],
+			["id" => Item::PRISMARINE_CRYSTALS],
 			/*["id" => Item::ENCHANTED_BOOK, "ench" => [["id" => Enchantment::TYPE_ARMOR_PROTECTION, "lvl" => 1]]],
 			["id" => Item::ENCHANTED_BOOK, "ench" => [["id" => Enchantment::TYPE_ARMOR_PROTECTION, "lvl" => 2]]],
 			["id" => Item::ENCHANTED_BOOK, "ench" => [["id" => Enchantment::TYPE_ARMOR_PROTECTION, "lvl" => 3]]],
