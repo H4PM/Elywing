@@ -402,6 +402,30 @@ class CraftingManager{
 				"IRI",
 				" I"
 			))->setIngredient("I", Item::get(Item::IRON_INGOT, 0, 4))->setIngredient("R", Item::get(Item::REDSTONE_DUST, 0, 1)));
+			$this->registerRecipe((new BigShapedRecipe(Item::get(Item::SEA_LANTERN_BLOCK, 0, 1),
+				"GSG",
+				"SSS",
+				"GSG"
+			))->setIngredient("G", Item::get(Item::PRISMARINE_SHARD, 0, 4))->setIngredient("S", Item::get(Item::PRISMARINE_CRYSTALS, 0, 5)));
+			$this->registerRecipe((new BigShapedRecipe(Item::get(Item::PRISMARINE_BLOCK, 0, 1),
+				"GG",
+				"GG"
+			))->setIngredient("G", Item::get(Item::PRISMARINE_SHARD, 0, 4)));
+			$this->registerRecipe((new BigShapedRecipe(Item::get(Item::PRISMARINE_BLOCK, 2, 1),
+				"GGG",
+				"GGG",
+				"GGG"
+			))->setIngredient("G", Item::get(Item::PRISMARINE_SHARD, 0, 9)));
+			$this->registerRecipe((new BigShapedRecipe(Item::get(Item::BEACON_BLOCK, 0, 1),
+				"GGG",
+				"GSG",
+				"FFF"
+			))->setIngredient("G", Item::get(Item::GLASS, 0, 5))->setIngredient("S", Item::get(Item::NETHER_STAR, 0, 1))->setIngredient("F", Item::get(Item::OBSIDIAN, 0, 3)));
+			$this->registerRecipe((new BigShapedRecipe(Item::get(Item::PRISMARINE_BLOCK, 1, 1),
+				"GGG",
+				"GSG",
+				"GGG"
+			))->setIngredient("G", Item::get(Item::PRISMARINE_SHARD, 0, 8))->setIngredient("S", Item::get(Item::DYE, 0, 1)));
 			$this->registerRecipe((new BigShapedRecipe(Item::get(Item::TNT, 0, 1),
 				"GSG",
 				"SGS",
