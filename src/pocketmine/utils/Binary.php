@@ -23,14 +23,16 @@
  * Various Utilities used around the code
  */
 namespace pocketmine\utils;
+
 use pocketmine\entity\Entity;
+use pocketmine\item\Item;
 
 class Binary{
 	const BIG_ENDIAN = 0x00;
 	const LITTLE_ENDIAN = 0x01;
 
 	private static function checkLength($str, $expect){
-		if(($len = strlen($str)) !== $expect) throw new \RuntimeException("Unexpected length: expected ".$expect.", got ".$len);
+		assert(($len = strlen($str)) === $expect, "Expected $expect bytes, got $len");
 	}
 
 	/**
@@ -124,6 +126,7 @@ class Binary{
 					$stream->putVector3f($d[1][0], $d[1][1], $d[1][2]); //x, y, z
 			}
 		}
+
 		return $stream->getBuffer();
 	}
 
@@ -149,7 +152,7 @@ class Binary{
 					$value = $stream->getByte();
 					break;
 				case Entity::DATA_TYPE_SHORT:
-					$value = $stream->getLShort(true); //signed;
+					$value = $stream->getLShort(true); //signed
 					break;
 				case Entity::DATA_TYPE_INT:
 					$value = $stream->getVarInt();
@@ -438,72 +441,50 @@ class Binary{
 		return strrev(self::writeLong($value));
 	}
 
+	//TODO: proper varlong support
+
 	public static function readVarInt($stream){
+		$shift = PHP_INT_SIZE === 8 ? 63 : 31;
 		$raw = self::readUnsignedVarInt($stream);
-		$temp = ((($raw << 31) >> 31) ^ $raw) >> 1;
-		return $temp ^ ($raw & (1 << 31));
+		$temp = ((($raw << $shift) >> $shift) ^ $raw) >> 1;
+		return $temp ^ ($raw & (1 << $shift));
 	}
-	
-	public static function readVarInt64($stream){
-		$raw = self::readUnsignedVarInt64($stream);
-		$temp = ((($raw << 63) >> 63) ^ $raw) >> 1;
-		return $temp ^ ($raw & 1 << 63);
-	}
-	
+
 	public static function readUnsignedVarInt($stream){
 		$value = 0;
 		$i = 0;
 		do{
+			if($i > 63){
+				throw new \InvalidArgumentException("Varint did not terminate after 10 bytes!");
+			}
 			$value |= ((($b = $stream->getByte()) & 0x7f) << $i);
 			$i += 7;
-			
 		}while($b & 0x80);
 
 		return $value;
 	}
 
-	public static function readUnsignedVarInt64($stream){
-		$value = 0;
-		$i = 0;
-		while((($b = $stream->getByte()) & 0x80) !== 0){
-			$value |= ($b & 0x7f) << $i;
-			$i += 7;
-			if($i > 63){
-				throw new \InvalidArgumentException("Value is too long to be an int64");
-			}
-		}
-		return $value | ($b << $i);
-	}
-
 	public static function writeVarInt($v){
-		return self::writeUnsignedVarInt(($v << 1) ^ ($v >> 31));
-	}
-	
-	public static function writeVarInt64($v){
-		return self::writeUnsignedVarInt64(($v << 1) ^ ($v >> 63));
+		return self::writeUnsignedVarInt(($v << 1) ^ ($v >> (PHP_INT_SIZE === 8 ? 63 : 31)));
 	}
 
 	public static function writeUnsignedVarInt($v){
 		$buf = "";
+		$loops = 0;
 		do{
+			if($loops > 9){
+				throw new \InvalidArgumentException("Varint cannot be longer than 10 bytes!"); //for safety reasons
+			}
 			$w = $v & 0x7f;
 			if(($v >> 7) !== 0){
 				$w = $v | 0x80;
 			}
 			$buf .= self::writeByte($w);
-			$v >>= 7;
+			$v = (($v >> 7) & (PHP_INT_MAX >> 6)); //PHP really needs a logical right-shift operator
+			++$loops;
 		}while($v);
 
 		return $buf;
 	}
 
-	public static function writeUnsignedVarInt64($v){
-		$buf = "";
-		while($v & 0xFFFFFFFFFFFFFF80 !== 0){
-			$buf .= self::writeByte(((int) $v & 0x7f) | 0x80);
-			$v >>= 7;
-		}
-		$buf .= self::writeByte($v);
-		return $buf;
-	}
 }

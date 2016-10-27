@@ -1,4 +1,5 @@
 <?php
+
 /*
  *
  *  ____            _        _   __  __ _                  __  __ ____  
@@ -17,13 +18,15 @@
  * 
  *
 */
+
 namespace pocketmine\utils;
+
 #include <rules/DataPacket.h>
-#ifndef COMPILE
-#endif
+
 use pocketmine\item\Item;
 
 class BinaryStream extends \stdClass{
+
 	public $offset;
 	public $buffer;
 
@@ -59,6 +62,7 @@ class BinaryStream extends \stdClass{
 			$this->offset = strlen($this->buffer);
 			return $str;
 		}
+
 		return $len === 1 ? $this->buffer{$this->offset++} : substr($this->buffer, ($this->offset += $len) - $len, $len);
 	}
 
@@ -146,6 +150,7 @@ class BinaryStream extends \stdClass{
 		$this->buffer .= Binary::writeLFloat($v);
 	}
 
+
 	public function getTriad(){
 		return Binary::readTriad($this->get(3));
 	}
@@ -153,6 +158,7 @@ class BinaryStream extends \stdClass{
 	public function putTriad($v){
 		$this->buffer .= Binary::writeTriad($v);
 	}
+
 
 	public function getLTriad(){
 		return Binary::readLTriad($this->get(3));
@@ -170,73 +176,12 @@ class BinaryStream extends \stdClass{
 		$this->buffer .= chr($v);
 	}
 
-	/**
-	 * Reads an unsigned varint from the stream.
-	 */
-	public function getUnsignedVarInt(){
-		return Binary::readUnsignedVarInt($this);
-	}
-	
-	/**
-	 * Reads a signed varint from the stream.
-	 */
-	public function getVarInt(){
-		return Binary::readVarInt($this);
-	}
-	
-	/**
-	 * Reads an unsigned 64-bit varint from the stream.
-	 */
-	public function getUnsignedVarInt64(){
-		return Binary::readUnsignedVarInt64($this);
-	}
-	
-	public function getVarInt64(){
-		return Binary::readVarInt64($this);
-	}
-	
-	/**
-	 * Writes an unsigned varint to the stream.
-	 */
-	public function putUnsignedVarInt($v){
-		$this->put(Binary::writeUnsignedVarInt($v));
-	}
-	
-	/**
-	 * Writes a signed varint to the stream.
-	 */
-	public function putVarInt($v){
-		$this->put(Binary::writeVarInt($v));
-	}
-	
-	/**
-	 * Writes a 64-bit unsigned varint to the stream.
-	 */
-	public function putUnsignedVarInt64($v){
-		$this->put(Binary::writeUnsignedVarInt64($v));
-	}
-	
-	/**
-	 * Writes a 64-bit signed varint to the stream.
-	 */
-	public function putVarInt64($v){
-		$this->put(Binary::writeVarInt64($v));
-	}
-
-	public function getString(){
-		return $this->get($this->getUnsignedVarInt());
-	}
-
-	public function putString($v){
-		$this->putUnsignedVarInt(strlen($v));
-		$this->put($v);
-	}
-
 	public function getDataArray($len = 10){
 		$data = [];
 		for($i = 1; $i <= $len and !$this->feof(); ++$i){
 			$data[] = $this->get($this->getTriad());
 		}
+
 		return $data;
 	}
 
@@ -261,7 +206,7 @@ class BinaryStream extends \stdClass{
 		if($id <= 0){
 			return Item::get(0, 0, 0);
 		}
-		$auxValue = $this->getVarInt(); //why, Mojang
+		$auxValue = $this->getVarInt();
 		$data = $auxValue >> 8;
 		$cnt = $auxValue & 0xff;
 
@@ -276,10 +221,10 @@ class BinaryStream extends \stdClass{
 			$id,
 			$data,
 			$cnt,
-			$nbt,
-			true
+			$nbt
 		);
 	}
+
 
 	public function putSlot(Item $item){
 		if($item->getId() === 0){
@@ -290,11 +235,50 @@ class BinaryStream extends \stdClass{
 		$this->putVarInt($item->getId());
 		$auxValue = ($item->getDamage() << 8) | $item->getCount();
 		$this->putVarInt($auxValue);
-		$nbt = $item->getNetworkCompoundTag();
+		$nbt = $item->getCompoundTag();
 		$this->putLShort(strlen($nbt));
 		$this->put($nbt);
 	}
-	
+
+	public function getString(){
+		return $this->get($this->getUnsignedVarInt());
+	}
+
+	public function putString($v){
+		$this->putUnsignedVarInt(strlen($v));
+		$this->put($v);
+	}
+
+	//TODO: varint64
+
+	/**
+	 * Reads an unsigned varint32 from the stream.
+	 */
+	public function getUnsignedVarInt(){
+		return Binary::readUnsignedVarInt($this);
+	}
+
+	/**
+	 * Writes an unsigned varint32 to the stream.
+	 */
+	public function putUnsignedVarInt($v){
+		$this->put(Binary::writeUnsignedVarInt($v));
+	}
+
+	/**
+	 * Reads a signed varint32 from the stream.
+	 */
+	public function getVarInt(){
+		return Binary::readVarInt($this);
+	}
+
+	/**
+	 * Writes a signed varint32 to the stream.
+	 */
+	public function putVarInt($v){
+		$this->put(Binary::writeVarInt($v));
+	}
+
 	public function getEntityId(){
 		return $this->getVarInt();
 	}
@@ -309,7 +293,7 @@ class BinaryStream extends \stdClass{
 		$z = $this->getVarInt();
 	}
 
-	public function putBlockCoords(int $x, int $y, int $z){
+	public function putBlockCoords($x, $y, $z){
 		$this->putVarInt($x);
 		$this->putByte($y);
 		$this->putVarInt($z);
@@ -321,7 +305,7 @@ class BinaryStream extends \stdClass{
 		$z = $this->getLFloat();
 	}
 	
-	public function putVector3f(float $x, float $y, float $z){
+	public function putVector3f($x, $y, $z){
 		$this->putLFloat($x);
 		$this->putLFloat($y);
 		$this->putLFloat($z);

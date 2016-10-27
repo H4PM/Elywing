@@ -2993,7 +2993,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				if($this->spawned === false or $this->blocked === true or !$this->isAlive()){
 					break;
 				}
-				$this->craftingType = self::CRAFTING_SMALL;
+				$this->craftingType = 0;
 
 				$vector = new Vector3($packet->x, $packet->y, $packet->z);
 
@@ -3002,10 +3002,11 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 
 				if($this->canInteract($vector->add(0.5, 0.5, 0.5), $this->isCreative() ? 13 : 6) and $this->level->useBreakOn($vector, $item, $this, $this->server->destroyBlockParticle)){
 					if($this->isSurvival()){
-						if(!$item->equals($oldItem) or $item->getCount() !== $oldItem->getCount()){
+						if(!$item->deepEquals($oldItem) or $item->getCount() !== $oldItem->getCount()){
 							$this->inventory->setItemInHand($item);
-							$this->inventory->sendHeldItem($this);
+							$this->inventory->sendHeldItem($this->hasSpawned);
 						}
+						$this->exhaust(0.025, PlayerExhaustEvent::CAUSE_MINING);
 					}
 					break;
 				}
@@ -3032,11 +3033,16 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 					break;
 				}
 
-				$this->craftingType = self::CRAFTING_SMALL;
+				$this->craftingType = 0;
 
 				$target = $this->level->getEntity($packet->target);
 
 				$cancelled = false;
+
+				if($packet->action !== InteractPacket::ACTION_LEFT_CLICK){
+					// TODO handle
+					break;
+				}
 
 				if($target instanceof Player and $this->server->getConfigBoolean("pvp", true) === false
 
