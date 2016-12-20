@@ -121,7 +121,7 @@ abstract class Entity extends Location implements Metadatable{
 	 * 58 (float)
 	 * 59 (float) */
 
-	const DATA_LEAD_HOLDER = 38;
+	const DATA_LEAD_HOLDER_EID = 38; const DATA_LEAD_HOLDER = 38;
 	const DATA_LEAD = 24;
 
 	const DATA_FLAG_ONFIRE = 0;
