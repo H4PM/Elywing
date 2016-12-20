@@ -2,7 +2,7 @@
 
 #Phiên bản file cài đặt
 config:
- version: 20
+ version: 22
 
 level:
  #Chỉnh nếu muốn bật/tắt thời tiết (true/false)
@@ -20,10 +20,6 @@ level:
 player:
  #Bật/tắt nếu muốn thêm chế độ đói (true/false)
  hunger: true
- #Số máu đói tối đa nếu có người tấn công (mặc định là 20)
- hunger-health: 10
- #Thời gian "tấn công" cơn đói, Mặc định là 80=4 giây
- hunger-timer: 3000
  #Bật/tắt nếu muốn thêm chế độ điểm kinh nghiệm (true/false)
  experience: true
  #Bật/tắt nếu muốn server chết không mất đồ (true/false)
@@ -42,8 +38,6 @@ nether:
  level-name: "nether"
  
 server:
- #Tái tạo lại hệ thống điểm kinh nghiệm，0=hủy bỏ chế độ
- experience-cache: 65535
  #Bật/tắt nếu muốn thêm Iron Golem vào server (true/false)
  allow-iron-golem: false
  #Bật/tắt nếu muốn thêm Snow Golem vào server (true/false)
@@ -59,10 +53,6 @@ server:
  player-msg-type: 0
  login-msg: "§3@player joined the game"
  logout-msg: "§3@player left the game"
- #Bật/tắt nếu muốn sử dụng đồ chế tạo qua file json (mặc định: false) (true/false)
- recipes-from-json: false
- #Bật/tắt nếu muốn sử dụng đồ cre qua file json (mặc định: false) (true/false)
- creative-items-from-json: false
  #Bật/tắt nếu muốn kiểm tra tốc độ (không còn đẩy lùi mỗi khi đi) (true/false)
  check-movement: true
  #Bật/tắt nếu kích hoạt chế độ sáng tạo giới hạn (Không thể rớt đồ, mở rương và hơn thế nữa) (mặc định: false) (true/false)
@@ -94,20 +84,6 @@ redstone:
  frequency-pulse: false
  #Đánh số tỷ lệ hoạt động, mặc định: 1 giây
  pulse-frequency: 1
-
-synapse:
- #Nếu muốn kích hoạt API của Synapse hoặc kết nối vào server Synapse, kích hoạt chế nđộ này
- enabled: false
- server-ip: 127.0.0.1
- server-port: 10305
- #Nếu Client này là server chính hoặc sv lobby
- is-main-server: true
- #Mật khẩu Synapse (có thể tham khảo ở server.properties tại Synapse)
- server-password: 16bitlongkey
- #Mô tả về hệ thống Synapse của bạn
- description: "A Synapse client"
- #Hủy RakLib tức là chỉ có thể vào Synapse mà không vào server này (mặc định là false)
- disable-rak: false
 
 dserver:
  #Tất cả các server gộp vào. Bật/tắt để hoạt động (true/false)

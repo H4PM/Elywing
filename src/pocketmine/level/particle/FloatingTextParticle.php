@@ -49,6 +49,14 @@ class FloatingTextParticle extends Particle{
 		$this->title = $title;
 	}
 
+	public function getText(){
+		return $this->text;
+	}
+
+	public function getTitle(){
+		return $this->title;
+	}
+
 	public function setText($text){
 		$this->text = $text;
 	}
@@ -78,7 +86,6 @@ class FloatingTextParticle extends Particle{
 		}
 
 		if(!$this->invisible){
-			
 			$pk = new AddPlayerPacket();
 			$pk->eid = $this->entityId;
 			$pk->uuid = UUID::fromRandom();
@@ -91,7 +98,7 @@ class FloatingTextParticle extends Particle{
 			$pk->yaw = 0;
 			$pk->pitch = 0;
 			$pk->item = Item::get(0);
-			$pk->meta = 0;
+			$flags = 0;
 			$flags |= 1 << Entity::DATA_FLAG_INVISIBLE;
 			$flags |= 1 << Entity::DATA_FLAG_CAN_SHOW_NAMETAG;
 			$flags |= 1 << Entity::DATA_FLAG_ALWAYS_SHOW_NAMETAG;
@@ -99,13 +106,12 @@ class FloatingTextParticle extends Particle{
 			$pk->metadata = [
 				Entity::DATA_FLAGS => [Entity::DATA_TYPE_LONG, $flags],
 				Entity::DATA_NAMETAG => [Entity::DATA_TYPE_STRING, $this->title . ($this->text !== "" ? "\n" . $this->text : "")],
-				Entity::DATA_LEAD_HOLDER => [Entity::DATA_TYPE_LONG, -1],
-				Entity::DATA_LEAD => [Entity::DATA_TYPE_BYTE, 0]
-			];
+				Entity::DATA_LEAD_HOLDER_EID => [Entity::DATA_TYPE_LONG, -1],
+            ];
 
 			$p[] = $pk;
 		}
-		
+
 		return $p;
 	}
 }

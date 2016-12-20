@@ -32,12 +32,16 @@ class RespawnPacket extends DataPacket{
 	public $z;
 
 	public function decode(){
-		$this->getVector3f($this->x, $this->y, $this->z);
+		$this->x = $this->getLFloat();
+		$this->y = $this->getLFloat();
+		$this->z = $this->getLFloat();
 	}
 
 	public function encode(){
 		$this->reset();
-		$this->putVector3f($this->x, $this->y, $this->z);
+		$this->putLFloat($this->x);
+		$this->putLFloat($this->y);
+		$this->putLFloat($this->z);
 	}
 
 }

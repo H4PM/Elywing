@@ -21,7 +21,7 @@
 
 namespace pocketmine\item;
 
-class SplashPotion extends Item{
+class SplashPotion extends ItemProjectile{
 	
 	public function __construct($meta = 0, $count = 1){
 		parent::__construct(self::SPLASH_POTION, $meta, $count, $this->getNameByMeta($meta));

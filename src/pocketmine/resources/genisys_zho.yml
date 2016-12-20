@@ -2,7 +2,7 @@
 
 #設定檔案版本
 config:
- version: 20
+ version: 22
 
 level:
  #設定是否變換天氣
@@ -20,10 +20,6 @@ level:
 player:
  #是否打開飢餓
  hunger: true
- #飢餓值扣血下限
- hunger-health: 10
- #飢餓值飢餓值計時器，預設80=4秒
- hunger-timer: 3000
  #是否打開經驗系統
  experience: true
  #是否開啟死亡不掉落
@@ -42,8 +38,6 @@ nether:
  level-name: "nether"
  
 server:
- #經驗數據預生成，0不啟用
- experience-cache: 65535
  #是否允許生成鐵傀儡
  allow-iron-golem: false
  #是否允許生成雪傀儡
@@ -58,10 +52,6 @@ server:
  player-msg-type: 0
  login-msg: "§3@player 加入了遊戲"
  logout-msg: "§3@player 離開了遊戲"
- #是否從recipes.json讀取合成公式
- recipes-from-json: false
- #是否從creativeitems.json讀取創造物品
- creative-items-from-json: false
  #是否進行移動檢測(不再拉回了)
  check-movement: true
  #是否限制創造某些功能(禁止丟物品, 禁止操作箱子等等)
@@ -94,19 +84,6 @@ redstone:
  frequency-pulse: false
  #設定脈衝頻率, 預設: 1s
  pulse-frequency: 1
-
-synapse:
- #如果你想使用 Synapse API 或連接到一個synapse伺服器,請將enabled置為true
- enabled: false
- server-ip: 127.0.0.1
- server-port: 10305
- #設置該伺服器是否為接待大廳伺服器或主要伺服器
- is-main-server: true
- server-password: 16bitlongkey
- #設置該伺服器唯一的識別字
- description: "A Synapse client"
- #啟用Disable RakLib設置玩家僅能通過接待大廳伺服器或主要伺服器加入遊戲
- disable-rak: false
 
 dserver:
  #多服統一人數

@@ -2,7 +2,7 @@
 
 #Version 파일의 버전
 config:
- version: 20
+ version: 22
 
 level:
  #날씨 시스템을 켜는 경우 설정하세요
@@ -20,10 +20,6 @@ level:
 player:
  #배고픔 시스템 스위치
  hunger: true
- #허기로 인하여 생명이 닳을 때 최소 생명
- hunger-health: 10
- #허기 시간 카운터, 기본: 80=4초
- hunger-timer: 3000
  #경험치 시스템을 켜는 경우 고르세요
  experience: true
  #플레이어가 사망하였을때 인벤토리를 유지하려는 경우 고르세요
@@ -42,8 +38,6 @@ nether:
  level-name: "nether"
  
 server:
- #경험치 데이터를 미리 생성합니다，0=비활성화
- experience-cache: 65535
  #철 골램을 생성하는 것이 허용된 경우 고르세요
  allow-iron-golem: false
  #눈 골렘을 생성하는 것이 허용된 경우 고르세요
@@ -57,12 +51,8 @@ server:
  #플레이어가 참여할 때 뜨는 메시지를 고릅니다
  #0 = 메시지, 1 = 팁, 2 = 팝업
  player-msg-type: 0
- login-msg: "§3@player joined the game"
- logout-msg: "§3@player left the game"
- #레시피를 json에서 가져오는 경우 고르세요
- recipes-from-json: false
- #크리에이티브 아이템을 json에서 가져오는 경우 고르세요
- creative-items-from-json: false
+ login-msg: "§3@player님이 게임에 참여했습니다"
+ logout-msg: "§3@player님이 게임을 떠났습니다"
  #움직임 확인을 활성화 하는 경우 고르세요 (더 이상 뒤로 당겨지지 않음)
  check-movement: true
  #제한된 크리에이티브를 활성화 하는 경우 설정하세요 (아이템 드롭 불가, 상자 열기 불가 등)
@@ -94,19 +84,6 @@ redstone:
  frequency-pulse: false
  #펄스 주파수 설정, 기본: 1초
  pulse-frequency: 1
-
-synapse:
- #Synapse API나 Synapse 서버 연결을 사용하고 싶으신 경우, 이 설정을 활성화 하세요.
- enabled: false
- server-ip: 127.0.0.1
- server-port: 10305
- #이 클라이언트가 로비 또는 메인 서버인 경우
- is-main-server: true
- server-password: 32bitlongkey
- #이 클라이언트의 설명은 이 클라이언트의 식별자입니다
- description: "A Synapse client"
- #RakLib 비활성화는 플레이어가 Synapse를 사용해서만 참여할 수 있음을 의미합니다
- disable-rak: false
 
 dserver:
  #모든 멀티 (다중) 서버의 수 통합

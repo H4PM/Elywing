@@ -97,7 +97,8 @@ class CompoundTag extends NamedTag implements \ArrayAccess{
 				$nbt->writeTag($tag, $network);
 			}
 		}
-		$nbt->writeTag(new EndTag(), $network);
+
+		$nbt->writeTag(new EndTag, $network);
 	}
 
 	public function __toString(){

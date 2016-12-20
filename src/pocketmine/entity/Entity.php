@@ -96,6 +96,7 @@ abstract class Entity extends Location implements Metadatable{
 	const DATA_AIR = 7; //short
 	const DATA_POTION_COLOR = 8; //int (ARGB!)
 	const DATA_POTION_AMBIENT = 9; //byte
+	const DATA_COLOR_INFO = 9; //byte
 	/* 8 (int)
 	 * 9 (int)
 	 * 27 (byte) player-specific flags
@@ -182,7 +183,6 @@ abstract class Entity extends Location implements Metadatable{
 		self::DATA_FLAGS => [self::DATA_TYPE_LONG, 0],
 		self::DATA_AIR => [self::DATA_TYPE_SHORT, 400],
 		self::DATA_MAX_AIR => [self::DATA_TYPE_SHORT, 400],
-		self::DATA_NAMETAG => [self::DATA_TYPE_STRING, ""],
 		self::DATA_NAMETAG => [self::DATA_TYPE_STRING, ""],
 		//self::DATA_SILENT => [self::DATA_TYPE_BYTE, 0],
 		self::DATA_LEAD_HOLDER => [self::DATA_TYPE_LONG, -1],

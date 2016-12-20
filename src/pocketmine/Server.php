@@ -37,6 +37,9 @@ use pocketmine\entity\Chicken;
 use pocketmine\entity\Cow;
 use pocketmine\entity\Creeper;
 use pocketmine\entity\Effect;
+use pocketmine\entity\EnderCrystal;
+use pocketmine\entity\Dragon;
+use pocketmine\entity\DragonFireBall;
 use pocketmine\entity\Egg;
 use pocketmine\entity\Enderman;
 use pocketmine\entity\Entity;
@@ -59,6 +62,7 @@ use pocketmine\entity\Painting;
 use pocketmine\entity\Pig;
 use pocketmine\entity\PigZombie;
 use pocketmine\entity\PrimedTNT;
+use pocketmine\entity\PolarBear;
 use pocketmine\entity\Rabbit;
 use pocketmine\entity\Sheep;
 use pocketmine\entity\Silverfish;
@@ -73,6 +77,8 @@ use pocketmine\entity\ThrownExpBottle;
 use pocketmine\entity\ThrownPotion;
 use pocketmine\entity\Villager;
 use pocketmine\entity\Witch;
+use pocketmine\entity\Shulker;
+use pocketmine\entity\ShulkerBullet;
 use pocketmine\entity\Wolf;
 use pocketmine\entity\XPOrb;
 use pocketmine\entity\Zombie;
@@ -168,8 +174,6 @@ use pocketmine\utils\TextFormat;
 use pocketmine\utils\Utils;
 use pocketmine\utils\UUID;
 use pocketmine\utils\VersionString;
-
-use synapse\Synapse;
 
 /**
  * The class that manages everything
@@ -339,12 +343,8 @@ class Server{
 	public $netherLevel = null;
 	public $weatherRandomDurationMin = 6000;
 	public $weatherRandomDurationMax = 12000;
-	public $hungerHealth = 10;
 	public $lightningTime = 200;
 	public $lightningFire = false;
-	public $expCache = [];
-	public $expWriteAhead = 200;
-	public $hungerTimer = 80;
 	public $version;
 	public $allowSnowGolem;
 	public $allowIronGolem;
@@ -361,8 +361,6 @@ class Server{
 	public $playerLogoutMsg = "";
 	public $antiFly = false;
 	public $asyncChunkRequest = true;
-	public $recipesFromJson = false;
-	public $creativeItemsFromJson = false;
 	public $checkMovement = false;
 	public $keepExperience = false;
 	public $limitedCreative = true;
@@ -371,22 +369,17 @@ class Server{
 	public $allowSplashPotion = true;
 	public $fireSpread = false;
 	public $advancedCommandSelector = false;
-	public $synapseConfig = [];
 	public $enchantingTableEnabled = true;
 	public $countBookshelf = false;
 	public $allowInventoryCheats = false;
 
 	/** @var CraftingDataPacket */
 	private $recipeList = null;
-
-	/** @var Synapse */
-	private $synapse = null;
-
 	/**
 	 * @return string
 	 */
 	public function getName() : string{
-		return "Genisys";
+		return "Elywing";
 	}
 
 	/**
@@ -825,6 +818,10 @@ class Server{
 		$this->generateRecipeList();
 	}
 
+	public function shouldSavePlayerData() : bool{
+		return (bool) $this->getProperty("player.save-player-data", true);
+	}
+
 	/**
 	 * @param string $name
 	 *
@@ -849,18 +846,20 @@ class Server{
 	public function getOfflinePlayerData($name){
 		$name = strtolower($name);
 		$path = $this->getDataPath() . "players/";
-		if(file_exists($path . "$name.dat")){
-			try{
-				$nbt = new NBT(NBT::BIG_ENDIAN);
-				$nbt->readCompressed(file_get_contents($path . "$name.dat"));
+		if($this->shouldSavePlayerData()){
+			if(file_exists($path . "$name.dat")){
+				try{
+					$nbt = new NBT(NBT::BIG_ENDIAN);
+					$nbt->readCompressed(file_get_contents($path . "$name.dat"));
 
-				return $nbt->getData();
-			}catch(\Throwable $e){ //zlib decode error / corrupt data
-				rename($path . "$name.dat", $path . "$name.dat.bak");
-				$this->logger->notice($this->getLanguage()->translateString("pocketmine.data.playerCorrupted", [$name]));
+					return $nbt->getData();
+				}catch(\Throwable $e){ //zlib decode error / corrupt data
+					rename($path . "$name.dat", $path . "$name.dat.bak");
+					$this->logger->notice($this->getLanguage()->translateString("pocketmine.data.playerCorrupted", [$name]));
+				}
+			}else{
+				$this->logger->notice($this->getLanguage()->translateString("pocketmine.data.playerNotFound", [$name]));
 			}
-		}else{
-			$this->logger->notice($this->getLanguage()->translateString("pocketmine.data.playerNotFound", [$name]));
 		}
 		$spawn = $this->getDefaultLevel()->getSafeSpawn();
 		$nbt = new CompoundTag("", [
@@ -895,11 +894,8 @@ class Server{
 			new ByteTag("OnGround", 1),
 			new ByteTag("Invulnerable", 0),
 			new StringTag("NameTag", $name),
-			new ShortTag("Hunger", 20),
 			new ShortTag("Health", 20),
 			new ShortTag("MaxHealth", 20),
-			new LongTag("Experience", 0),
-			new LongTag("ExpLevel", 0),
 		]);
 		$nbt->Pos->setTagType(NBT::TAG_Double);
 		$nbt->Inventory->setTagType(NBT::TAG_Compound);
@@ -968,18 +964,18 @@ class Server{
 	 * @param bool     $async
 	 */
 	public function saveOfflinePlayerData($name, CompoundTag $nbtTag, $async = false){
-		$nbt = new NBT(NBT::BIG_ENDIAN);
-		try{
-			$nbt->setData($nbtTag);
+		if($this->shouldSavePlayerData()){
+			$nbt = new NBT(NBT::BIG_ENDIAN);
+			try{
+				$nbt->setData($nbtTag);
 
-			if($async){
-				$this->getScheduler()->scheduleAsyncTask(new FileWriteTask($this->getDataPath() . "players/" . strtolower($name) . ".dat", $nbt->writeCompressed()));
-			}else{
-				file_put_contents($this->getDataPath() . "players/" . strtolower($name) . ".dat", $nbt->writeCompressed());
-			}
-		}catch(\Throwable $e){
-			$this->logger->critical($this->getLanguage()->translateString("pocketmine.data.saveError", [$name, $e->getMessage()]));
-			if(\pocketmine\DEBUG > 1 and $this->logger instanceof MainLogger){
+				if($async){
+					$this->getScheduler()->scheduleAsyncTask(new FileWriteTask($this->getDataPath() . "players/" . strtolower($name) . ".dat", $nbt->writeCompressed()));
+				}else{
+					file_put_contents($this->getDataPath() . "players/" . strtolower($name) . ".dat", $nbt->writeCompressed());
+				}
+			}catch(\Throwable $e){
+				$this->logger->critical($this->getLanguage()->translateString("pocketmine.data.saveError", [$name, $e->getMessage()]));
 				$this->logger->logException($e);
 			}
 		}
@@ -1564,26 +1560,25 @@ class Server{
 		}, $microseconds);
 	}
 
-	public function getExpectedExperience($level){
-		if(isset($this->expCache[$level])) return $this->expCache[$level];
-		$levelSquared = $level ** 2;
-		if($level < 16) $this->expCache[$level] = $levelSquared + 6 * $level;
-		elseif($level < 31) $this->expCache[$level] = 2.5 * $levelSquared - 40.5 * $level + 360;
-		else $this->expCache[$level] = 4.5 * $levelSquared - 162.5 * $level + 2220;
-		return $this->expCache[$level];
-	}
-
 	public function about(){
-		$string = '
+		$string = "§b
+                ____          
+               |  __|_              _
+               | |__| |      _    _(_)_ __   ___
+               |  __| |_   _| |  | | | '_ \ / _ \
+               | |__| | | | | |/\| | | | | | (_) |
+               |____|_|\ \/ \__/\__/_|_| |_|\___ |
+                       _|  /                 __| |
+                      |___/                 |___/
 
-	§3Genisys§f is a fork of §bPocketMine-MP§f, made by §5iTX Technologies LLC§f
-	Version: §6' . $this->getPocketMineVersion() . '§f
-	Target client version: §b' . \pocketmine\MINECRAFT_VERSION . '§f
-	Source code: §dhttps://github.com/iTXTech/Genisys§f
-	';
+	§fA stable §e" . \pocketmine\MINECRAFT_VERSION . "§f fork of §3PocketMine-MP (pmmp)§f.
+			§fModified by §bH§e4§3PM§f.
+	    Source code: §3https://github.com/H4PM/Elywing§f
+	";
 	
 		$this->getLogger()->info($string);
 	}
+
 
 	public function loadAdvancedConfig(){
 		$this->playerMsgType = $this->getAdvancedProperty("server.player-msg-type", self::PLAYER_MSG_TYPE_MESSAGE);
@@ -1598,11 +1593,8 @@ class Server{
 		$this->netherName = $this->getAdvancedProperty("nether.level-name", "nether");
 		$this->weatherRandomDurationMin = $this->getAdvancedProperty("level.weather-random-duration-min", 6000);
 		$this->weatherRandomDurationMax = $this->getAdvancedProperty("level.weather-random-duration-max", 12000);
-		$this->hungerHealth = $this->getAdvancedProperty("player.hunger-health", 10);
 		$this->lightningTime = $this->getAdvancedProperty("level.lightning-time", 200);
 		$this->lightningFire = $this->getAdvancedProperty("level.lightning-fire", false);
-		$this->expWriteAhead = $this->getAdvancedProperty("server.experience-cache", 200);
-		$this->hungerTimer = $this->getAdvancedProperty("player.hunger-timer", 80);
 		$this->allowSnowGolem = $this->getAdvancedProperty("server.allow-snow-golem", false);
 		$this->allowIronGolem = $this->getAdvancedProperty("server.allow-iron-golem", false);
 		$this->autoClearInv = $this->getAdvancedProperty("player.auto-clear-inventory", true);
@@ -1626,8 +1618,6 @@ class Server{
 		$this->getLogger()->setWrite(!$this->getAdvancedProperty("server.disable-log", false));
 		$this->antiFly = $this->getAdvancedProperty("server.anti-fly", true);
 		$this->asyncChunkRequest = $this->getAdvancedProperty("server.async-chunk-request", true);
-		$this->recipesFromJson = $this->getAdvancedProperty("server.recipes-from-json", false);
-		$this->creativeItemsFromJson = $this->getAdvancedProperty("server.creative-items-from-json", false);
 		$this->checkMovement = $this->getAdvancedProperty("server.check-movement", true);
 		$this->limitedCreative = $this->getAdvancedProperty("server.limited-creative", true);
 		$this->chunkRadius = $this->getAdvancedProperty("player.chunk-radius", -1);
@@ -1635,24 +1625,19 @@ class Server{
 		$this->allowSplashPotion = $this->getAdvancedProperty("server.allow-splash-potion", true);
 		$this->fireSpread = $this->getAdvancedProperty("level.fire-spread", false);
 		$this->advancedCommandSelector = $this->getAdvancedProperty("server.advanced-command-selector", false);
-		$this->synapseConfig = [
-			"enabled" => $this->getAdvancedProperty("synapse.enabled", false),
-			"server-ip" => $this->getAdvancedProperty("synapse.server-ip", "127.0.0.1"),
-			"server-port" => $this->getAdvancedProperty("synapse.server-port", 10305),
-			"isMainServer" => $this->getAdvancedProperty("synapse.is-main-server", true),
-			"password" => $this->getAdvancedProperty("synapse.server-password", "123456"),
-			"description" => $this->getAdvancedProperty("synapse.description", "A Synapse client"),
-			"disable-rak" => $this->getAdvancedProperty("synapse.disable-rak", false),
-		];
 		$this->anvilEnabled = $this->getAdvancedProperty("enchantment.enable-anvil", true);
 		$this->enchantingTableEnabled = $this->getAdvancedProperty("enchantment.enable-enchanting-table", true);
 		$this->countBookshelf = $this->getAdvancedProperty("enchantment.count-bookshelf", false);
 
 		$this->allowInventoryCheats = $this->getAdvancedProperty("inventory.allow-cheats", false);
 	}
-
+	
+	/**
+	 * @deprecated Use SynapsePM plugin instead
+	 * @return bool
+	 */
 	public function isSynapseEnabled() : bool {
-		return (bool) $this->synapseConfig["enabled"];
+		return $this->getSynapse() !== null;
 	}
 
 	/**
@@ -1679,12 +1664,6 @@ class Server{
 
 	public function updateDServerInfo(){
 		$this->scheduler->scheduleAsyncTask(new DServerTask($this->dserverConfig["serverList"], $this->dserverConfig["retryTimes"]));
-	}
-
-	public function generateExpCache($level){
-		for($i = 0; $i <= $level; $i++){
-			$this->getExpectedExperience($i);
-		}
 	}
 
 	public function getBuild(){
@@ -1775,10 +1754,6 @@ class Server{
 
 			$this->loadAdvancedConfig();
 
-			if($this->expWriteAhead > 0){
-				$this->generateExpCache($this->expWriteAhead);
-			}
-
 			$this->properties = new Config($this->dataPath . "server.properties", Config::PROPERTIES, [
 				"motd" => "Minecraft: PE Server",
 				"server-port" => 19132,
@@ -1807,7 +1782,7 @@ class Server{
 
 			$onlineMode = $this->getConfigBoolean("online-mode", false);
 			if(!extension_loaded("openssl")){
-				$this->logger->warning("The OpenSSL extension is not loaded, and this is required for XBOX authentication to work. If you want to use Xbox Live auth, please update your PHP binaries at itxtech.org/download, or recompile PHP with the OpenSSL extension.");
+				$this->logger->warning("The OpenSSL extension is not loaded, and this is required for XBOX authentication to work. If you want to use Xbox Live auth, please update your PHP binaries at itxtech.org/genisys/get/, or recompile PHP with the OpenSSL extension.");
 				$this->setConfigBool("online-mode", false);
 			}elseif(!$onlineMode){
 				$this->logger->warning("SERVER IS RUNNING IN OFFLINE/INSECURE MODE!");
@@ -1909,13 +1884,13 @@ class Server{
 			InventoryType::init();
 			Block::init();
 			Enchantment::init();
-			Item::init($this->creativeItemsFromJson);
+			Item::init();
 			Biome::init();
 			Effect::init();
 			Attribute::init();
 			EnchantmentLevelTable::init();
 			Color::init();
-			$this->craftingManager = new CraftingManager($this->recipesFromJson);
+			$this->craftingManager = new CraftingManager();
 
 			$this->pluginManager = new PluginManager($this, $this->commandMap);
 			$this->pluginManager->subscribeToPermission(Server::BROADCAST_CHANNEL_ADMINISTRATIVE, $this->consoleSender);
@@ -1929,11 +1904,7 @@ class Server{
 
 			$this->queryRegenerateTask = new QueryRegenerateEvent($this, 5);
 
-			if(!$this->synapseConfig["enabled"] or ($this->synapseConfig["enabled"] and !$this->synapseConfig["disable-rak"])){
-				$this->network->registerInterface(new RakLibInterface($this));
-			}else{
-				$this->logger->notice("RakLib has been disabled by synapse.disable-rak option");
-			}
+			$this->network->registerInterface(new RakLibInterface($this));
 
 			$this->pluginManager->loadPlugins($this->pluginPath);
 
@@ -2021,10 +1992,6 @@ class Server{
 				"updateDServerInfo"
 			]), $this->dserverConfig["timer"]);
 
-			if($this->isSynapseEnabled()){
-				$this->synapse = new Synapse($this, $this->synapseConfig);
-			}
-
 			if($cfgVer > $advVer){
 				$this->logger->notice("Your genisys.yml needs update");
 				$this->logger->notice("Current Version: $advVer   Latest Version: $cfgVer");
@@ -2039,10 +2006,15 @@ class Server{
 	}
 
 	/**
-	 * @return Synapse
+	 * @deprecated Use SynapsePM plugin instead
+	 * @return Synapse|null
 	 */
 	public function getSynapse(){
-		return $this->synapse;
+		$plugin = $this->pluginManager->getPlugin('SynapsePM');
+		if ($plugin === null or $plugin->isDisabled()) {
+			return null;
+		}
+		return $plugin->getSynapse();
 	}
 
 	/**
@@ -2264,16 +2236,12 @@ class Server{
 	 * @throws \Throwable
 	 */
 	public function dispatchCommand(CommandSender $sender, $commandLine){
-		if(!($sender instanceof CommandSender)){
-			throw new ServerException("CommandSender is not valid");
-		}
-
 		if($this->commandMap->dispatch($sender, $commandLine)){
 			return true;
 		}
 
 
-		$sender->sendMessage(new TranslationContainer(TextFormat::RED . "%commands.generic.notFound"));
+		$sender->sendMessage(new TranslationContainer(TextFormat::GOLD . "%commands.generic.notFound"));
 
 		return false;
 	}
@@ -2388,11 +2356,6 @@ class Server{
 			foreach($this->network->getInterfaces() as $interface){
 				$interface->shutdown();
 				$this->network->unregisterInterface($interface);
-			}
-
-			if($this->isSynapseEnabled()){
-				$this->getLogger()->debug("Stopping Synapse client");
-				$this->synapse->shutdown();
 			}
 
 			//$this->memoryManager->doObjectCleanup();
@@ -2862,9 +2825,6 @@ class Server{
 
 		Timings::$connectionTimer->startTiming();
 		$this->network->processInterfaces();
-		if($this->isSynapseEnabled()){
-			$this->synapse->tick();
-		}
 
 		if($this->rcon !== null){
 			$this->rcon->check();
@@ -2962,8 +2922,11 @@ class Server{
 		Entity::registerEntity(Cow::class);
 		Entity::registerEntity(Creeper::class);
 		Entity::registerEntity(DroppedItem::class);
+		Entity::registerEntity(Dragon::class);
+		Entity::registerEntity(DragonFireBall::class);
 		Entity::registerEntity(Egg::class);
 		Entity::registerEntity(Enderman::class);
+		Entity::registerEntity(EnderCrystal::class);
 		Entity::registerEntity(FallingSand::class);
 		Entity::registerEntity(FishingHook::class);
 		Entity::registerEntity(Ghast::class);
@@ -2981,8 +2944,11 @@ class Server{
 		Entity::registerEntity(Pig::class);
 		Entity::registerEntity(PigZombie::class);
 		Entity::registerEntity(PrimedTNT::class);
+		Entity::registerEntity(PolarBear::class);
 		Entity::registerEntity(Rabbit::class);
 		Entity::registerEntity(Sheep::class);
+		Entity::registerEntity(Shulker::class);
+		Entity::registerEntity(ShulkerBullet::class);
 		Entity::registerEntity(Silverfish::class);
 		Entity::registerEntity(Skeleton::class);
 		Entity::registerEntity(Slime::class);

@@ -1,5 +1,4 @@
 <?php
-
 /*
  *
  *  ____            _        _   __  __ _                  __  __ ____  
@@ -18,15 +17,13 @@
  * 
  *
 */
-
 namespace pocketmine\utils;
-
 #include <rules/DataPacket.h>
-
+#ifndef COMPILE
+#endif
 use pocketmine\item\Item;
 
 class BinaryStream extends \stdClass{
-
 	public $offset;
 	public $buffer;
 
@@ -62,7 +59,6 @@ class BinaryStream extends \stdClass{
 			$this->offset = strlen($this->buffer);
 			return $str;
 		}
-
 		return $len === 1 ? $this->buffer{$this->offset++} : substr($this->buffer, ($this->offset += $len) - $len, $len);
 	}
 
@@ -150,7 +146,6 @@ class BinaryStream extends \stdClass{
 		$this->buffer .= Binary::writeLFloat($v);
 	}
 
-
 	public function getTriad(){
 		return Binary::readTriad($this->get(3));
 	}
@@ -158,7 +153,6 @@ class BinaryStream extends \stdClass{
 	public function putTriad($v){
 		$this->buffer .= Binary::writeTriad($v);
 	}
-
 
 	public function getLTriad(){
 		return Binary::readLTriad($this->get(3));
@@ -181,7 +175,6 @@ class BinaryStream extends \stdClass{
 		for($i = 1; $i <= $len and !$this->feof(); ++$i){
 			$data[] = $this->get($this->getTriad());
 		}
-
 		return $data;
 	}
 
@@ -216,7 +209,6 @@ class BinaryStream extends \stdClass{
 		if($nbtLen > 0){
 			$nbt = $this->get($nbtLen);
 		}
-
 		return Item::get(
 			$id,
 			$data,
@@ -233,7 +225,7 @@ class BinaryStream extends \stdClass{
 		}
 
 		$this->putVarInt($item->getId());
-		$auxValue = ($item->getDamage() << 8) | $item->getCount();
+		$auxValue = (($item->getDamage() ?? -1) << 8) | $item->getCount();
 		$this->putVarInt($auxValue);
 		$nbt = $item->getCompoundTag();
 		$this->putLShort(strlen($nbt));

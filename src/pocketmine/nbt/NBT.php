@@ -433,7 +433,7 @@ class NBT{
 			if($c === ":"){
 				++$offset;
 				break;
-			}elseif($c !== " " and $c !== "\r" and $c !== "\n" and $c !== "\t"){
+			}elseif($c !== " " and $c !== "\r" and $c !== "\n" and $c !== "\t" and $c !== "\""){
 				$key .= $c;
 			}
 		}
@@ -483,12 +483,13 @@ class NBT{
 	}
 
 	public function readCompressed($buffer, $compression = ZLIB_ENCODING_GZIP){
-		$this->read(zlib_decode($buffer), false, false);
+		$this->read(zlib_decode($buffer));
 	}
 
 	public function readNetworkCompressed($buffer, $compression = ZLIB_ENCODING_GZIP){
 		$this->read(zlib_decode($buffer), false, true);
 	}
+
 
 	/**
 	 * @return string|bool
@@ -512,13 +513,13 @@ class NBT{
 	}
 
 	public function writeCompressed($compression = ZLIB_ENCODING_GZIP, $level = 7){
-		if(($write = $this->write(false)) !== false){
+		if(($write = $this->write()) !== false){
 			return zlib_encode($write, $compression, $level);
 		}
 
 		return false;
 	}
-	
+
 	public function writeNetworkCompressed($compression = ZLIB_ENCODING_GZIP, $level = 7){
 		if(($write = $this->write(true)) !== false){
 			return zlib_encode($write, $compression, $level);
@@ -529,7 +530,7 @@ class NBT{
 
 	public function readTag(bool $network = false){
 		if($this->feof()){
-			$tagType = -1; //prevent crashes for empty tags -_-
+			$tagType = -1; //prevent crashes for empty tags
 		}else{
 			$tagType = $this->getByte();
 		}
@@ -624,7 +625,6 @@ class NBT{
 		}else{
 			$this->buffer .= $this->endianness === self::BIG_ENDIAN ? Binary::writeInt($v) : Binary::writeLInt($v);
 		}
-		
 	}
 
 	public function getLong(){
@@ -652,12 +652,7 @@ class NBT{
 	}
 
 	public function getString(bool $network = false){
-		if($network === true){
-			$len = $this->getByte();
-		}else{
-			$len = $this->getShort();
-		}
-	
+		$len = $network ? $this->getByte() : $this->getShort();
 		return $this->get($len);
 	}
 
@@ -673,6 +668,7 @@ class NBT{
 	public function getArray(){
 		$data = [];
 		self::toArray($data, $this->data);
+		return $data;
 	}
 
 	private static function toArray(array &$data, Tag $tag){

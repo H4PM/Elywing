@@ -37,7 +37,6 @@ abstract class Command{
 
 	/** @var string */
 	private $name;
-
 	/** @var \stdClass */
 	protected $commandData = null;
 
@@ -98,6 +97,7 @@ abstract class Command{
 	public function getDefaultCommandData() : \stdClass{
 		return $this->commandData;
 	}
+
 	/**
 	 * Generates modified command data for the specified player
 	 * for AvailableCommandsPacket.
@@ -107,18 +107,20 @@ abstract class Command{
 	 * @return \stdClass|null
 	 */
 	public function generateCustomCommandData(Player $player){
-		if(!$this->testPermission($player)){
+		//TODO: fix command permission filtering on join
+		/*if(!$this->testPermission($player)){
 			return null;
-		}
+		}*/
 		$customData = clone $this->commandData;
 		$customData->aliases = $this->getAliases();
-		foreach($customData->overloads as &$overload){
+		/*foreach($customData->overloads as &$overload){
 			if(($p = @$overload->pocketminePermission) !== null and !$player->hasPermission($p)){
 				unset($overload);
 			}
-		}
+		}*/
 		return $customData;
 	}
+
 	public function getOverloads(): \stdClass{
 		return $this->commandData->overloads;
 	}
@@ -145,6 +147,7 @@ abstract class Command{
 	public function getPermission(){
 		return $this->commandData->pocketminePermission ?? null;
 	}
+	
 
 	/**
 	 * @param string|null $permission
@@ -185,11 +188,13 @@ abstract class Command{
 		if(($perm = $this->getPermission()) === null or $perm === ""){
 			return true;
 		}
+
 		foreach(explode(";", $perm) as $permission){
 			if($target->hasPermission($permission)){
 				return true;
 			}
 		}
+
 		return false;
 	}
 
