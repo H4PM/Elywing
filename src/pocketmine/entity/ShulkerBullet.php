@@ -27,8 +27,8 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 
-class Snowball extends Projectile{
-	const NETWORK_ID = 81;
+class ShulkerBullet extends Projectile{
+	const NETWORK_ID = 76;
 
 	public $width = 0.25;
 	public $length = 0.25;
@@ -62,7 +62,7 @@ class Snowball extends Projectile{
 
 	public function spawnTo(Player $player){
 		$pk = new AddEntityPacket();
-		$pk->type = Snowball::NETWORK_ID;
+		$pk->type = ShulkerBullet::NETWORK_ID;
 		$pk->eid = $this->getId();
 		$pk->x = $this->x;
 		$pk->y = $this->y;
