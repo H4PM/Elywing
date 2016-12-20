@@ -1,5 +1,5 @@
 # ![PocketMine-MP](http://image.noelshack.com/fichiers/2016/43/1477490625-elybanner.png)
-###Elywing is now updated for MC:PE 0.11 [Windows10+PocketEdition] 
+###Elywing is now updated for MC:PE 1.0 [Windows 10 + PocketEdition] 
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Lesser General Public License as published by
@@ -20,7 +20,7 @@ __Elywing is a free, open-source software that creates Minecraft: Pocket Edition
 
 ### Elywing, a fork of PocketMine-MP, modified by
 
-### [Twitter @SuperMaXAleX_](https://twitter.com/SuperMaXAleX_/)
+### [Twitter @SuperMaXAleX](https://twitter.com/SuperMaXAleX/)
 
 ### [Twitter @ReskillDEV](https://twitter.com/ReskillDEV/)
 
@@ -31,28 +31,7 @@ __Elywing is a free, open-source software that creates Minecraft: Pocket Edition
 ### [Twitter @muqsitrayyan](https://twitter.com/muqsitrayyan/)
 
 
-### [Homepage](http://www.pocketmine.net/)
-
-### [Forums](http://forums.pocketmine.net/)
-
-### [Documentation](http://pocketmine-mp.readthedocs.org/)
-
-### [Plugin Repository](http://plugins.pocketmine.net/)
-
-<!--## [FAQ: Frequently Asked Questions](https://github.com/PocketMine/PocketMine-MP/wiki/Frequently-Asked-Questions)-->
-
-### API Documentation
- * [Official Doxygen-generated documentation](http://docs.pocketmine.net/)
- * [Latest Doxygen generated from development](http://jenkins.pocketmine.net/job/PocketMine-MP-doc/doxygen/)
-
-### [Twitter @PocketMine](https://twitter.com/PocketMine)
-
-### IRC Chat #pocketmine (or #mcpedevs) @ irc.freenode.net
-[#pocketmine + #mcpedevs channel WebIRC](http://webchat.freenode.net/?channels=pocketmine,mcpedevs)
-
-### Want to contribute?
-* Check the [Contributing Guidelines](CONTRIBUTING.md)
-
+### [Elywing's Twitter](https://twitter.com/elywing_h4pm/)
 
 ## Third-party Libraries/Protocols Used
 * __[PHP Sockets](http://php.net/manual/en/book.sockets.php)__
