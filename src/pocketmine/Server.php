@@ -38,6 +38,7 @@ use pocketmine\entity\Cow;
 use pocketmine\entity\Creeper;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EnderCrystal;
+use pocketmine\entity\EnderPearl;
 use pocketmine\entity\Dragon;
 use pocketmine\entity\DragonFireBall;
 use pocketmine\entity\Egg;
@@ -2927,6 +2928,7 @@ class Server{
 		Entity::registerEntity(Egg::class);
 		Entity::registerEntity(Enderman::class);
 		Entity::registerEntity(EnderCrystal::class);
+		Entity::registerEntity(EnderPearl::class);
 		Entity::registerEntity(FallingSand::class);
 		Entity::registerEntity(FishingHook::class);
 		Entity::registerEntity(Ghast::class);
