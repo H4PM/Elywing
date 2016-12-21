@@ -2687,7 +2687,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 						if($enderpearl instanceof Projectile){
 							$this->server->getPluginManager()->callEvent($projectileEv = new ProjectileLaunchEvent($enderpearl));
 							if($projectileEv->isCancelled()){
-								$enderpearl->kill();
+								$enderpearl->close();
 								$this->teleport($enderpearl);
 							}else{
 								$enderpearl->spawnToAll();
