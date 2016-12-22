@@ -391,14 +391,8 @@ class Item implements ItemIds{
 	}
 
 	public function __construct(int $id, int $meta = 0, int $count = 1, string $name = "Unknown"){
-		if(is_string($id)){
-			$item = Item::fromString($id);
-			$id = $item->getId();
-			if($item->getDamage() != $meta) $meta = $item->getDamage();
-			$name = $item->getName();
-		}
 		$this->id = $id & 0xffff;
-		$this->meta = $meta !== null ? $meta & 0xffff : null;
+		$this->meta = $meta !== -1 ? $meta & 0xffff : -1;
 		$this->count = $count;
 		$this->name = $name;
 		if(!isset($this->block) and $this->id <= 0xff and isset(Block::$list[$this->id])){
@@ -407,18 +401,12 @@ class Item implements ItemIds{
 		}
 	}
 
-	public function setCompoundTag($tags, $fromNetwork = false){
+	public function setCompoundTag($tags){
 		if($tags instanceof CompoundTag){
 			$this->setNamedTag($tags);
 		}else{
-			if($fromNetwork === true){
-				if(strlen($tags) > 0){
-					$this->setNamedTag(self::parseCompoundTag($tags, true));
-				}
-			}else{
-				$this->tags = $tags;
-				$this->cachedNBT = null;
-			}
+			$this->tags = (string) $tags;
+			$this->cachedNBT = null;
 		}
 
 		return $this;
@@ -427,19 +415,12 @@ class Item implements ItemIds{
 	/**
 	 * @return string
 	 */
-	public function getCompoundTag(){
+	public function getCompoundTag() : string{
 		return $this->tags;
 	}
 
-	public function getNetworkCompoundTag(){
-		if(($nbt = $this->getNamedTag()) instanceof CompoundTag){
-			return self::writeCompoundTag($nbt, true);
-		}
-		return "";
-	}
-
 	public function hasCompoundTag() : bool{
-		return $this->tags !== "" and $this->tags !== null;
+		return $this->tags !== "";
 	}
 
 	public function hasCustomBlockData() : bool{
@@ -788,7 +769,7 @@ class Item implements ItemIds{
 	public function getNamedTagEntry($name){
 		$tag = $this->getNamedTag();
 		if($tag !== null){
-			return isset($tag->{$name}) ? $tag->{$name} : null;
+			return $tag->{$name} ?? null;
 		}
 
 		return null;
@@ -800,7 +781,7 @@ class Item implements ItemIds{
 		}elseif($this->cachedNBT !== null){
 			return $this->cachedNBT;
 		}
-		return $this->cachedNBT = self::parseCompoundTag($this->tags, false);
+		return $this->cachedNBT = self::parseCompoundTag($this->tags);
 	}
 
 	public function setNamedTag(CompoundTag $tag){
@@ -809,7 +790,7 @@ class Item implements ItemIds{
 		}
 
 		$this->cachedNBT = $tag;
-		$this->tags = self::writeCompoundTag($tag, false);
+		$this->tags = self::writeCompoundTag($tag);
 
 		return $this;
 	}
@@ -838,6 +819,17 @@ class Item implements ItemIds{
 		return $this->canBePlaced();
 	}
 
+	public function canBeConsumed() : bool{
+		return false;
+	}
+
+	public function canBeConsumedBy(Entity $entity) : bool{
+		return $this->canBeConsumed();
+	}
+
+	public function onConsume(Entity $entity){
+	}
+
 	public function getBlock() : Block{
 		if($this->block instanceof Block){
 			return clone $this->block;
@@ -850,12 +842,16 @@ class Item implements ItemIds{
 		return $this->id;
 	}
 
-	final public function getDamage(){
+	final public function getDamage() : int{
 		return $this->meta;
 	}
 
-	public function setDamage($meta){
-		$this->meta = $meta !== null ? $meta & 0xFFFF : null;
+	public function setDamage(int $meta){
+		$this->meta = $meta !== -1 ? $meta & 0xFFFF : -1;
+	}
+
+	public function hasAnyDamageValue() : bool{
+		return $this->meta === -1;
 	}
 
 	public function getMaxStackSize() : int{
@@ -969,10 +965,6 @@ class Item implements ItemIds{
 		return $rec;
 	}
 
-	final public function __toString(){ //Get error here..
-		return "Item " . $this->name . " (" . $this->id . ":" . ($this->meta === null ? "?" : $this->meta) . ")x" . $this->count . ($this->hasCompoundTag() ? " tags:0x" . bin2hex($this->getCompoundTag()) : "");
-	}
-
 	public function getDestroySpeed(Block $block, Player $player){
 		return 1;
 	}
@@ -994,4 +986,75 @@ class Item implements ItemIds{
 
 		return false;
 	}
+
+	final public function __toString() : string{
+		return "Item " . $this->name . " (" . $this->id . ":" . ($this->meta === null ? "?" : $this->meta) . ")x" . $this->count . ($this->hasCompoundTag() ? " tags:0x" . bin2hex($this->getCompoundTag()) : "");
+	}
+
+	final public function jsonSerialize(){
+		return [
+			"id" => $this->id,
+			"damage" => $this->meta,
+			"count" => $this->count, //TODO: separate items and stacks
+			"nbt" => $this->tags
+		];
+	}
+
+	/**
+	 * Serializes the item to an NBT CompoundTag
+	 *
+	 * @param int $slot optional, the inventory slot of the item
+	 * @param string $tagName optional, the tag name
+	 *
+	 * @return CompoundTag
+	 */
+	public function nbtSerialize(int $slot = -1, string $tagName = "") : CompoundTag{
+		$tag = new CompoundTag($tagName, [
+			"id" => new ShortTag("id", $this->id),
+			"Count" => new ByteTag("Count", $this->count ?? -1),
+			"Damage" => new ShortTag("Damage", $this->meta),
+		]);
+
+		if($this->hasCompoundTag()){
+			$tag->tag = clone $this->getNamedTag();
+			$tag->tag->setName("tag");
+		}
+		
+		if($slot !== -1){
+			$tag->Slot = new ByteTag("Slot", $slot);
+		}
+
+		return $tag;
+	}
+
+	/**
+	 * Deserializes an Item from an NBT CompoundTag
+	 *
+	 * @param CompoundTag $tag
+	 *
+	 * @return Item
+	 */
+	public static function nbtDeserialize(CompoundTag $tag) : Item{
+		if(!isset($tag->id) or !isset($tag->Count)){
+			return Item::get(0);
+		}
+
+		if($tag->id instanceof ShortTag){
+			$item = Item::get($tag->id->getValue(), !isset($tag->Damage) ? 0 : $tag->Damage->getValue(), $tag->Count->getValue());
+		}elseif($tag->id instanceof StringTag){ //PC item save format
+			$item = Item::fromString($tag->id->getValue());
+			$item->setDamage(!isset($tag->Damage) ? 0 : $tag->Damage->getValue());
+			$item->setCount($tag->Count->getValue());
+		}else{
+			throw new \InvalidArgumentException("Item CompoundTag ID must be an instance of StringTag or ShortTag, " . get_class($tag->id) . " given");
+		}
+
+		if(isset($tag->tag) and $tag->tag instanceof CompoundTag){
+			$item->setNamedTag($tag->tag);
+		}
+
+		return $item;
+	}
+
 }
+
