@@ -36,6 +36,7 @@ class Slab extends Transparent{
 	const STONE_BRICK = 5;
 	const QUARTZ = 6;
 	const NETHER_BRICK = 7;
+	const PURPUR_BLOCK = 8;
 
 	protected $id = self::SLAB;
 
@@ -57,6 +58,7 @@ class Slab extends Transparent{
 			5 => "Stone Brick",
 			6 => "Quartz",
 			7 => "",
+			8 => "Purpur Block",
 		];
 		return (($this->meta & 0x08) > 0 ? "Upper " : "") . $names[$this->meta & 0x07] . " Slab";
 	}
