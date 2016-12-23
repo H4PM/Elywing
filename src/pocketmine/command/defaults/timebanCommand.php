@@ -34,7 +34,23 @@ class TimebanCommand extends VanillaCommand{
 		$this->setPermission("pocketmine.command.timeban.use");
 	}
 	public function execute(CommandSender $sender, $currentAlias, array $args){
-	  //I will be ended this command soon.
+	  //WARNING: THIS CODE IS NOT ENDED!
+		
+		if(!$this->testPermission($sender)){
+			return true;
+		}
+		if(count($args) != 3){
+			$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
+			return false;
+		} else {
+		
+		$player = $sender->getServer()->getPlayer($args[0]);
+		$reason = $args[1];
+		$time = $args[2];
+			//TODO: Verify if user exist and added ban with time ;)
+		$this->getServer()->broadcastMessage(new TranslationContainer(TextFormat::RED . "%commands.generic.timeban.success"));
+		}
+			
 		return true;
 	}
 }
