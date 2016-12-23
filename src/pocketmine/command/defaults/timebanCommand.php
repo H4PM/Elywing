@@ -48,7 +48,7 @@ class TimebanCommand extends VanillaCommand{
 		$reason = $args[1];
 		$time = $args[2];
 			//TODO: Verify if user exist and added ban with time ;)
-		$this->getServer()->broadcastMessage(new TranslationContainer(TextFormat::RED . "%commands.generic.timeban.success"));
+		$sender->getServer()->broadcastMessage(new TranslationContainer(TextFormat::RED . "%commands.generic.timeban.success"));
 		}
 			
 		return true;
