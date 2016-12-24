@@ -138,7 +138,7 @@
 	const RAW_CHICKEN = 365;
 	const COOKED_CHICKEN = 366;
 	const ROTTEN_FLESH = 367;
-	const ENDERPEARL = 368;
+	const ENDERPEARL = 368; const ENDER_PEARL = 368;
 	const BLAZE_ROD = 369;
 	const GHAST_TEAR = 370;
 	const GOLD_NUGGET = 371; const GOLDEN_NUGGET = 371;
@@ -151,7 +151,7 @@
 	const MAGMA_CREAM = 378;
 	const BREWING_STAND = 379;
 	const CAULDRON = 380;
-	const ENDER_EYE = 381; //
+	const ENDER_EYE = 381;
 	const GLISTERING_MELON = 382;
 	const SPAWN_EGG = 383;
 	const BOTTLE_O_ENCHANTING = 384; const ENCHANTING_BOTTLE = 384;
@@ -185,7 +185,7 @@
 	const RABBIT_STEW = 413;
 	const RABBIT_FOOT = 414;
 	const RABBIT_HIDE = 415;
-	const LEATHER_HORSE_ARMOR = 416; //I hate being forced to spell this wrong
+	const LEATHER_HORSE_ARMOR = 416;
 	const IRON_HORSE_ARMOR = 417;
 	const GOLD_HORSE_ARMOR = 418;
 	const DIAMOND_HORSE_ARMOR = 419;
@@ -195,21 +195,21 @@
 	const RAW_MUTTON = 423;
 	const COOKED_MUTTON = 424;
 
-	const END_CRYSTAL = 426; //
+	const END_CRYSTAL = 426;
 	const SPRUCE_DOOR = 427;
 	const BIRCH_DOOR = 428;
 	const JUNGLE_DOOR = 429;
 	const ACACIA_DOOR = 430;
 	const DARK_OAK_DOOR = 431;
-	const CHORUS_FRUIT = 432; //
-	const CHORUS_FRUIT_POPPED = 433; //
+	const CHORUS_FRUIT = 432;
+	const CHORUS_FRUIT_POPPED = 433;
 	
-	const DARGON_BREATH = 437; //
+	const DARGON_BREATH = 437;
 	const SPLASH_POTION = 438;
 
-	const LINGERING_SPLASH_POTION = 441; //
+	const LINGERING_SPLASH_POTION = 441;
 
-	const ELYTRA = 444; const ELYTRA_WINGS = 444; const ELYTRA_WING = 444; //
+	const ELYTRA = 444; const ELYTRA_WINGS = 444; const ELYTRA_WING = 444;
 	const SHULKER_SHELL = 445;
 	
 	const BEETROOT = 457;
@@ -221,6 +221,4 @@
 	const COOKED_SALMON = 463;
 
 	const ENCHANTED_GOLDEN_APPLE = 466;
-
-	const CAMERA = 498; #blamemojang
  }
