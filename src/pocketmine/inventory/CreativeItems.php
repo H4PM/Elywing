@@ -21,9 +21,6 @@
 
 namespace pocketmine\inventory;
 
-use pocketmine\item\Item;
-use pocketmine\item\enchantment\Enchantment;
-
 use pocketmine\block\StoneBricks;
 use pocketmine\block\Planks;
 use pocketmine\block\Stone;
@@ -34,7 +31,6 @@ use pocketmine\block\Wood2;
 use pocketmine\block\Slab as StoneSlab;
 use pocketmine\block\WoodSlab as WoodenSlab;
 use pocketmine\block\Quartz;
-
 use pocketmine\block\StoneWall;
 use pocketmine\block\Anvil;
 use pocketmine\block\Flower;
@@ -45,6 +41,8 @@ use pocketmine\block\Leaves;
 use pocketmine\block\Leaves2;
 use pocketmine\block\SkullBlock as Skull;
 
+use pocketmine\item\Item;
+use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Coal;
 use pocketmine\item\Dye;
 use pocketmine\item\Potion;
@@ -114,7 +112,7 @@ class CreativeItems{
 			["id" => Item::WOOD, "meta" => Wood::SPRUCE],
 			["id" => Item::WOOD, "meta" => Wood::BIRCH],
 			["id" => Item::WOOD, "meta" => Wood::JUNGLE],
-			["id" => Item::WOOD2, "meta" => Wood2::ACACIA], #blamemojang
+			["id" => Item::WOOD2, "meta" => Wood2::ACACIA],
 			["id" => Item::WOOD2, "meta" => Wood2::DARK_OAK],
 			["id" => Item::NETHER_BRICK_BLOCK],
 			["id" => Item::NETHERRACK],
@@ -143,7 +141,7 @@ class CreativeItems{
 			["id" => Item::WOODEN_SLAB, "meta" => Planks::DARK_OAK],
 			["id" => Item::STONE_SLAB, "meta" => StoneSlab::BRICK],
 			["id" => Item::STONE_SLAB, "meta" => StoneSlab::SANDSTONE],
-			["id" => Item::RED_SANDSTONE_SLAB], #blamemojang
+			["id" => Item::RED_SANDSTONE_SLAB],
 			["id" => Item::STONE_SLAB, "meta" => StoneSlab::STONE_BRICK],
 			["id" => Item::STONE_SLAB, "meta" => StoneSlab::QUARTZ],
 			["id" => Item::STONE_SLAB, "meta" => StoneSlab::NETHER_BRICK],
@@ -153,6 +151,8 @@ class CreativeItems{
 			["id" => Item::PRISMARINE_BLOCK, "meta" => 0], //Prismarine Block
 			["id" => Item::PRISMARINE_BLOCK, "meta" => 2], //Prismarine Bricks Block
 			["id" => Item::PRISMARINE_BLOCK, "meta" => 1], //Dark Prismarine Block
+			["id" => Item::PURPUR_BLOCK, "meta" => 0], //Purpur Block
+			["id" => Item::PURPUR_BLOCK, "meta" => 1], //Purpur Pillar
 			["id" => Item::COAL_ORE],
 			["id" => Item::IRON_ORE],
 			["id" => Item::GOLD_ORE],
@@ -427,6 +427,7 @@ class CreativeItems{
 			["id" => Item::GOLD_CHESTPLATE],
 			["id" => Item::GOLD_LEGGINGS],
 			["id" => Item::GOLD_BOOTS],
+			["id" => Item::ELYTRA],
 			["id" => Item::LEVER],
 			["id" => Item::REDSTONE_LAMP],
 			["id" => Item::REDSTONE_TORCH],
@@ -446,7 +447,9 @@ class CreativeItems{
 			["id" => Item::STICKY_PISTON],
 			["id" => Item::OBSERVER],
 			["id" => Item::HOPPER],
-			["id" => Item::SNOWBALL] #blamemojang
+			["id" => Item::SNOWBALL]
+			["id" => Item::ENDER_PEARL]
+			["id" => Item::ENDER_EYE]
 		],
 		self::CATEGORY_MISCELLANEOUS => [
 			["id" => Item::COAL],
@@ -539,6 +542,7 @@ class CreativeItems{
 			["id" => Item::RAW_RABBIT],
 			["id" => Item::COOKED_RABBIT],
 			["id" => Item::RABBIT_STEW],
+			["id" => Item::CHORUS_FRUIT],
 			["id" => Item::NETHER_STAR],
 			["id" => Item::MAGMA_CREAM],
 			["id" => Item::BLAZE_ROD],
