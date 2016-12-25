@@ -560,7 +560,7 @@ class CreativeItems{
 			["id" => Item::GLOWSTONE_DUST],
 			["id" => Item::SPIDER_EYE],
 			["id" => Item::FERMENTED_SPIDER_EYE],
-			["id" => Item::DARGON_BREATH],
+			["id" => Item::DRAGON_BREATH],
 			["id" => Item::CARROT_ON_A_STICK],
 			["id" => Item::BOTTLE_O_ENCHANTING],
 			["id" => Item::PRISMARINE_SHARD],
