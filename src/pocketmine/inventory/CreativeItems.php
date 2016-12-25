@@ -153,6 +153,7 @@ class CreativeItems{
 			["id" => Item::PRISMARINE_BLOCK, "meta" => 2], //Prismarine Bricks Block
 			["id" => Item::PRISMARINE_BLOCK, "meta" => 1], //Dark Prismarine Block
 			["id" => Item::PURPUR_BLOCK, "meta" => 0], //Purpur Block
+			["id" => Item::PURPUR_BLOCK, "meta" => 2],
 			["id" => Item::COAL_ORE],
 			["id" => Item::IRON_ORE],
 			["id" => Item::GOLD_ORE],
@@ -279,6 +280,7 @@ class CreativeItems{
 			["id" => Item::SKULL, "meta" => Skull::STEVE_HEAD],
 			["id" => Item::SKULL, "meta" => Skull::CREEPER_HEAD],
 			["id" => Item::FLOWER_POT],
+			["id" => Item::DRAGON_EGG],
 			["id" => Item::MONSTER_SPAWNER],
 			["id" => Item::ENCHANTMENT_TABLE],
 			["id" => Item::SLIME_BLOCK],
