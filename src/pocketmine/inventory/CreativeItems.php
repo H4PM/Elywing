@@ -447,9 +447,9 @@ class CreativeItems{
 			["id" => Item::STICKY_PISTON],
 			["id" => Item::OBSERVER],
 			["id" => Item::HOPPER],
-			["id" => Item::SNOWBALL]
-			["id" => Item::ENDER_PEARL]
-			["id" => Item::ENDER_EYE]
+			["id" => Item::SNOWBALL],
+			["id" => Item::ENDER_PEARL],
+			["id" => Item::ENDER_EYE],
 		],
 		self::CATEGORY_MISCELLANEOUS => [
 			["id" => Item::COAL],
