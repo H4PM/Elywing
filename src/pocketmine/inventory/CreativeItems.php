@@ -152,7 +152,6 @@ class CreativeItems{
 			["id" => Item::PRISMARINE_BLOCK, "meta" => 2], //Prismarine Bricks Block
 			["id" => Item::PRISMARINE_BLOCK, "meta" => 1], //Dark Prismarine Block
 			["id" => Item::PURPUR_BLOCK, "meta" => 0], //Purpur Block
-			["id" => Item::PURPUR_BLOCK, "meta" => 1], //Purpur Pillar
 			["id" => Item::COAL_ORE],
 			["id" => Item::IRON_ORE],
 			["id" => Item::GOLD_ORE],
