@@ -19,6 +19,8 @@
  *
 */
 
+declare(strict_types = 1);
+
 namespace pocketmine\level\format\generic;
 
 use pocketmine\level\format\LevelProvider;
@@ -40,7 +42,7 @@ abstract class BaseLevelProvider implements LevelProvider{
 	/** @var CompoundTag */
 	protected $levelData;
 
-	public function __construct(Level $level, $path){
+	public function __construct(Level $level, string $path){
 		$this->level = $level;
 		$this->path = $path;
 		if(!file_exists($this->path)){
@@ -64,7 +66,7 @@ abstract class BaseLevelProvider implements LevelProvider{
 		}
 	}
 
-	public function getPath(){
+	public function getPath() : string{
 		return $this->path;
 	}
 
@@ -85,7 +87,7 @@ abstract class BaseLevelProvider implements LevelProvider{
 	}
 
 	public function setTime($value){
-		$this->levelData->Time = new IntTag("Time", (int) $value);
+		$this->levelData->Time = new LongTag("Time", $value);
 	}
 
 	public function getSeed(){
@@ -93,11 +95,11 @@ abstract class BaseLevelProvider implements LevelProvider{
 	}
 
 	public function setSeed($value){
-		$this->levelData->RandomSeed = new LongTag("RandomSeed", (int) $value);
+		$this->levelData->RandomSeed = new LongTag("RandomSeed", $value);
 	}
 
-	public function getSpawn(){
-		return new Vector3((float) $this->levelData["SpawnX"] + 0.5, (float) $this->levelData["SpawnY"], (float) $this->levelData["SpawnZ"] + 0.5);
+	public function getSpawn() : Vector3{
+		return new Vector3((float) $this->levelData["SpawnX"], (float) $this->levelData["SpawnY"], (float) $this->levelData["SpawnZ"]);
 	}
 
 	public function setSpawn(Vector3 $pos){
@@ -113,7 +115,7 @@ abstract class BaseLevelProvider implements LevelProvider{
 	/**
 	 * @return CompoundTag
 	 */
-	public function getLevelData(){
+	public function getLevelData() : CompoundTag{
 		return $this->levelData;
 	}
 
@@ -126,5 +128,12 @@ abstract class BaseLevelProvider implements LevelProvider{
 		file_put_contents($this->getPath() . "level.dat", $buffer);
 	}
 
+	public function requestChunkTask(int $x, int $z){
+		$chunk = $this->getChunk($x, $z, false);
+		if(!($chunk instanceof GenericChunk)){
+			throw new ChunkException("Invalid Chunk sent");
+		}
 
+		$this->getLevel()->chunkRequestCallback($x, $z, $chunk->networkSerialize());
+	}
 }

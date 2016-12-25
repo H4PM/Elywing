@@ -42,6 +42,8 @@ class PlayerActionPacket extends DataPacket{
 	const ACTION_STOP_SNEAK = 12;
 	const ACTION_SPAWN_OVERWORLD = 13;
 	const ACTION_SPAWN_NETHER = 14;
+	const ACTION_START_GLIDE = 15;
+	const ACTION_STOP_GLIDE = 16;
 
 	public $eid;
 	public $action;

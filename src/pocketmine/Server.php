@@ -101,10 +101,11 @@ use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\enchantment\EnchantmentLevelTable;
 use pocketmine\item\Item;
 use pocketmine\lang\BaseLang;
-use pocketmine\level\format\anvil\Anvil;
 use pocketmine\level\format\leveldb\LevelDB;
 use pocketmine\level\format\LevelProviderManager;
-use pocketmine\level\format\mcregion\McRegion;
+use pocketmine\level\format\region\Anvil;
+use pocketmine\level\format\region\McRegion;
+use pocketmine\level\format\region\PMAnvil;
 use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\generator\Flat;
 use pocketmine\level\generator\Void;
@@ -149,20 +150,6 @@ use pocketmine\scheduler\DServerTask;
 use pocketmine\scheduler\FileWriteTask;
 use pocketmine\scheduler\SendUsageTask;
 use pocketmine\scheduler\ServerScheduler;
-use pocketmine\tile\BrewingStand;
-use pocketmine\tile\Cauldron;
-use pocketmine\tile\Chest;
-use pocketmine\tile\Dispenser;
-use pocketmine\tile\DLDetector;
-use pocketmine\tile\Dropper;
-use pocketmine\tile\EnchantTable;
-use pocketmine\tile\FlowerPot;
-use pocketmine\tile\Furnace;
-use pocketmine\tile\Hopper;
-use pocketmine\tile\ItemFrame;
-use pocketmine\tile\MobSpawner;
-use pocketmine\tile\Sign;
-use pocketmine\tile\Skull;
 use pocketmine\tile\Tile;
 use pocketmine\utils\Binary;
 use pocketmine\utils\Color;
@@ -1228,8 +1215,8 @@ class Server{
 			$generator = Generator::getGenerator($this->getLevelType());
 		}
 
-		if(($provider = LevelProviderManager::getProviderByName($providerName = $this->getProperty("level-settings.default-format", "anvil"))) === null){
-			$provider = LevelProviderManager::getProviderByName($providerName = "anvil");
+		if(($provider = LevelProviderManager::getProviderByName($providerName = $this->getProperty("level-settings.default-format", "pmanvil"))) === null){
+			$provider = LevelProviderManager::getProviderByName($providerName = "pmanvil");
 		}
 
 		try{
@@ -1880,7 +1867,7 @@ class Server{
 			$this->commandMap = new SimpleCommandMap($this);
 
 			$this->registerEntities();
-			$this->registerTiles();
+			Tile::init();
 
 			InventoryType::init();
 			Block::init();
@@ -1911,11 +1898,12 @@ class Server{
 
 			$this->enablePlugins(PluginLoadOrder::STARTUP);
 
-			LevelProviderManager::addProvider($this, Anvil::class);
-			LevelProviderManager::addProvider($this, McRegion::class);
+			LevelProviderManager::addProvider(Anvil::class);
+			LevelProviderManager::addProvider(McRegion::class);
+			LevelProviderManager::addProvider(PMAnvil::class);
 			if(extension_loaded("leveldb")){
 				$this->logger->debug($this->getLanguage()->translateString("pocketmine.debug.enable"));
-				LevelProviderManager::addProvider($this, LevelDB::class);
+				LevelProviderManager::addProvider(LevelDB::class);
 			}
 
 
@@ -2969,22 +2957,5 @@ class Server{
 		Entity::registerEntity(ZombieVillager::class);
 
 		Entity::registerEntity(Human::class, true);
-	}
-
-	private function registerTiles(){
-		Tile::registerTile(BrewingStand::class);
-		Tile::registerTile(Cauldron::class);
-		Tile::registerTile(Chest::class);
-		Tile::registerTile(Dispenser::class);
-		Tile::registerTile(DLDetector::class);
-		Tile::registerTile(Dropper::class);
-		Tile::registerTile(EnchantTable::class);
-		Tile::registerTile(FlowerPot::class);
-		Tile::registerTile(Furnace::class);
-		Tile::registerTile(Hopper::class);
-		Tile::registerTile(ItemFrame::class);
-		Tile::registerTile(MobSpawner::class);
-		Tile::registerTile(Sign::class);
-		Tile::registerTile(Skull::class);
 	}
 }

@@ -31,7 +31,7 @@ use pocketmine\block\LapisOre;
 use pocketmine\block\RedstoneOre;
 use pocketmine\item\Item;
 use pocketmine\level\ChunkManager;
-use pocketmine\level\format\FullChunk;
+use pocketmine\level\format\Chunk;
 use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\generator\populator\Ore;
 use pocketmine\level\generator\populator\Populator;
@@ -41,7 +41,7 @@ use pocketmine\utils\Random;
 class Flat extends Generator{
 	/** @var ChunkManager */
 	private $level;
-	/** @var FullChunk */
+	/** @var Chunk */
 	private $chunk;
 	/** @var Random */
 	private $random;
@@ -111,15 +111,10 @@ class Flat extends Generator{
 
 		$this->chunk = clone $this->level->getChunk($chunkX, $chunkZ);
 		$this->chunk->setGenerated();
-		$c = Biome::getBiome($biome)->getColor();
-		$R = $c >> 16;
-		$G = ($c >> 8) & 0xff;
-		$B = $c & 0xff;
 
 		for($Z = 0; $Z < 16; ++$Z){
 			for($X = 0; $X < 16; ++$X){
 				$this->chunk->setBiomeId($X, $Z, $biome);
-				$this->chunk->setBiomeColor($X, $Z, $R, $G, $B);
 				for($y = 0; $y < 128; ++$y){
 					$this->chunk->setBlock($X, $y, $Z, ...$this->structure[$y]);
 				}
