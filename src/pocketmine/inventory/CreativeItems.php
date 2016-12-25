@@ -131,6 +131,7 @@ class CreativeItems{
 			["id" => Item::STONE_BRICK_STAIRS],
 			["id" => Item::NETHER_BRICK_STAIRS],
 			["id" => Item::QUARTZ_STAIRS],
+			["id" => Item::PURPUR_STAIRS],
 			["id" => Item::STONE_SLAB],
 			["id" => Item::STONE_SLAB, "meta" => StoneSlab::COBBLESTONE],
 			["id" => Item::WOODEN_SLAB, "meta" => Planks::OAK],
@@ -164,6 +165,7 @@ class CreativeItems{
 			["id" => Item::ICE],
 			["id" => Item::PACKED_ICE],
 			["id" => Item::SNOW_BLOCK],
+			["id" => Item::END_STONE_BRICKS],
 			["id" => Item::END_STONE],
 		],
 		self::CATEGORY_DECORATION => [
