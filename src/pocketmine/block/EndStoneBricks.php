@@ -26,7 +26,7 @@ use pocketmine\item\Tool;
 
 class EndStoneBricks extends Solid{
 
-	protected $id = self::ENDSTONE_BRICKS;
+	protected $id = self::END_STONE_BRICKS;
 
 	public function __construct($meta = 0){
 		$this->meta = $meta;
@@ -43,7 +43,7 @@ class EndStoneBricks extends Solid{
 	public function getDrops(Item $item) : array {
 		if($item->isPickaxe() >= 1){
 			return [
-				[Item::ENDSTONE_BRICKS, $this->meta & 0x03, 1],
+				[Item::END_STONE_BRICKS, $this->meta & 0x03, 1],
 			];
 		}else{
 			return [];
