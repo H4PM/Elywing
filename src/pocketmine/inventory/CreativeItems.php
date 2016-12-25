@@ -153,7 +153,7 @@ class CreativeItems{
 			["id" => Item::PRISMARINE_BLOCK, "meta" => 2], //Prismarine Bricks Block
 			["id" => Item::PRISMARINE_BLOCK, "meta" => 1], //Dark Prismarine Block
 			["id" => Item::PURPUR_BLOCK, "meta" => 0], //Purpur Block
-			["id" => Item::PURPUR_BLOCK, "meta" => 2],
+			["id" => Item::PURPUR_BLOCK, "meta" => 2], //Purpur Pillar
 			["id" => Item::COAL_ORE],
 			["id" => Item::IRON_ORE],
 			["id" => Item::GOLD_ORE],
@@ -271,7 +271,7 @@ class CreativeItems{
 			["id" => Item::LEAVES, "meta" => Leaves::SPRUCE],
 			["id" => Item::LEAVES, "meta" => Leaves::BIRCH],
 			["id" => Item::LEAVES, "meta" => Leaves::JUNGLE],
-			["id" => Item::LEAVES2, "meta" => Leaves::ACACIA], #blamemojang
+			["id" => Item::LEAVES2, "meta" => Leaves::ACACIA],
 			["id" => Item::LEAVES2, "meta" => Leaves::DARK_OAK],
 			["id" => Item::CAKE],
 			["id" => Item::SKULL, "meta" => Skull::SKELETON],
