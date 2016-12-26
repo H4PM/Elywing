@@ -4066,7 +4066,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 			and $source->getCause() !== EntityDamageEvent::CAUSE_VOID
 		){
 			$source->setCancelled();
-		}elseif($this->allowFlight and $source->getCause() === EntityDamageEvent::CAUSE_FALL or $this->getLevel()->getName() === "world"){
+		}elseif($this->allowFlight and $source->getCause() === EntityDamageEvent::CAUSE_FALL){
 			$source->setCancelled();
 		}
 
