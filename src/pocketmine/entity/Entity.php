@@ -152,7 +152,7 @@ abstract class Entity extends Location implements Metadatable{
 	const DATA_FLAG_TAMED = 24;
 	const DATA_FLAG_LEASHED = 25;
 	const DATA_FLAG_SHEARED = 26; //for sheep
-	const DATA_FLAG_GLIDING = 27; DATA_FLAG_FALL_FLYING = 27; //for Elytras
+	const DATA_FLAG_GLIDING = 27, DATA_FLAG_FALL_FLYING = 27; //for Elytras
 	const DATA_FLAG_ELDER = 28; //elder guardian
 	const DATA_FLAG_MOVING = 29;
 	const DATA_FLAG_BREATHING = 30; //hides bubbles if true
