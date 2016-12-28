@@ -46,8 +46,8 @@ class Obsidian extends Solid{
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getHardness() {
-		return 50;
+	public function getHardness(){
+		return 35;
 	}
 
 	public function getDrops(Item $item) : array {
@@ -74,7 +74,7 @@ class Obsidian extends Solid{
 			}
 			$block = $this->getSide($i);
 			if($this->getLevel()->getBlock($this->temporalVector->setComponents($block->x - 1, $block->y, $block->z))->getId() == Block::PORTAL or
-				$this->getLevel()->getBlock($this->temporalVector->setComponents($block->x + 1, $block->y, $block->z))->getId() == Block::PORTAL){//x方向
+				$this->getLevel()->getBlock($this->temporalVector->setComponents($block->x + 1, $block->y, $block->z))->getId() == Block::PORTAL){
 				for($x = $block->x;$this->getLevel()->getBlock($this->temporalVector->setComponents($x, $block->y, $block->z))->getId() == Block::PORTAL;$x++){
 					for($y = $block->y;$this->getLevel()->getBlock($this->temporalVector->setComponents($x, $y, $block->z))->getId() == Block::PORTAL;$y++){
 						$this->getLevel()->setBlock($this->temporalVector->setComponents($x, $y, $block->z), new Air());
@@ -91,7 +91,7 @@ class Obsidian extends Solid{
 						$this->getLevel()->setBlock($this->temporalVector->setComponents($x, $y, $block->z), new Air());
 					}
 				}
-			}else{//z方向
+			}else{
 				for($z = $block->z;$this->getLevel()->getBlock($this->temporalVector->setComponents($block->x, $block->y, $z))->getId() == Block::PORTAL;$z++){
 					for($y = $block->y;$this->getLevel()->getBlock($this->temporalVector->setComponents($block->x, $y, $z))->getId() == Block::PORTAL;$y++){
 						$this->getLevel()->setBlock($this->temporalVector->setComponents($block->x, $y, $z), new Air());
