@@ -24,41 +24,41 @@
 
 namespace pocketmine\block;
 
+//use pocketmine\inventory\BeaconInventory;
 use pocketmine\item\Item;
+use pocketmine\Player;
 use pocketmine\item\Tool;
 
-class PrismarineBlock extends Solid{
+class Beacon extends Solid{
 
-	protected $id = self::PRISMARINE_BLOCK;
+	protected $id = self::BEACON;
 
 	public function __construct($meta = 0){
 		$this->meta = $meta;
 	}
 
-	public function getName(){
-		static $names = [
-			0 => "Prismarine Block",
-			1 => "Dark Prismarine Block",
-			2 => "Prismarine Bricks Block",
-		];
-		return $names[$this->meta & 0x0f];
+	/*public function canBeActivated() : bool{
+		return true;
+	}*/
+
+	public function getLightLevel(){
+		return 15;
 	}
 
 	public function getHardness(){
-		return 1.5;
+		return 3;
 	}
 
-	public function getToolType(){
-		return Tool::TYPE_PICKAXE;
+	public function getName(){
+        return "Beacon";
 	}
 
-	public function getDrops(Item $item) : array {
-		if($item->isPickaxe() >= Tool::TIER_WOODEN){
-			return [
-				[$this->id, $this->meta & 0x0f, 1],
-			];
-		}else{
-			return [];
+	/*public function onActivate(Item $item, Player $player = null){
+		if($player instanceof Player){
+			$player->addWindow(new BeaconInventory($this));
 		}
-	}
+
+		return true;
+	}*/
+
 }
