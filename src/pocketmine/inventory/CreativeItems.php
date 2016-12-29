@@ -226,6 +226,7 @@ class CreativeItems{
 			["id" => Item::BREWING_STAND],
 			["id" => Item::CAULDRON],
 			["id" => Item::NOTEBLOCK],
+			["id" => Item::END_ROD],
 			["id" => Item::END_PORTAL_FRAME],
 			["id" => Item::ANVIL],
 			["id" => Item::ANVIL, "meta" => Anvil::SLIGHTLY_DAMAGED],
