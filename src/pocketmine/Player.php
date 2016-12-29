@@ -1413,7 +1413,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 			$this->dataPacket($pk);
 			$this->sendSettings();
 		}else{
-			Command::broadcastCommandMessage($this, new TranslationContainer("commands.gamemode.success.self", [Server::getGamemodeString($gm)]));
+			Command::broadcastCommandMessage($this, new TranslationContainer("commands.gamemode.success.self", ["", "", Server::getGamemodeString($gm)]));
 		}
 
 		if($this->gamemode === Player::SPECTATOR){
