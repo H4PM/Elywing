@@ -2,32 +2,27 @@
 
 /*
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
+ *  ____            _        _   __  __ _                  __  __ ____
+ * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
+ * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
+ * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
+ * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author iTX Technologies
- * @link https://itxtech.org
+ * @author PocketMine Team
+ * @link http://www.pocketmine.net/
  *
- */
-
-/*
- * THIS IS COPIED FROM THE PLUGIN FlowerPot MADE BY @beito123!!
- * https://github.com/beito123/PocketMine-MP-Plugins/blob/master/test%2FFlowerPot%2Fsrc%2Fbeito%2FFlowerPot%2Fomake%2FSkull.php
  *
- */
+*/
 
 namespace pocketmine\tile;
 
 use pocketmine\level\format\Chunk;
+use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
@@ -38,6 +33,7 @@ class Skull extends Spawnable{
 	const TYPE_ZOMBIE = 2;
 	const TYPE_HUMAN = 3;
 	const TYPE_CREEPER = 4;
+	const TYPE_DRAGON = 5;
 
 	public function __construct(Chunk $chunk, CompoundTag $nbt){
 		if(!isset($nbt->SkullType)){
@@ -49,18 +45,9 @@ class Skull extends Spawnable{
 		parent::__construct($chunk, $nbt);
 	}
 
-	public function saveNBT(){
-		parent::saveNBT();
-		unset($this->namedtag->Creator);
-	}
-
-	public function setType($type){
-		if($type >= 0 && $type <= 4){
-			$this->namedtag->SkullType = new ByteTag("SkullType", $type);
-			$this->onChanged();
-			return true;
-		}
-		return false;
+	public function setType(int $type){
+		$this->namedtag->SkullType = new ByteTag("SkullType", $type);
+		$this->onChanged();
 	}
 
 	public function getType(){

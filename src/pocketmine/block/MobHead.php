@@ -22,105 +22,97 @@
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
-use pocketmine\item\Tool;
-use pocketmine\nbt\tag\Compound;
+use pocketmine\level\Level;
+use pocketmine\math\AxisAlignedBB;
+use pocketmine\nbt\tag\ByteTag;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
+use pocketmine\tile\Skull as SkullTile;
+use pocketmine\tile\Spawnable;
 use pocketmine\tile\Tile;
-use pocketmine\math\AxisAlignedBB;
-use pocketmine\nbt\tag\ByteTag;
-use pocketmine\tile\Skull;
-class MobHead extends Transparent{
-	
-	const SKELETON = 0;
-	const WITHER_SKELETON = 1;
-	const ZOMBIE_HEAD = 2;
-	const STEVE_HEAD = 3;
-	const CREEPER_HEAD = 4;
-	
+
+class MobHead extends Flowable{
+
 	protected $id = self::MOB_HEAD_BLOCK;
-	
+
 	public function __construct($meta = 0){
 		$this->meta = $meta;
 	}
-	public function getHardness() {
+
+	public function getHardness(){
 		return 1;
 	}
-	public function isSolid(){
-		return false;
+
+	public function getName(){
+		return "Mob Head";
 	}
-	
-	public function getBoundingBox(){
+
+	protected function recalculateBoundingBox(){
 		return new AxisAlignedBB(
-			$this->x - 0.75,
-			$this->y - 0.5,
-			$this->z - 0.75,
+			$this->x + 0.25,
+			$this->y,
+			$this->z + 0.25,
 			$this->x + 0.75,
 			$this->y + 0.5,
 			$this->z + 0.75
 		);
 	}
-	
+
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
-		$down = $this->getSide(0);
-		if($face !== 0 && $fy > 0.5 && $target->getId() !== self::MOB_HEAD_BLOCK && !$down instanceof MobHead){
-			$this->getLevel()->setBlock($block, Block::get(Block::MOB_HEAD_BLOCK, 0), true, true);
+		if($face !== 0){
+			$this->meta = $face;
 			if($face === 1){
-				$rot = new ByteTag("Rot", floor(($player->yaw * 16 / 360) + 0.5) & 0x0F);
+				$rot = floor(($player->yaw * 16 / 360) + 0.5) & 0x0F;
 			}else{
-				$rot = new ByteTag("Rot", 0);
+				$rot = $face;
 			}
-			$nbt = new Compound("", [
+			$this->getLevel()->setBlock($block, $this, true);
+			$nbt = new CompoundTag("", [
 				new StringTag("id", Tile::SKULL),
-				new IntTag("x", $block->x),
-				new IntTag("y", $block->y),
-				new IntTag("z", $block->z),
 				new ByteTag("SkullType", $item->getDamage()),
-				$rot
+				new ByteTag("Rot", $rot),
+				new IntTag("x", (int) $this->x),
+				new IntTag("y", (int) $this->y),
+				new IntTag("z", (int) $this->z)
 			]);
-			if($item->hasCustomBlockData()){
-			    foreach($item->getCustomBlockData() as $key => $v){
-				    $nbt->{$key} = $v;
-			    }
+			if($item->hasCustomName()){
+				$nbt->CustomName = new StringTag("CustomName", $item->getCustomName());
 			}
-			$chunk = $this->getLevel()->getChunk($this->x >> 4, $this->z >> 4);
-			$pot = Tile::createTile(Tile::SKULL, $chunk, $nbt);
-			$this->getLevel()->setBlock($block, Block::get(Block::MOB_HEAD_BLOCK, $face), true, true);
+			/** @var Spawnable $tile */
+			Tile::createTile("Skull", $this->getLevel()->getChunk($this->x >> 4, $this->z >> 4), $nbt);
 			return true;
 		}
 		return false;
 	}
-	
-	public function getResistance(){
-		return 5;
-	}
-	
-	public function getName(){
-		static $names = [
-			0 => "Skeleton Head",
-			1 => "Wither Skeleton Head",
-			2 => "Zombie Head",
-			3 => "Steve Head",
-			4 => "Creeper Head"
+
+	public function onUpdate($type){
+		$faces = [
+			1 => 0,
+			2 => 3,
+			3 => 2,
+			4 => 5,
+			5 => 4,
 		];
-		return $names[$this->meta & 0x04];
+		if($type === Level::BLOCK_UPDATE_NORMAL){
+			if($this->getSide($faces[$this->meta])->getId() === self::AIR){
+				$this->getLevel()->useBreakOn($this);
+
+				return Level::BLOCK_UPDATE_NORMAL;
+			}
+		}
+
+		return parent::onUpdate($type);
 	}
-	
-	public function getToolType(){
-		return Tool::TYPE_PICKAXE;
-	}
-	
-	public function onBreak(Item $item){
-		$this->getLevel()->setBlock($this, new Air(), true, true);
-		return true;
-	}
-	
+
 	public function getDrops(Item $item){
-		/** @var Skull $tile */
-		if($this->getLevel()!=null && (($tile = $this->getLevel()->getTile($this)) instanceof Skull)){
-			return [[Item::MOB_HEAD, $tile->getSkullType(), 1]];
-		}else
-			return [[Item::MOB_HEAD, 0, 1]];
+		if(($tile = $this->level->getTile($this)) instanceof SkullTile){
+			return [
+				[Item::MOB_HEAD, $tile->getType(), 1]
+			];
+		}
+
+		return [];
 	}
 }
