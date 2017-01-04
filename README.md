@@ -30,6 +30,8 @@ __Elywing is a free, open-source software that creates Minecraft: Pocket Edition
 
 ### [Twitter @muqsitrayyan](https://twitter.com/muqsitrayyan/)
 
+### [Twitter @XenialDan/@thebigsmileXD](https://twitter.com/xenialdan/)
+
 
 ### [Elywing's Twitter](https://twitter.com/elywing_h4pm/)
 
