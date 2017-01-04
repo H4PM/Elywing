@@ -30,7 +30,6 @@ use pocketmine\network\Network;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\Player;
-use pocketmine\Server;
 
 class Squid extends WaterAnimal implements Ageable{
 	const NETWORK_ID = 17;

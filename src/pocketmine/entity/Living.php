@@ -35,7 +35,6 @@ use pocketmine\nbt\tag\ShortTag;
 use pocketmine\network\Network;
 use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\Player;
-use pocketmine\Server;
 use pocketmine\utils\BlockIterator;
 
 abstract class Living extends Entity implements Damageable{

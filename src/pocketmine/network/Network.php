@@ -96,7 +96,6 @@ use pocketmine\network\protocol\PlayerInputPacket;
 //use pocketmine\network\protocol\ShowCreditsPacket;
 use pocketmine\Player;
 use pocketmine\Server;
-use pocketmine\utils\Binary;
 use pocketmine\utils\BinaryStream;
 use pocketmine\utils\MainLogger;
 
