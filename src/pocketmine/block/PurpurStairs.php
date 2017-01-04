@@ -33,7 +33,7 @@ class PurpurStairs extends Stair{
 	public function getToolType(){
 		return Tool::TYPE_PICKAXE;
 	}
-	public function getName() : string{
+	public function getName(){
 		return "Purpur Stairs";
 	}
 }

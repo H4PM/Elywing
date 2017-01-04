@@ -46,7 +46,7 @@ class Cake extends Transparent implements FoodSource{
 		return 0.5;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Cake Block";
 	}
 

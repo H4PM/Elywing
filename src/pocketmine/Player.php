@@ -117,9 +117,9 @@ use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
@@ -872,7 +872,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				$this->dataPacket($pk);
 				$this->shouldSendStatus = true;
 			}
-			$targetLevel->getWeather()->sendWeather($this);
+			#$targetLevel->getWeather()->sendWeather($this);
 
 			if($this->spawned){
 				$this->spawnToAll();
@@ -1056,7 +1056,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 		$this->server->onPlayerLogin($this);
 		$this->spawnToAll();
 
-		$this->level->getWeather()->sendWeather($this);
+		#$this->level->getWeather()->sendWeather($this);
 
 		if($this->server->dserverConfig["enable"] and $this->server->dserverConfig["queryAutoUpdate"]){
 			$this->server->updateQuery();
@@ -1413,7 +1413,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 			$this->dataPacket($pk);
 			$this->sendSettings();
 		}else{
-			Command::broadcastCommandMessage($this, new TranslationContainer("commands.gamemode.success.self", ["", "", Server::getGamemodeString($gm)]));
+			Command::broadcastCommandMessage($this, new TranslationContainer("commands.gamemode.success.self", [Server::getGamemodeString($gm)]));
 		}
 
 		if($this->gamemode === Player::SPECTATOR){
@@ -1759,12 +1759,6 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 		$this->newPosition = null;
 	}
 
-	public function addMovement($x, $y, $z, $yaw, $pitch, $headYaw = null){
-		if($this->chunk !== null){
-			$this->level->addPlayerMovement($this->chunk->getX(), $this->chunk->getZ(), $this->id, $x, $y, $z, $yaw, $pitch, $this->onGround, $headYaw === null ? $yaw : $headYaw);
-		}
-	}
-
 	public function setMotion(Vector3 $mot){
 		if(parent::setMotion($mot)){
 			if($this->chunk !== null){
@@ -1899,11 +1893,11 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 			if($this->isOnFire() or $this->lastUpdate % 10 == 0){
 				if($this->isCreative() and !$this->isInsideOfFire()){
 					$this->extinguish();
-				}elseif($this->getLevel()->getWeather()->isRainy()){
+				}/*elseif($this->getLevel()->getWeather()->isRainy()){
 					if($this->getLevel()->canBlockSeeSky($this)){
 						$this->extinguish();
 					}
-				}
+				}*/
 			}
 
 			if($this->server->antiFly){
@@ -2141,7 +2135,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 		$pk->rainLevel = 0; //TODO: implement these properly
 		$pk->lightningLevel = 0;
 		$pk->commandsEnabled = 1;
-		$pk->unknown = "UNKNOWN";
+		$pk->levelId = "";
 		$pk->worldName = $this->server->getMotd();
 		$this->dataPacket($pk);
 
@@ -2181,7 +2175,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 
 		$this->sendCommandData();
 
-		$this->level->getWeather()->sendWeather($this);
+		#$this->level->getWeather()->sendWeather($this);
 		$this->forceMovement = $this->teleportPosition = $this->getPosition();
 	}
 
@@ -2702,7 +2696,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				}
 				break;
 			case ProtocolInfo::PLAYER_ACTION_PACKET:
-				if($this->spawned === false or $this->blocked === true or (!$this->isAlive() and $packet->action !== PlayerActionPacket::ACTION_SPAWN_SAME_DIMENSION and $packet->action !== PlayerActionPacket::ACTION_SPAWN_OVERWORLD)){
+				if($this->spawned === false or $this->blocked === true or (!$this->isAlive() and $packet->action !== PlayerActionPacket::ACTION_RESPAWN and $packet->action !== PlayerActionPacket::ACTION_DIMENSION_CHANGE)){
 					break;
 				}
 
@@ -2839,9 +2833,8 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 					case PlayerActionPacket::ACTION_STOP_SLEEPING:
 						$this->stopSleep();
 						break;
-					case PlayerActionPacket::ACTION_SPAWN_SAME_DIMENSION:
-					case PlayerActionPacket::ACTION_SPAWN_OVERWORLD:
-						if($this->isAlive() or !$this->isOnline()){
+					case PlayerActionPacket::ACTION_RESPAWN:
+						if($this->spawned === false or $this->isAlive() or !$this->isOnline()){
 							break;
 						}
 
@@ -4325,25 +4318,20 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 		$this->server->getPlayerMetadata()->removeMetadata($this, $metadataKey, $plugin);
 	}
 
-
 	public function onChunkChanged(Chunk $chunk){
 		$this->loadQueue[Level::chunkHash($chunk->getX(), $chunk->getZ())] = abs(($this->x >> 4) - $chunk->getX()) + abs(($this->z >> 4) - $chunk->getZ());
 	}
 
 	public function onChunkLoaded(Chunk $chunk){
-
 	}
 
 	public function onChunkPopulated(Chunk $chunk){
-
 	}
 
 	public function onChunkUnloaded(Chunk $chunk){
-
 	}
 
 	public function onBlockChanged(Vector3 $block){
-
 	}
 
 	public function getLoaderId(){
@@ -4355,26 +4343,25 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	}
 
 	/**
-	 * @param     $chunkX
-	 * @param     $chunkZ
-	 * @param     $payload
-	 * @param int $ordering
-	 * @return BatchPacket|FullChunkDataPacket
+	 * @param int    $chunkX
+	 * @param int    $chunkZ
+	 * @param string $payload
+	 *
+	 * @return DataPacket
 	 */
 	public static function getChunkCacheFromData($chunkX, $chunkZ, $payload){
 		$pk = new FullChunkDataPacket();
 		$pk->chunkX = $chunkX;
 		$pk->chunkZ = $chunkZ;
 		$pk->data = $payload;
-		if(Network::$BATCH_THRESHOLD >= 0){
-			$pk->encode();
-			$batch = new BatchPacket();
-			$batch->payload = zlib_encode(Binary::writeUnsignedVarInt(strlen($pk->getBuffer())) . $pk->getBuffer(), ZLIB_ENCODING_DEFLATE, Server::getInstance()->networkCompressionLevel);
-			$batch->encode();
-			$batch->isEncoded = true;
-			return $batch;
-		}
-		return $pk;
+		$pk->encode();
+
+		$batch = new BatchPacket();
+		$batch->payload = zlib_encode(Binary::writeUnsignedVarInt(strlen($pk->getBuffer())) . $pk->getBuffer(), ZLIB_ENCODING_DEFLATE, Server::getInstance()->networkCompressionLevel);
+
+		$batch->encode();
+		$batch->isEncoded = true;
+		return $batch;
 	}
 
 	/**

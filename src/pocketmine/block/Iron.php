@@ -32,7 +32,7 @@ class Iron extends Solid{
 
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Iron Block";
 	}
 

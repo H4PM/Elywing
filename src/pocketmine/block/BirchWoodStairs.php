@@ -25,7 +25,7 @@ class BirchWoodStairs extends WoodStairs{
 
 	protected $id = self::BIRCH_WOOD_STAIRS;
 
-	public function getName() : string{
+	public function getName(){
 		return "Birch Wood Stairs";
 	}
 }

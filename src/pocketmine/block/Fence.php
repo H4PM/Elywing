@@ -56,7 +56,7 @@ class Fence extends Transparent{
 		return 20;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			0 => "Oak Fence",
 			1 => "Spruce Fence",

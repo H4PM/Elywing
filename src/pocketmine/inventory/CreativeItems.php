@@ -142,10 +142,11 @@ class CreativeItems{
 			["id" => Item::WOODEN_SLAB, "meta" => Planks::DARK_OAK],
 			["id" => Item::STONE_SLAB, "meta" => StoneSlab::BRICK],
 			["id" => Item::STONE_SLAB, "meta" => StoneSlab::SANDSTONE],
-			["id" => Item::RED_SANDSTONE_SLAB],
+			["id" => Item::SLAB2],
 			["id" => Item::STONE_SLAB, "meta" => StoneSlab::STONE_BRICK],
-			["id" => Item::STONE_SLAB, "meta" => StoneSlab::QUARTZ],
 			["id" => Item::STONE_SLAB, "meta" => StoneSlab::NETHER_BRICK],
+			["id" => Item::STONE_SLAB, "meta" => StoneSlab::QUARTZ],
+			["id" => Item::SLAB2, "meta" => 1], //Purpur
 			["id" => Item::QUARTZ_BLOCK],
 			["id" => Item::QUARTZ_BLOCK, "meta" => Quartz::QUARTZ_PILLAR],
 			["id" => Item::QUARTZ_BLOCK, "meta" => Quartz::QUARTZ_CHISELED],

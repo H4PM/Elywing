@@ -42,7 +42,7 @@ class Carpet extends Flowable{
 		return true;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			0 => "White Carpet",
 			1 => "Orange Carpet",

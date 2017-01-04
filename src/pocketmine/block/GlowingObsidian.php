@@ -30,7 +30,7 @@ class GlowingObsidian extends Solid implements SolidLight{
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Glowing Obsidian";
 	}
 

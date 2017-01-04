@@ -40,7 +40,7 @@ class Sandstone extends Solid{
 		return 0.8;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			0 => "Sandstone",
 			1 => "Chiseled Sandstone",

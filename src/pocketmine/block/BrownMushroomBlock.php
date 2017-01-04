@@ -38,7 +38,7 @@ class BrownMushroomBlock extends Solid{
 		return true;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Brown Mushroom Block";
 	}
 

@@ -116,7 +116,7 @@ class MobSpawner extends Spawnable{
 		$this->namedtag->Delay->setValue($value);
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Monster Spawner";
 	}
 

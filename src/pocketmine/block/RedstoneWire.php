@@ -39,7 +39,7 @@ class RedstoneWire extends RedstoneSource{
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Redstone Wire";
 	}
 

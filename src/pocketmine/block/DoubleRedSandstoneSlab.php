@@ -27,7 +27,7 @@ class DoubleRedSandstoneSlab extends DoubleSlab{
 
 	protected $id = Block::DOUBLE_RED_SANDSTONE_SLAB;
 
-	public function getName() : string{
+	public function getName(){
 		return "Double Red Sandstone Slab";
 	}
 

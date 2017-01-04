@@ -40,7 +40,7 @@ class SeaLanternBlock extends Solid{
 		return 15;
 	}
 
-	public function getName() : string{
+	public function getName(){
         return "Sea Lantern Block";
 	}
 

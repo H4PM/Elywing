@@ -24,7 +24,7 @@ namespace pocketmine\block;
 class RedSandstone extends Sandstone{
 	protected $id = Block::RED_SANDSTONE;
 	
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			0 => "Red Sandstone",
 			1 => "Chiseled Red Sandstone",

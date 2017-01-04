@@ -33,7 +33,7 @@ class StickyPiston extends Solid{
 	}
 
 	public function getName(){
-        return "Sticky Piston";
+		return "Sticky Piston";
 	}
 
 }

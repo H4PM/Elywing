@@ -92,7 +92,7 @@ class EnchantingTable extends Transparent{
 		return 6000;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Enchanting Table";
 	}
 

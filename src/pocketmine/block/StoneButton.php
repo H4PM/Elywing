@@ -28,7 +28,7 @@ use pocketmine\level\sound\ButtonClickSound;
 class StoneButton extends WoodenButton{
 	protected $id = self::STONE_BUTTON;
 
-	public function getName() : string{
+	public function getName(){
 		return "Stone Button";
 	}
 

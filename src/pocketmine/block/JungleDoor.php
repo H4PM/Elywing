@@ -32,7 +32,7 @@ class JungleDoor extends Door{
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Jungle Door Block";
 	}
 

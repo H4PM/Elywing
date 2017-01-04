@@ -558,6 +558,12 @@
         "nbt": ""
     },
     {
+        "id": 182,
+        "damage": 1,
+        "count": 1,
+        "nbt": ""
+    },
+    {
         "id": 44,
         "damage": 5,
         "count": 1,

@@ -36,7 +36,7 @@ class Snow extends Solid{
 		return 0.2;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Snow Block";
 	}
 	

@@ -33,7 +33,7 @@ class Water extends Liquid{
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Water";
 	}
 

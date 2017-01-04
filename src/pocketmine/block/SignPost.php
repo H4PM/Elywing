@@ -43,7 +43,7 @@ class SignPost extends Transparent{
 		return false;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Sign Post";
 	}
 

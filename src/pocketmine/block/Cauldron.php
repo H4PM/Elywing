@@ -56,7 +56,7 @@ class Cauldron extends Solid{
 		return 2;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Cauldron";
 	}
 

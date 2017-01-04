@@ -36,7 +36,7 @@ class NetherWartBlock extends Flowable{
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Nether Wart Block";
 	}
 

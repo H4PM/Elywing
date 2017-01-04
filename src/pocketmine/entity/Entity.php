@@ -54,9 +54,9 @@ use pocketmine\metadata\MetadataValue;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\protocol\MobEffectPacket;
@@ -81,8 +81,6 @@ abstract class Entity extends Location implements Metadatable{
 	const DATA_TYPE_STRING = 4;
 	const DATA_TYPE_SLOT = 5;
 	const DATA_TYPE_POS = 6;
-	//const DATA_TYPE_ROTATION = 8;
-	//const DATA_TYPE_LONG = 8;
 	const DATA_TYPE_LONG = 7;
 	const DATA_TYPE_VECTOR3F = 8;
 
@@ -139,9 +137,9 @@ abstract class Entity extends Location implements Metadatable{
 	const DATA_FLAG_BABY = 11;
 	const DATA_FLAG_CONVERTING = 12; //???
 	const DATA_FLAG_CRITICAL = 13;
-	const DATA_FLAG_CAN_SHOW_NAMETAG = 14;
+	const DATA_FLAG_CAN_SHOW_NAMETAG = 14, DATA_SHOW_NAMETAG = 14;
 	const DATA_FLAG_ALWAYS_SHOW_NAMETAG = 15;
-	const DATA_FLAG_IMMOBILE = 16, DATA_FLAG_NO_AI = 16;
+	const DATA_FLAG_IMMOBILE = 16, DATA_FLAG_NO_AI = 16, DATA_NO_AI = 16;
 	const DATA_FLAG_SILENT = 17;
 	const DATA_FLAG_WALLCLIMBING = 18;
 	const DATA_FLAG_RESTING = 19; //for bats?
@@ -291,9 +289,8 @@ abstract class Entity extends Location implements Metadatable{
 
 
 	public function __construct(Chunk $chunk, CompoundTag $nbt){
-		if($chunk === null or $chunk->getProvider() === null){
- 			throw new ChunkException("Invalid garbage Chunk given to Entity");
-		}
+
+		assert($chunk !== null and $chunk->getProvider() !== null);
 
 		$this->timings = Timings::getEntityTimings($this);
 

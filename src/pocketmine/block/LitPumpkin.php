@@ -47,7 +47,7 @@ class LitPumpkin extends Solid implements SolidLight{
 		return Tool::TYPE_AXE;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Jack o'Lantern";
 	}
 

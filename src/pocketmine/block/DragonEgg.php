@@ -27,7 +27,7 @@ class DragonEgg extends Solid{
 	protected $id = self::DRAGON_EGG;
 	public function __construct(){
 	}
-	public function getName() : string{
+	public function getName(){
 		return "Dragon Egg";
 	}
 	public function getHardness(){

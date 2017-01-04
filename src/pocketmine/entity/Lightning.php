@@ -36,7 +36,7 @@ class Lightning extends Animal{
 	public $length = 0.9;
 	public $height = 1.8;
 
-	public function getName() : string{
+	public function getName(){
 		return "Lightning";
 	}
 

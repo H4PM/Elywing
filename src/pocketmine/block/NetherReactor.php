@@ -30,7 +30,7 @@ class NetherReactor extends Solid{
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Nether Reactor";
 	}
 

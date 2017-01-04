@@ -1,24 +1,4 @@
 <?php
-
-/*
- *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
-
 namespace pocketmine\block;
 
 use pocketmine\item\Tool;
@@ -26,6 +6,13 @@ use pocketmine\item\Item;
 use pocketmine\level\sound\NoteblockSound;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\StringTag;
+use pocketmine\tile\Tile;
+use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\ByteTag;
+use pocketmine\tile\Music;
+use pocketmine\network\protocol\BlockEventPacket;
 
 class Noteblock extends Solid implements ElectricalAppliance{
 	protected $id = self::NOTEBLOCK;
@@ -133,17 +120,43 @@ class Noteblock extends Solid implements ElectricalAppliance{
 		return NoteblockSound::INSTRUMENT_PIANO;
 	}
 
-	public function onActivate(Item $item, Player $player = null){
-		$up = $this->getSide(Vector3::SIDE_UP);
-		if($up->getId() == 0){
-			$this->getLevel()->addSound(new NoteblockSound($this, $this->getInstrument(), $this->getStrength()));
-			return true;
-		}else{
-			return false;
-		}
+	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
+		$this->getLevel()->setBlock($this, $this, true, true);
+		$nbt = new CompoundTag("", [
+				new StringTag("id", Tile::NOTEBLOCK),
+				new IntTag("x", $block->x),
+				new IntTag("y", $block->y),
+				new IntTag("z", $block->z),
+				new ByteTag("note", 0)
+		]);
+		Tile::createTile(Tile::NOTEBLOCK, $this->getLevel()->getChunk($this->x >> 4, $this->z >> 4), $nbt);
+		return true;
 	}
 
-	public function getName() : string{
+	public function onActivate(Item $item, Player $player = null){
+		$tile = $this->getLevel()->getTile($this);
+		if($tile instanceof Music){
+			$instrument = $this->getInstrument();
+			$pitch = $tile->getNote() + 1;
+			if($pitch < 0 or $pitch > 24){
+				$pitch = 0;
+			}
+			$tile->setNote($pitch);
+			$this->getLevel()->addSound(new NoteblockSound($this, $instrument, $pitch));
+			$pk = new BlockEventPacket();
+			$pk->x = $this->x;
+			$pk->y = $this->y;
+			$pk->z = $this->z;
+			$pk->case1 = $instrument;
+			$pk->case2 = $pitch;
+			$player->dataPacket($pk);
+			$this->getLevel()->addChunkPacket($tile->chunk->getX(), $tile->chunk->getZ(), $pk);
+			return true;
+		}
+		return false;
+	}
+
+	public function getName(){
 		return "Noteblock";
 	}
 }

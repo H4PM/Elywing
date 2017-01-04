@@ -54,7 +54,7 @@ class Zombie extends Monster{
 	private $fire_r = 1.3; //点燃半径
 	private $hateTicker = 0; //仇恨计时器
 
-	public function getName() : string{
+	public function getName(){
 		return "Zombie";
 	}
 	

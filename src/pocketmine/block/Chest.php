@@ -49,7 +49,7 @@ class Chest extends Transparent{
 		return 2.5;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Chest";
 	}
 

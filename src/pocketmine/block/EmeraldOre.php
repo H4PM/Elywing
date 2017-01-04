@@ -33,7 +33,7 @@ class EmeraldOre extends Solid{
 
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Emerald Ore";
 	}
 

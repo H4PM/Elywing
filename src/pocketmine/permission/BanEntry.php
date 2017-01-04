@@ -39,7 +39,7 @@ class BanEntry{
 		$this->creationDate = new \DateTime();
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return $this->name;
 	}
 

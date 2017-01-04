@@ -117,7 +117,7 @@ class ConsoleCommandSender implements CommandSender{
 	/**
 	 * @return string
 	 */
-	public function getName() : string{
+	public function getName(){
 		return "CONSOLE";
 	}
 

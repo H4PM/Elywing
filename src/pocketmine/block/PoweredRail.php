@@ -35,7 +35,7 @@ class PoweredRail extends Rail{
 		$this->meta = $meta;//0,1,2,3,4,5
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "PoweredRail";
 	}
 

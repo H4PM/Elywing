@@ -42,7 +42,7 @@ class Workbench extends Solid{
 		return 2.5;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Crafting Table";
 	}
 

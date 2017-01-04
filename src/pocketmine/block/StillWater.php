@@ -33,7 +33,7 @@ class StillWater extends Water{
 		}
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Still Water";
 	}
 }

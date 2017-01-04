@@ -48,7 +48,7 @@ class Coal extends Solid{
 		return 5;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Coal Block";
 	}
 

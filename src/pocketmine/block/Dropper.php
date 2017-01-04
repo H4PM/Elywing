@@ -48,7 +48,7 @@ class Dropper extends Solid implements ElectricalAppliance{
 		return 3.5;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Dropper";
 	}
 

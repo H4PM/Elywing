@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  * 
  *
- */
+*/
 
 namespace pocketmine\network\protocol;
 

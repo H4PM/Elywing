@@ -33,7 +33,7 @@ class Bookshelf extends Solid{
 
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Bookshelf";
 	}
 

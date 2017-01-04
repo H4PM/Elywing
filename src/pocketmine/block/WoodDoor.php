@@ -32,7 +32,7 @@ class WoodDoor extends Door{
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Wood Door Block";
 	}
 

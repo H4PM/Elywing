@@ -40,7 +40,7 @@ class CobblestoneStairs extends Stair{
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Cobblestone Stairs";
 	}
 

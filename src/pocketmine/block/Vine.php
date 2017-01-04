@@ -40,7 +40,7 @@ class Vine extends Transparent{
 		return false;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Vines";
 	}
 

@@ -43,7 +43,7 @@ class Quartz extends Solid{
 		return 0.8;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			0 => "Quartz Block",
 			1 => "Chiseled Quartz Block",

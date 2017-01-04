@@ -27,7 +27,7 @@ use pocketmine\Player;
 class MinecartChest extends Minecart{
 	const NETWORK_ID = 98;
 
-	public function getName() : string{
+	public function getName(){
 		return "Minecart Chest";
 	}
 

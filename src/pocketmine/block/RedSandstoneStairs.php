@@ -25,7 +25,7 @@ class RedSandstoneStairs extends SandstoneStairs{
 
 	protected $id = Block::RED_SANDSTONE_STAIRS;
 
-	public function getName() : string{
+	public function getName(){
 		return "Red Sandstone Stairs";
 	}
 }

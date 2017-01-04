@@ -110,7 +110,7 @@ class SkullBlock extends Transparent{
 		return 5;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			0 => "Skeleton Skull",
 			1 => "Wither Skeleton Skull",

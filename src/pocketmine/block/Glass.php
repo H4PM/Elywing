@@ -32,7 +32,7 @@ class Glass extends Transparent{
 
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Glass";
 	}
 

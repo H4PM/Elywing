@@ -40,7 +40,7 @@ class QuartzStairs extends Stair{
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Quartz Stairs";
 	}
 

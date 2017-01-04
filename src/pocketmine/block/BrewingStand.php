@@ -85,7 +85,7 @@ class BrewingStand extends Transparent{
 		return 1;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Brewing Stand";
 	}
 

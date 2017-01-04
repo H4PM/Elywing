@@ -42,7 +42,7 @@ class TNT extends Solid implements ElectricalAppliance{
 
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "TNT";
 	}
 

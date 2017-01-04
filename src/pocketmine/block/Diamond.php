@@ -36,7 +36,7 @@ class Diamond extends Solid{
 		return 5;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Diamond Block";
 	}
 

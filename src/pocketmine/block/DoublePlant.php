@@ -44,7 +44,7 @@ class DoublePlant extends Flowable{
 		return true;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			0 => "Sunflower",
 			1 => "Lilac",

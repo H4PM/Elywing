@@ -82,7 +82,7 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 		}*/
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return $this->hasName() ? $this->namedtag->CustomName->getValue() : "Brewing Stand";
 	}
 
@@ -150,7 +150,7 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 		if($i < 0){
 			return Item::get(Item::AIR, 0, 0);
 		}else{
-			return NBT::getItemHelper($this->namedtag->Items[$i]);
+			return Item::nbtDeserialize($this->namedtag->Items[$i]);
 		}
 	}
 
@@ -165,7 +165,7 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 	public function setItem($index, Item $item){
 		$i = $this->getSlotIndex($index);
 
-		$d = NBT::putItemHelper($item, $index);
+		$d = $item->nbtSerialize($index);
 
 		if($item->getId() === Item::AIR or $item->getCount() <= 0){
 			if($i >= 0){
@@ -222,7 +222,7 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 		$ingredient = $this->inventory->getIngredient();
 		$canBrew = false;
 
-		for($i = 1; $i <= 3; $i++){//查瓶子
+		for($i = 1; $i <= 3; $i++){
 			if($this->inventory->getItem($i)->getId() === Item::POTION or
 				$this->inventory->getItem($i)->getId() === Item::SPLASH_POTION
 			){
@@ -231,13 +231,13 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 		}
 
 		if($ingredient->getId() !== Item::AIR and $ingredient->getCount() > 0){//有原料
-			if($canBrew){//查原料
+			if($canBrew){
 				if(!$this->checkIngredient($ingredient)){
 					$canBrew = false;
 				}
 			}
 
-			if($canBrew){//查能不能炼
+			if($canBrew){
 				for($i = 1; $i <= 3; $i++){
 					$potion = $this->inventory->getItem($i);
 					$recipe = Server::getInstance()->getCraftingManager()->matchBrewingRecipe($ingredient, $potion);

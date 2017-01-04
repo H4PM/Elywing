@@ -23,12 +23,9 @@ namespace pocketmine\level\format;
 
 use pocketmine\level\Level;
 use pocketmine\nbt\NBT;
-use pocketmine\network\protocol\FullChunkDataPacket;
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\Server;
 use pocketmine\tile\Spawnable;
-use pocketmine\utils\BinaryStream;
-
 
 class ChunkRequestTask extends AsyncTask{
 
@@ -47,6 +44,7 @@ class ChunkRequestTask extends AsyncTask{
 		$this->chunkX = $chunk->getX();
 		$this->chunkZ = $chunk->getZ();
 
+		//TODO: serialize tiles with chunks
 		$tiles = "";
 		$nbt = new NBT(NBT::LITTLE_ENDIAN);
 		foreach($chunk->getTiles() as $tile){
@@ -61,14 +59,16 @@ class ChunkRequestTask extends AsyncTask{
 
 	public function onRun(){
 		$chunk = GenericChunk::fastDeserialize($this->chunk);
+
 		$ordered = $chunk->networkSerialize();
+
 		$this->setResult($ordered, false);
 	}
 
 	public function onCompletion(Server $server){
 		$level = $server->getLevel($this->levelId);
 		if($level instanceof Level and $this->hasResult()){
-			$level->chunkRequestCallback($this->chunkX, $this->chunkZ, $this->getResult(), FullChunkDataPacket::ORDER_LAYERED);
+			$level->chunkRequestCallback($this->chunkX, $this->chunkZ, $this->getResult());
 		}
 	}
 

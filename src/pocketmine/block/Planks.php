@@ -54,7 +54,7 @@ class Planks extends Solid{
 		return 20;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			self::OAK => "Oak Wood Planks",
 			self::SPRUCE => "Spruce Wood Planks",

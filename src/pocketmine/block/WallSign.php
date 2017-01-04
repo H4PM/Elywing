@@ -27,7 +27,7 @@ class WallSign extends SignPost{
 	
 	protected $id = self::WALL_SIGN;
 	
-	public function getName() : string{
+	public function getName(){
 		return "Wall Sign";
 	}
 	

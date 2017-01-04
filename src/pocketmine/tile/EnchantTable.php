@@ -35,7 +35,7 @@ class EnchantTable extends Spawnable implements Nameable{
 		parent::__construct($chunk, $nbt);
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return $this->hasName() ? $this->namedtag->CustomName->getValue() : "Enchanting Table";
 	}
 

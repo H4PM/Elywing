@@ -38,7 +38,7 @@ class Cobweb extends Flowable{
 		return true;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Cobweb";
 	}
 

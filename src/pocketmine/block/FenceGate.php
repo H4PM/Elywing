@@ -35,7 +35,7 @@ class FenceGate extends Transparent implements ElectricalAppliance{
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Oak Fence Gate";
 	}
 

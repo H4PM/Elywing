@@ -48,7 +48,7 @@ class Dispenser extends Solid{
 		return 3.5;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Dispenser";
 	}
 

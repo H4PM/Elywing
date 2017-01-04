@@ -30,7 +30,7 @@ class MelonStem extends Crops{
 
 	protected $id = self::MELON_STEM;
 
-	public function getName() : string{
+	public function getName(){
 		return "Melon Stem";
 	}
 

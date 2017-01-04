@@ -23,23 +23,22 @@ namespace pocketmine\level;
 
 use pocketmine\block\Block;
 use pocketmine\entity\Entity;
+use pocketmine\event\block\BlockUpdateEvent;
 use pocketmine\event\entity\EntityDamageByBlockEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityExplodeEvent;
-use pocketmine\event\block\BlockUpdateEvent;
 use pocketmine\item\Item;
+use pocketmine\level\particle\HugeExplodeSeedParticle;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
-use pocketmine\network\Network;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\network\protocol\ExplodePacket;
-
 use pocketmine\utils\Random;
 
 class Explosion{
@@ -55,20 +54,18 @@ class Explosion{
 	public $stepLen = 0.3;
 	/** @var Entity|Block */
 	private $what;
-	private $dropItem;
 
-	public function __construct(Position $center, $size, $what = null, bool $dropItem = true){
+	public function __construct(Position $center, $size, $what = null){
 		$this->level = $center->getLevel();
 		$this->source = $center;
 		$this->size = max($size, 0);
 		$this->what = $what;
-		$this->dropItem = $dropItem;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function explodeA() : bool{
+	public function explodeA(){
 		if($this->size < 0.1){
 			return false;
 		}
@@ -119,7 +116,7 @@ class Explosion{
 		return true;
 	}
 
-	public function explodeB() : bool{
+	public function explodeB(){
 		$send = [];
 		$updateBlocks = [];
 
@@ -165,9 +162,7 @@ class Explosion{
 					$ev = new EntityDamageEvent($entity, EntityDamageEvent::CAUSE_BLOCK_EXPLOSION, $damage);
 				}
 
-				if($entity->attack($ev->getFinalDamage(), $ev) === true){
-					$ev->useArmors();
-				}
+				$entity->attack($ev->getFinalDamage(), $ev);
 				$entity->setMotion($motion->multiply($impact));
 			}
 		}
@@ -196,7 +191,7 @@ class Explosion{
 					"Fuse" => new ByteTag("Fuse", mt_rand(10, 30))
 				]));
 				$tnt->spawnToAll();
-			}elseif($this->dropItem and mt_rand(0, 100) < $yield){
+			}elseif(mt_rand(0, 100) < $yield){
 				foreach($block->getDrops($air) as $drop){
 					$this->level->dropItem($block->add(0.5, 0.5, 0.5), Item::get(...$drop));
 				}
@@ -226,6 +221,8 @@ class Explosion{
 		$pk->radius = $this->size;
 		$pk->records = $send;
 		$this->level->addChunkPacket($source->x >> 4, $source->z >> 4, $pk);
+
+		$this->level->addParticle(new HugeExplodeSeedParticle($source));
 
 		return true;
 	}

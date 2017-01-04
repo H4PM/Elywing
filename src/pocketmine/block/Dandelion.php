@@ -33,7 +33,7 @@ class Dandelion extends Flowable{
 
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Dandelion";
 	}
 

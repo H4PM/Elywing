@@ -40,7 +40,7 @@ class Clay extends Solid{
 		return Tool::TYPE_SHOVEL;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Clay Block";
 	}
 

@@ -40,7 +40,7 @@ class SlimeBlock extends Solid{
 		return 0;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Slime Block";
 	}
 }

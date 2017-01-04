@@ -37,7 +37,7 @@ class EndRod extends Flowable{
 		return 14;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "End Rod";
 	}
 

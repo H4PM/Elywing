@@ -51,7 +51,7 @@ class Fire extends Flowable{
 		return true;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Fire Block";
 	}
 

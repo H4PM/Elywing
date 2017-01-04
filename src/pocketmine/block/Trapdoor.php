@@ -35,7 +35,7 @@ class Trapdoor extends Transparent{
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Wooden Trapdoor";
 	}
 

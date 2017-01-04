@@ -25,7 +25,7 @@ class BurningFurnace extends Furnace implements SolidLight{
 
 	protected $id = self::BURNING_FURNACE;
 
-	public function getName() : string{
+	public function getName(){
 		return "Burning Furnace";
 	}
 

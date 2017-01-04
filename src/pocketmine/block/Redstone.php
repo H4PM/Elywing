@@ -56,7 +56,7 @@ class Redstone extends RedstoneSource{
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Block of Redstone";
 	}
 

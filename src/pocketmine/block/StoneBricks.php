@@ -45,7 +45,7 @@ class StoneBricks extends Solid{
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			0 => "Stone Bricks",
 			1 => "Mossy Stone Bricks",

@@ -121,9 +121,9 @@ use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
@@ -366,7 +366,7 @@ class Server{
 	/**
 	 * @return string
 	 */
-	public function getName() : string{
+	public function getName(){
 		return "Elywing";
 	}
 
@@ -2563,14 +2563,7 @@ class Server{
 		$pk = new PlayerListPacket();
 		$pk->type = PlayerListPacket::TYPE_ADD;
 		$pk->entries[] = [$uuid, $entityId, $name, $skinId, $skinData];
-
-		$playerList = $players === null ? $this->playerList : $players;
-		foreach($playerList as $player){
-			if($uuid->toBinary() === $player->getRawUniqueId()){
-				continue; //fixes duplicates
-			}
-			$player->dataPacket($pk);
-		}
+		Server::broadcastPacket($players === null ? $this->playerList : $players, $pk);
 	}
 
 	public function removePlayerListData(UUID $uuid, array $players = null){

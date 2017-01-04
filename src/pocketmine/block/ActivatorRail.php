@@ -29,7 +29,7 @@ class ActivatorRail extends PoweredRail {
         $this->meta = $meta;
     }
 
-    public function getName() : string {
+    public function getName() {
         return "Activator Rail";
     }
 }

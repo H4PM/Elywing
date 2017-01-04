@@ -79,7 +79,7 @@ class Sponge extends Solid{
 		}
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			0 => "Sponge",
 			1 => "Wet Sponge",

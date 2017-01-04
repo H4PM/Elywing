@@ -33,7 +33,7 @@ class Gravel extends Fallable{
 
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Gravel";
 	}
 

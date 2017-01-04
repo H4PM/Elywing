@@ -41,7 +41,7 @@ class WaterLily extends Flowable{
 		return false;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Lily Pad";
 	}
 

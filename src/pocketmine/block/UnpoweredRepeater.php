@@ -26,7 +26,7 @@ use pocketmine\item\Item;
 class UnpoweredRepeater extends PoweredRepeater{
 	protected $id = self::UNPOWERED_REPEATER_BLOCK;
 
-	public function getName() : string{
+	public function getName(){
 		return "Unpowered Repeater";
 	}
 

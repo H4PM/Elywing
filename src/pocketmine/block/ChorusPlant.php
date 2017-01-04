@@ -41,7 +41,7 @@ class ChorusPlant extends Crops{
 	return Tool::TYPE_AXE;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Chorus Plant";
 	}
 

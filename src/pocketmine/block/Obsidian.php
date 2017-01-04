@@ -38,7 +38,7 @@ class Obsidian extends Solid{
 		}
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Obsidian";
 	}
 

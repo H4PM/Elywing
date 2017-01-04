@@ -22,7 +22,6 @@
 namespace pocketmine\level\generator\normal\biome;
 
 
-
 class DesertBiome extends SandyBiome{
 
 	public function __construct(){
@@ -33,7 +32,7 @@ class DesertBiome extends SandyBiome{
 		$this->rainfall = 0;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Desert";
 	}
 }

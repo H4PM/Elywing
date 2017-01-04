@@ -40,7 +40,7 @@ class PolarBear extends Monster{
 
 	public $dropExp = [5, 5];
 	
-	public function getName() : string{
+	public function getName(){
 		$this->setMaxHealth(30);
 		return "Polar Bear";
 	}

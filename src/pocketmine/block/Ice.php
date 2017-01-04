@@ -33,7 +33,7 @@ class Ice extends Transparent{
 
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Ice";
 	}
 

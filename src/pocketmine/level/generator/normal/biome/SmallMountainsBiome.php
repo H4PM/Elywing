@@ -30,7 +30,7 @@ class SmallMountainsBiome extends MountainsBiome{
 		$this->setElevation(63, 97);
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Small Mountains";
 	}
 }

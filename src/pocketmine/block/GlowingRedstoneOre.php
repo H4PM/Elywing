@@ -28,7 +28,7 @@ class GlowingRedstoneOre extends RedstoneOre implements SolidLight{
 
 	protected $id = self::GLOWING_REDSTONE_ORE;
 
-	public function getName() : string{
+	public function getName(){
 		return "Glowing Redstone Ore";
 	}
 

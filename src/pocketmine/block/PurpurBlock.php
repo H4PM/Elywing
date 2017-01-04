@@ -26,6 +26,7 @@ namespace pocketmine\block;
 
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
+use pocketmine\Player;
 
 class PurpurBlock extends Solid{
 
@@ -35,7 +36,7 @@ class PurpurBlock extends Solid{
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			0 => "Purpur Block",
 			2 => "Purpur Pillar",
@@ -45,6 +46,23 @@ class PurpurBlock extends Solid{
 
 	public function getHardness(){
 		return 1.5;
+	}
+	
+	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
+		if($this->meta === 2){
+			//Quartz pillar block and chiselled quartz have different orientations
+			$faces = [
+				0 => 0,
+				1 => 0,
+				2 => 0b1000,
+				3 => 0b1000,
+				4 => 0b0100,
+				5 => 0b0100,
+			];
+			$this->meta = ($this->meta & 0x03) | $faces[$face];
+		}
+		$this->getLevel()->setBlock($block, $this, true, true);
+		return true;
 	}
 
 	public function getToolType(){

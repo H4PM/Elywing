@@ -33,7 +33,7 @@ class PackedIce extends Solid {
 
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Packed Ice";
 	}
 

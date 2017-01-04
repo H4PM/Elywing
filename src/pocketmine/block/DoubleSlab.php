@@ -40,7 +40,7 @@ class DoubleSlab extends Solid{
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			0 => "Stone",
 			1 => "Sandstone",

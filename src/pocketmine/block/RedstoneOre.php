@@ -34,7 +34,7 @@ class RedstoneOre extends Solid{
 
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Redstone Ore";
 	}
 

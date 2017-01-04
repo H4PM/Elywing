@@ -15,7 +15,7 @@ class Dragon extends Monster {
 		parent::initEntity();
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Ender Dragon";
 	}
 

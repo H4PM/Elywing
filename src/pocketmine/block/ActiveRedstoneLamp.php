@@ -32,7 +32,7 @@ class ActiveRedstoneLamp extends Solid implements ElectricalAppliance, SolidLigh
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Active Redstone Lamp";
 	}
 

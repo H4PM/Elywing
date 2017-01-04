@@ -56,7 +56,7 @@ class Wool extends Solid{
 		return Tool::TYPE_SHEARS;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			0 => "White Wool",
 			1 => "Orange Wool",

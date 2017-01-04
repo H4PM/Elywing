@@ -78,7 +78,7 @@ class Rabbit extends Animal{
 		return (int) $this->namedtag["RabbitType"];
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Rabbit";
 	}
 

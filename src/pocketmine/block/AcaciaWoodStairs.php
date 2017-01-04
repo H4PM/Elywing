@@ -25,7 +25,7 @@ class AcaciaWoodStairs extends WoodStairs{
 
 	protected $id = self::ACACIA_WOOD_STAIRS;
 
-	public function getName() : string{
+	public function getName(){
 		return "Acacia Wood Stairs";
 	}
 }

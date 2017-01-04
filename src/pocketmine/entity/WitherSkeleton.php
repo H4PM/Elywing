@@ -31,7 +31,7 @@ class WitherSkeleton extends Monster implements ProjectileSource{
 
 	public $dropExp = [5, 5];
 	
-	public function getName() : string{
+	public function getName(){
 		return "Wither Skeleton";
 	}
 	

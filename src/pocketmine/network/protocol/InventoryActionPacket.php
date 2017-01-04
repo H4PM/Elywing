@@ -26,12 +26,11 @@ namespace pocketmine\network\protocol;
 class InventoryActionPacket extends DataPacket{
 	const NETWORK_ID = Info::INVENTORY_ACTION_PACKET;
 
-	public $unknown; //varint (unsigned)
+	public $unknown;
 	public $item;
 
 	public function decode(){
-		$this->unknown = $this->getUnsignedVarInt();
-		$this->item = $this->getSlot();
+
 	}
 	
 	public function encode(){

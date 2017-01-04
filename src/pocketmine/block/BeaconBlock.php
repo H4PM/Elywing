@@ -49,7 +49,7 @@ class BeaconBlock extends Solid{
 		return 3;
 	}
 
-	public function getName() : string{
+	public function getName(){
         return "Beacon Block";
 	}
 

@@ -37,4 +37,5 @@ class BatchPacket extends DataPacket{
 		$this->reset();
 		$this->putString($this->payload);
 	}
+
 }

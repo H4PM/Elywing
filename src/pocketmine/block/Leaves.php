@@ -62,7 +62,7 @@ class Leaves extends Transparent{
 		return 60;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			self::OAK => "Oak Leaves",
 			self::SPRUCE => "Spruce Leaves",

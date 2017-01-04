@@ -62,6 +62,8 @@ class CompoundTag extends NamedTag implements \ArrayAccess{
 			}
 		}
 
+		assert(false, "Offset $offset not found");
+
 		return null;
 	}
 
@@ -97,7 +99,6 @@ class CompoundTag extends NamedTag implements \ArrayAccess{
 				$nbt->writeTag($tag, $network);
 			}
 		}
-
 		$nbt->writeTag(new EndTag, $network);
 	}
 

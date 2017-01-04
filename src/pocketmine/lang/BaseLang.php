@@ -45,7 +45,7 @@ class BaseLang{
 		$this->loadLang($path . $fallback . ".ini", $this->fallbackLang);
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return $this->get("language.name");
 	}
 

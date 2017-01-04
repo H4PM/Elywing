@@ -33,7 +33,7 @@ class Glowstone extends Transparent implements SolidLight{
 
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Glowstone";
 	}
 

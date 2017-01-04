@@ -33,7 +33,7 @@ class DaylightDetector extends RedstoneSource{
 	protected $id = self::DAYLIGHT_SENSOR;
 	//protected $hasStartedUpdate = false;
 
-	public function getName() : string{
+	public function getName(){
 		return "Daylight Sensor";
 	}
 

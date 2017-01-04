@@ -30,7 +30,7 @@ class Piston extends Solid{
 	}
 
 	public function getName(){
-        return "Piston";
+		return "Piston";
 	}
 
 }

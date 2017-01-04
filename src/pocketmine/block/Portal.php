@@ -39,7 +39,7 @@ class Portal extends Transparent{
 		}
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Portal";
 	}
 	

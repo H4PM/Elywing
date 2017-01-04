@@ -36,7 +36,7 @@ class EndPortalFrame extends Solid implements SolidLight{
 		return 1;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "End Portal Frame";
 	}
 

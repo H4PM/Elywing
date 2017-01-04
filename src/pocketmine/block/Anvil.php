@@ -55,7 +55,7 @@ class Anvil extends Fallable{
 		return 6000;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		$names = [
 			self::NORMAL => "Anvil",
 			self::SLIGHTLY_DAMAGED => "Slightly Damaged Anvil",

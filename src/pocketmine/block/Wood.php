@@ -43,7 +43,7 @@ class Wood extends Solid{
 		return 2;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		static $names = [
 			self::OAK => "Oak Wood",
 			self::SPRUCE => "Spruce Wood",
