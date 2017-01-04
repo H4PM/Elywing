@@ -1005,8 +1005,8 @@ class Item implements ItemIds{
 	/**
 	 * Serializes the item to an NBT CompoundTag
 	 *
-	 * @param int $slot optional, the inventory slot of the item
-	 * @param string $tagName optional, the tag name
+	 * @param int    $slot optional, the inventory slot of the item
+	 * @param string $tagName the name to assign to the CompoundTag object
 	 *
 	 * @return CompoundTag
 	 */
