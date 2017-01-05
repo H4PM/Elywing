@@ -51,6 +51,7 @@ use pocketmine\entity\Arrow;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Item as DroppedItem;
+use pocketmine\entity\XPOrb;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\block\BlockUpdateEvent;
@@ -90,6 +91,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\protocol\DataPacket;
@@ -2369,7 +2371,7 @@ class Level implements ChunkManager, Metadatable{
                 "Experience" => new LongTag("Experience", $exp),
             ]);
             $chunk = $this->getChunk($pos->x >> 4, $pos->z >> 4, false);
-            $expOrb = new ExperienceOrb($chunk, $nbt);
+            $expOrb = new XPOrb($chunk, $nbt);
             $expOrb->spawnToAll();
             $exp -= $ExpPerBall;
             $ExpPerBall = mt_rand(5, 10);
