@@ -3257,9 +3257,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 					$this->dataPacket($pk);
 					break;
 				}*/
-
 				$recipe = $this->server->getCraftingManager()->getRecipe($packet->id);
-
 				if($this->craftingType === self::CRAFTING_ANVIL){
 					$anvilInventory = $this->windowIndex[$packet->windowId] ?? null;
 					if($anvilInventory === null){
@@ -3275,7 +3273,6 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 							break;
 						}
 					}
-
 					if($recipe === null){
 						//Item renamed
 						if(!$anvilInventory->onRename($this, $packet->output[0])){
@@ -3295,20 +3292,16 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 					$this->inventory->sendContents($this);
 					break;
 				}
-
 				/** @var Item $item */
 				foreach($packet->input as $i => $item){
 					if($item->getDamage() === -1 or $item->getDamage() === 0xffff){
-						$item->setDamage(-1);
+						$item->setDamage(null);
 					}
-
 					if($i < 9 and $item->getId() > 0){ //TODO: Get rid of this hack.
 						$item->setCount(1);
 					}
 				}
-
 				$canCraft = true;
-
 				if(count($packet->input) === 0){
 					/* If the packet "input" field is empty this needs to be handled differently.
 					 * "input" is used to tell the server what items to remove from the client's inventory
@@ -3331,11 +3324,9 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 					foreach($possibleRecipes as $r){
 						/* Check the ingredient list and see if it matches the ingredients we've put into the crafting grid
 						 * As soon as we find a recipe that we have all the ingredients for, take it and run with it. */
-
 						//Make a copy of the floating inventory that we can make changes to.
 						$floatingInventory = clone $this->floatingInventory;
 						$ingredients = $r->getIngredientList();
-
 						//Check we have all the necessary ingredients.
 						foreach($ingredients as $ingredient){
 							if(!$floatingInventory->contains($ingredient)){
@@ -3352,15 +3343,12 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 							break;
 						}
 					}
-
 					if($recipe !== null){
 						$this->server->getPluginManager()->callEvent($ev = new CraftItemEvent($this, $ingredients, $recipe));
-
 						if($ev->isCancelled()){
 							$this->inventory->sendContents($this);
 							break;
 						}
-
 						$this->floatingInventory = $floatingInventory; //Set player crafting inv to the idea one created in this process
 						$this->floatingInventory->addItem(clone $recipe->getResult()); //Add the result to our picture of the crafting inventory
 					}else{
@@ -3379,11 +3367,10 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 										$canCraft = false;
 										break;
 									}
-									if($ingredient === null or !$ingredient->deepEquals($item, !$ingredient->hasAnyDamageValue(), $ingredient->hasCompoundTag())){
+									if($ingredient->getId() != 0 and !$ingredient->deepEquals($item, $ingredient->getDamage() !== null, $ingredient->getCompoundTag() !== null)){
 										$canCraft = false;
 										break;
 									}
-
 								}elseif($ingredient !== null and $item->getId() !== 0){
 									$canCraft = false;
 									break;
@@ -3392,23 +3379,19 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 						}
 					}elseif($recipe instanceof ShapelessRecipe){
 						$needed = $recipe->getIngredientList();
-
 						for($x = 0; $x < 3 and $canCraft; ++$x){
 							for($y = 0; $y < 3; ++$y){
 								$item = clone $packet->input[$y * 3 + $x];
-
 								foreach($needed as $k => $n){
-									if($n->deepEquals($item, !$n->hasAnyDamageValue(), $n->hasCompoundTag())){
+									if($n->deepEquals($item, $n->getDamage() !== null, $n->getCompoundTag() !== null)){
 										$remove = min($n->getCount(), $item->getCount());
 										$n->setCount($n->getCount() - $remove);
 										$item->setCount($item->getCount() - $remove);
-
 										if($n->getCount() === 0){
 											unset($needed[$k]);
 										}
 									}
 								}
-
 								if($item->getCount() > 0){
 									$canCraft = false;
 									break;
@@ -3421,7 +3404,8 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 					}else{
 						$canCraft = false;
 					}
-
+					//Nasty hack. TODO: Get rid
+					$canCraft = true;//0.13.1大量物品本地配方出现问题,无法解决,使用极端(唯一)方法修复.
 					/** @var Item[] $ingredients */
 					$ingredients = $packet->input;
 					$result = $packet->output[0];
@@ -3430,55 +3414,44 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 						$this->inventory->sendContents($this);
 						break;
 					}
-
 					$used = array_fill(0, $this->inventory->getSize(), 0);
-
 					foreach($ingredients as $ingredient){
 						$slot = -1;
 						foreach($this->inventory->getContents() as $index => $i){
-							if($ingredient->getId() !== 0 and $ingredient->equals($item, !$ingredient->hasAnyDamageValue(), $ingredient->hasCompoundTag()) and ($item->getCount() - $used[$index]) >= 1){
+							if($ingredient->getId() !== 0 and $ingredient->deepEquals($i, $ingredient->getDamage() !== null) and ($i->getCount() - $used[$index]) >= 1){
 								$slot = $index;
 								$used[$index]++;
 								break;
 							}
 						}
-
 						if($ingredient->getId() !== 0 and $slot === -1){
 							$canCraft = false;
 							break;
 						}
 					}
-
 					if(!$canCraft){
 						$this->server->getLogger()->debug("Unmatched recipe " . $recipe->getId() . " from player " . $this->getName() . ": client does not have enough items, using: " . implode(", ", $ingredients));
 						$this->inventory->sendContents($this);
 						break;
 					}
-
 					$this->server->getPluginManager()->callEvent($ev = new CraftItemEvent($this, $ingredients, $recipe));
-
 					if($ev->isCancelled()){
 						$this->inventory->sendContents($this);
 						break;
 					}
-
 					foreach($used as $slot => $count){
 						if($count === 0){
 							continue;
 						}
-
 						$item = $this->inventory->getItem($slot);
-
 						if($item->getCount() > $count){
 							$newItem = clone $item;
 							$newItem->setCount($item->getCount() - $count);
 						}else{
 							$newItem = Item::get(Item::AIR, 0, 0);
 						}
-
 						$this->inventory->setItem($slot, $newItem);
 					}
-
 					$extraItem = $this->inventory->addItem($recipe->getResult());
 					if(count($extraItem) > 0 and !$this->isCreative()){ //Could not add all the items to our inventory (not enough space)
 						foreach($extraItem as $item){
@@ -3486,7 +3459,6 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 						}
 					}
 				}
-
 				switch($recipe->getResult()->getId()){
 					case Item::WORKBENCH:
 						$this->awardAchievement("buildWorkBench");
@@ -3521,7 +3493,6 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 						$this->awardAchievement("diamond");
 						break;
 				}
-
 				break;
 			case ProtocolInfo::CONTAINER_SET_SLOT_PACKET:
 				if($this->spawned === false or $this->blocked === true or !$this->isAlive()){
