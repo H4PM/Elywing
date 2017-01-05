@@ -2395,7 +2395,7 @@ class Level implements ChunkManager, Metadatable{
                 "Experience" => new LongTag("Experience", $exp),
             ]);
             $chunk = $this->getChunk($pos->x >> 4, $pos->z >> 4, true);
-            $expOrb = new ExperienceOrb($chunk, $nbt);
+            $expOrb = new XPOrb($chunk, $nbt);
             $expOrb->spawnToAll();
         }
     }
