@@ -2342,7 +2342,61 @@ class Level implements ChunkManager, Metadatable{
 
 		unset($this->entities[$entity->getId()]);
 		unset($this->updateEntities[$entity->getId()]);
-	}
+    }
+
+    public function spawnXPOrb(Vector3 $pos, $exp = 0)
+    {
+        if ($exp > 50) {
+            $exp = 50;
+        }
+        $ExpPerBall = mt_rand(5, 10);
+        while ($exp >= $ExpPerBall) {
+            $nbt = new CompoundTag("", [
+                "Pos" => new ListTag("Pos", [
+                    new DoubleTag("", $pos->getX() + mt_rand(-1, 1) + mt_rand(100, 999) / 1000),
+                    new DoubleTag("", $pos->getY()),
+                    new DoubleTag("", $pos->getZ() + mt_rand(-1, 1) + mt_rand(100, 999) / 1000)
+                ]),
+                "Motion" => new ListTag("Motion", [
+                    new DoubleTag("", 0),
+                    new DoubleTag("", 0),
+                    new DoubleTag("", 0)
+                ]),
+                "Rotation" => new ListTag("Rotation", [
+                    new FloatTag("", 0),
+                    new FloatTag("", 0)
+                ]),
+                "Experience" => new LongTag("Experience", $exp),
+            ]);
+            $chunk = $this->getChunk($pos->x >> 4, $pos->z >> 4, false);
+            $expOrb = new ExperienceOrb($chunk, $nbt);
+            $expOrb->spawnToAll();
+            $exp -= $ExpPerBall;
+            $ExpPerBall = mt_rand(5, 10);
+        }
+        if ($exp > 0) {
+            $nbt = new CompoundTag("", [
+                "Pos" => new ListTag("Pos", [
+                    new DoubleTag("", $pos->getX() + mt_rand(-1, 1) + mt_rand(100, 999) / 1000),
+                    new DoubleTag("", $pos->getY()),
+                    new DoubleTag("", $pos->getZ() + mt_rand(-1, 1) + mt_rand(100, 999) / 1000)
+                ]),
+                "Motion" => new ListTag("Motion", [
+                    new DoubleTag("", 0),
+                    new DoubleTag("", 0),
+                    new DoubleTag("", 0)
+                ]),
+                "Rotation" => new ListTag("Rotation", [
+                    new FloatTag("", 0),
+                    new FloatTag("", 0)
+                ]),
+                "Experience" => new LongTag("Experience", $exp),
+            ]);
+            $chunk = $this->getChunk($pos->x >> 4, $pos->z >> 4, true);
+            $expOrb = new ExperienceOrb($chunk, $nbt);
+            $expOrb->spawnToAll();
+        }
+    }
 
 	/**
 	 * @param Entity $entity
