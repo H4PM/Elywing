@@ -150,9 +150,9 @@ class CreativeItems{
 			["id" => Item::QUARTZ_BLOCK],
 			["id" => Item::QUARTZ_BLOCK, "meta" => Quartz::QUARTZ_PILLAR],
 			["id" => Item::QUARTZ_BLOCK, "meta" => Quartz::QUARTZ_CHISELED],
-			["id" => Item::PRISMARINE_BLOCK, "meta" => 0], //Prismarine Block
-			["id" => Item::PRISMARINE_BLOCK, "meta" => 2], //Prismarine Bricks Block
-			["id" => Item::PRISMARINE_BLOCK, "meta" => 1], //Dark Prismarine Block
+			["id" => Item::PRISMARINE, "meta" => 0], //Prismarine Block
+			["id" => Item::PRISMARINE, "meta" => 2], //Prismarine Bricks Block
+			["id" => Item::PRISMARINE, "meta" => 1], //Dark Prismarine Block
 			["id" => Item::PURPUR_BLOCK, "meta" => 0], //Purpur Block
 			["id" => Item::PURPUR_BLOCK, "meta" => 2], //Purpur Pillar
 			["id" => Item::COAL_ORE],
@@ -171,11 +171,11 @@ class CreativeItems{
 			["id" => Item::END_STONE],
 		],
 		self::CATEGORY_DECORATION => [
-			["id" => Item::BEACON_BLOCK],
+			["id" => Item::BEACON],
 			["id" => Item::COBBLESTONE_WALL],
 			["id" => Item::COBBLESTONE_WALL, "meta" => StoneWall::MOSSY_WALL],
 			["id" => Item::LILY_PAD],
-			["id" => Item::SEA_LANTERN_BLOCK],
+			["id" => Item::SEA_LANTERN],
 			["id" => Item::GOLD_BLOCK],
 			["id" => Item::IRON_BLOCK],
 			["id" => Item::DIAMOND_BLOCK],

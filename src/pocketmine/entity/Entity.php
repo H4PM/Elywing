@@ -67,6 +67,7 @@ use pocketmine\Player;
 use pocketmine\plugin\Plugin;
 use pocketmine\Server;
 use pocketmine\utils\ChunkException;
+use pocketmine\entity\Item as DroppedItem;
 
 abstract class Entity extends Location implements Metadatable{
 

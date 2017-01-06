@@ -36,6 +36,8 @@ class BurningFurnace extends Solid{
 
 	protected $id = self::BURNING_FURNACE;
 
+	public function __construct(){}
+
 	public function getName(){
 		return "Burning Furnace";
 	}
@@ -109,7 +111,7 @@ class BurningFurnace extends Solid{
 		return true;
 	}
 
-	public function getDrops(Item $item){
+	public function getDrops(Item $item) : array{
 		$drops = [];
 		if($item->isPickaxe() >= Tool::TIER_WOODEN){
 			$drops[] = [Item::FURNACE, 0, 1];

@@ -43,7 +43,7 @@ class SeaLantern extends Solid{
 		return 15;
 	}
 
-	public function getDrops(Item $item){
+	public function getDrops(Item $item) : array{
 		return [
 			[Item::PRISMARINE_CRYSTALS, 0, 3],
 		];

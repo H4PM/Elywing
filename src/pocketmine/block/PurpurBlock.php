@@ -41,7 +41,7 @@ class PurpurBlock extends Solid{
 			0 => "Purpur Block",
 			2 => "Purpur Pillar",
 		];
-		return $names[$this->meta & 0x0f];
+		return $names[$this->meta & 0x0f]??"Purpur Block";
 	}
 
 	public function getHardness(){

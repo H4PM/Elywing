@@ -100,6 +100,12 @@ use pocketmine\utils\TextFormat;
 use pocketmine\utils\Utils;
 use pocketmine\utils\UUID;
 use pocketmine\utils\VersionString;
+use pocketmine\command\CommandReader;
+use pocketmine\command\ConsoleCommandSender;
+use pocketmine\command\SimpleCommandMap;
+use pocketmine\entity\Entity;
+use pocketmine\entity\Effect;
+use pocketmine\entity\Attribute;
 
 /**
  * The class that manages everything

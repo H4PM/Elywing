@@ -34,9 +34,7 @@ class Mycelium extends Solid{
 
 	protected $id = self::MYCELIUM;
 
-	public function __construct(){
-
-	}
+	public function __construct(){}
 
 	public function getName(){
 		return "Mycelium";
