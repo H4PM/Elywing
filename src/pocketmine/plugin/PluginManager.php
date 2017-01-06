@@ -490,7 +490,7 @@ class PluginManager{
 	 */
 	public function getPermissionSubscriptions($permission){
 		if(isset($this->permSubs[$permission])){
-			return $this->permSubs[$permission];
+			return $this->permSubs[$permission];//Return and ignore the further code
 			$subs = [];
 			foreach($this->permSubs[$permission] as $k => $perm){
 				/** @var \WeakRef $perm */
@@ -541,7 +541,7 @@ class PluginManager{
 		$subs = [];
 
 		if($op === true){
-			return $this->defSubsOp;
+			return $this->defSubsOp;//Return and ignore further code
 			foreach($this->defSubsOp as $k => $perm){
 				/** @var \WeakRef $perm */
 				if($perm->acquire()){
@@ -552,7 +552,7 @@ class PluginManager{
 				}
 			}
 		}else{
-			return $this->defSubs;
+			return $this->defSubs;//Return and ignore further code
 			foreach($this->defSubs as $k => $perm){
 				/** @var \WeakRef $perm */
 				if($perm->acquire()){
