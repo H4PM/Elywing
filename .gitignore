@@ -1,3 +1,6 @@
 *.iml
 .idea/misc.xml
 *.xml
+.buildpath
+.project
+.settings/org.eclipse.php.core.prefs
