@@ -282,7 +282,7 @@ class Chunk extends BaseChunk{
 					$count = $stream->getInt();
 					for($i = 0; $i < $count; ++$i){
 						$key = $stream->getInt();
-						$value = $stream->getShort(false);
+						$value = $stream->getShort();
 						$extraData[$key] = $value;
 					}
 				}

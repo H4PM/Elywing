@@ -91,6 +91,7 @@ class FillCommand extends VanillaCommand{
 			$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
 			return false;
 		}
+		return true;
 	}
 
 	private function setBlock(Vector3 $p, Level $lvl, ItemBlock $b, int $meta = 0) : bool{

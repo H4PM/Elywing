@@ -75,8 +75,8 @@ class Sponge extends Solid{
 					return Level::BLOCK_UPDATE_NORMAL;
 				}
 			}
-			return false;
 		}
+        return false;
 	}
 
 	public function getName(){

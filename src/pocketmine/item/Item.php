@@ -347,14 +347,14 @@ class Item implements ItemIds{
 			}
 			$class = self::$list[$id];
 			if($class === null){
-				return (new Item($id, $meta, $count))->setCompoundTag($tags, $networkItem);
+				return (new Item($id, $meta, $count))->setCompoundTag($tags/*, $networkItem*/);
 			}elseif($id < 256){
-				return (new ItemBlock(new $class($meta), $meta, $count))->setCompoundTag($tags, $networkItem);
+				return (new ItemBlock(new $class($meta), $meta, $count))->setCompoundTag($tags/*, $networkItem*/);
 			}else{
 				return (new $class($meta, $count))->setCompoundTag($tags, $networkItem);
 			}
 		}catch(\RuntimeException $e){
-			return (new Item($id, $meta, $count))->setCompoundTag($tags, $networkItem);
+			return (new Item($id, $meta, $count))->setCompoundTag($tags/*, $networkItem*/);
 		}
 	}
 

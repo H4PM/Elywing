@@ -74,6 +74,7 @@ abstract class Event{
 
 		/** @var Event $this */
 		$this->isCancelled = (bool) $value;
+		return (bool) $value;
 	}
 
 	/**

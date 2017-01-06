@@ -4037,7 +4037,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 
 	public function attack($damage, EntityDamageEvent $source){
 		if(!$this->isAlive()){
-			return;
+			return false;
 		}
 
 		if($this->isCreative()
@@ -4053,7 +4053,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 		parent::attack($damage, $source);
 
 		if($source->isCancelled()){
-			return;
+			return false;
 		}elseif($this->getLastDamageCause() === $source and $this->spawned){
 			$pk = new EntityEventPacket();
 			$pk->eid = 0;

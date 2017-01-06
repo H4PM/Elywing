@@ -409,6 +409,7 @@ class Minecart extends Vehicle{
 			$this->moveUsingVector($newVector);
 			return true;
 		}
+		return false;
 	}
 
 	/**

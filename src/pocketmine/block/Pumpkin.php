@@ -102,7 +102,7 @@ class Pumpkin extends Solid{
 					}elseif($block4->getId() == Item::IRON_BLOCK and $block5->getId() == Item::IRON_BLOCK and $block2->getId() == Item::AIR and $block3->getId() == Item::AIR){
 						$level->setBlock($block4, new Air());
 						$level->setBlock($block5, new Air());
-					}else return;
+					}else return true;
 					$level->setBlock($block, new Air());
 					$level->setBlock($block0, new Air());
 					$level->setBlock($block1, new Air());
