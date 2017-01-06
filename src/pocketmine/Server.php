@@ -106,6 +106,7 @@ use pocketmine\command\SimpleCommandMap;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Attribute;
+use pocketmine\command\CommandSender;
 
 /**
  * The class that manages everything
