@@ -113,7 +113,7 @@ class FishingHook extends Projectile{
 			$pk = new EntityEventPacket();
 			$pk->eid = $this->shootingEntity->getId();//$this or $this->shootingEntity
 			$pk->event = EntityEventPacket::FISH_HOOK_HOOK;
-			Server::broadcastPacket($this->shootingEntity->hasSpawned, $pk);
+			Server::getInstance()->broadcastPacket($this->shootingEntity->hasSpawned, $pk);
 		}
 	}
 
@@ -122,7 +122,7 @@ class FishingHook extends Projectile{
 			$pk = new EntityEventPacket();
 			$pk->eid = $this->shootingEntity->getId();//$this or $this->shootingEntity
 			$pk->event = EntityEventPacket::FISH_HOOK_BUBBLE;
-			Server::broadcastPacket($this->shootingEntity->hasSpawned, $pk);
+            Server::getInstance()->broadcastPacket($this->shootingEntity->hasSpawned, $pk);
 		}
 	}
 

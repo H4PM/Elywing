@@ -97,6 +97,10 @@ class Arrow extends Projectile{
 		return $hasUpdate;
 	}
 
+	public function isCritical(){
+	    return $this->isCritical;
+    }
+
 	public function spawnTo(Player $player){
 		$pk = new AddEntityPacket();
 		$pk->type = Arrow::NETWORK_ID;

@@ -173,7 +173,7 @@ class Potion extends Item{
 		if($human instanceof Player){
 			$human->dataPacket($pk);
 		}
-		Server::broadcastPacket($human->getViewers(), $pk);
+        Server::getInstance()->broadcastPacket($human->getViewers(), $pk);
 		
 		Server::getInstance()->getPluginManager()->callEvent($ev = new EntityDrinkPotionEvent($human, $this));
 		
