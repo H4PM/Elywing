@@ -29,7 +29,7 @@ use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\item\Tool;
 
-class Beacon extends Solid{
+class Beacon extends Transparent implements SolidLight{
 
 	protected $id = self::BEACON;
 
