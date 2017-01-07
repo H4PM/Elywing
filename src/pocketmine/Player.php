@@ -143,6 +143,7 @@ use pocketmine\network\protocol\PlayerActionPacket;
 use pocketmine\network\protocol\PlayStatusPacket;
 use pocketmine\network\protocol\ResourcePacksInfoPacket;
 use pocketmine\network\protocol\RespawnPacket;
+use pocketmine\network\protocol\SetDifficultyPacket;
 use pocketmine\network\protocol\SetEntityMotionPacket;
 use pocketmine\network\protocol\SetEntityDataPacket;
 use pocketmine\network\protocol\SetHealthPacket;
@@ -159,7 +160,10 @@ use pocketmine\permission\PermissibleBase;
 use pocketmine\permission\PermissionAttachment;
 use pocketmine\plugin\Plugin;
 use pocketmine\tile\ItemFrame;
+use pocketmine\tile\Sign;
 use pocketmine\tile\Spawnable;
+use pocketmine\tile\Tile;
+use pocketmine\utils\Binary;
 use pocketmine\utils\TextFormat;
 use pocketmine\utils\UUID;
 
@@ -868,7 +872,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				$this->dataPacket($pk);
 				$this->shouldSendStatus = true;
 			}
-			#$targetLevel->getWeather()->sendWeather($this);
+			$targetLevel->getWeather()->sendWeather($this);
 
 			if($this->spawned){
 				$this->spawnToAll();
@@ -1052,7 +1056,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 		$this->server->onPlayerLogin($this);
 		$this->spawnToAll();
 
-		#$this->level->getWeather()->sendWeather($this);
+		$this->level->getWeather()->sendWeather($this);
 
 		if($this->server->dserverConfig["enable"] and $this->server->dserverConfig["queryAutoUpdate"]){
 			$this->server->updateQuery();
@@ -1889,11 +1893,11 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 			if($this->isOnFire() or $this->lastUpdate % 10 == 0){
 				if($this->isCreative() and !$this->isInsideOfFire()){
 					$this->extinguish();
-				}/*elseif($this->getLevel()->getWeather()->isRainy()){
+				}elseif($this->getLevel()->getWeather()->isRainy()){
 					if($this->getLevel()->canBlockSeeSky($this)){
 						$this->extinguish();
 					}
-				}*/
+				}
 			}
 
 			if($this->server->antiFly){
@@ -2171,7 +2175,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 
 		$this->sendCommandData();
 
-		#$this->level->getWeather()->sendWeather($this);
+		$this->level->getWeather()->sendWeather($this);
 		$this->forceMovement = $this->teleportPosition = $this->getPosition();
 	}
 

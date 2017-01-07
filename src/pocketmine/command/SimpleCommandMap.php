@@ -80,7 +80,7 @@ use pocketmine\Server;
 use pocketmine\utils\MainLogger;
 use pocketmine\utils\TextFormat;
 
-class SimpleCommandMap implements CommandMap{
+class SimpleCommandMap implements CommandMap {
 
 	/**
 	 * @var Command[]

@@ -22,6 +22,11 @@
 namespace pocketmine;
 
 use pocketmine\block\Block;
+use pocketmine\command\CommandReader;
+use pocketmine\command\CommandSender;
+use pocketmine\command\ConsoleCommandSender;
+use pocketmine\command\PluginIdentifiableCommand;
+use pocketmine\command\SimpleCommandMap;
 use pocketmine\event\HandlerList;
 use pocketmine\event\level\LevelInitEvent;
 use pocketmine\event\level\LevelLoadEvent;
@@ -100,13 +105,9 @@ use pocketmine\utils\TextFormat;
 use pocketmine\utils\Utils;
 use pocketmine\utils\UUID;
 use pocketmine\utils\VersionString;
-use pocketmine\command\CommandReader;
-use pocketmine\command\ConsoleCommandSender;
-use pocketmine\command\SimpleCommandMap;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Attribute;
-use pocketmine\command\CommandSender;
 
 /**
  * The class that manages everything
