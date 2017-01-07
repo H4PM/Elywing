@@ -101,7 +101,7 @@ abstract class Entity extends Location implements Metadatable{
 	 * 28 (int) player "index"? 
 	 * 29 (block coords) bed position */
 	const DATA_SCALE = 39; //float
-	const DATA_INTERACTIVE_TAG = 40; const DATA_BUTTON_TEXT = 40 //string (button text)
+	const DATA_INTERACTIVE_TAG = 40; const DATA_BUTTON_TEXT = 40; //string (button text)
 	/* 41 (long) */
 	const DATA_MAX_AIR = 44; //short
 	const DATA_MARK_VARIANT = 45; //int
