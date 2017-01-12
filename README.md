@@ -14,6 +14,14 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+### How to get a server phar (assuming server has been setup once already)
+1. Download the .zip from GitHub
+2. Open Elywing-master and put the `src` file into the server folder. (DELETE OTHER SERVER PHARS, ONLY HAVE SRC)
+3. Download [DevTools.phar](https://jenkins.pmmp.io/job/PocketMine-MP%20DevTools/) and place it in your plugins folder.
+4. Run the server, and do /makeserver. Wait until it has finished, this can take a couple minutes.
+5. Now go to plugins/DevTools/ and you can find elywing.phar.
+6. Delete src from your server directory and place elywing.phar into the directory.
+7. Start the server
 
 __Elywing is a free, open-source software that creates Minecraft: Pocket Edition servers and allows extending its functionalities__
 
