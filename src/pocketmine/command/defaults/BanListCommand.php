@@ -32,7 +32,7 @@ class BanListCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			"%pocketmine.command.banlist.description",
-			"%commands.banlist.usage"
+			"%pocketmine.command.banlist.usage"
 		);
 		$this->setPermission("pocketmine.command.ban.list");
 	}

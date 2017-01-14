@@ -32,8 +32,7 @@ class ReloadCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			"%pocketmine.command.reload.description",
-			"%pocketmine.command.reload.usage",
-			["rl"]
+			"%pocketmine.command.reload.usage"
 		);
 		$this->setPermission("pocketmine.command.reload");
 	}

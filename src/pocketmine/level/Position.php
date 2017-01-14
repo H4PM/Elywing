@@ -89,6 +89,7 @@ class Position extends Vector3{
 		if(!$this->isValid()){
 			throw new LevelException("Undefined Level reference");
 		}
+
 		return Position::fromObject(parent::getSide($side, $step), $this->level);
 	}
 
@@ -117,4 +118,5 @@ class Position extends Vector3{
 		parent::fromObjectAdd($pos, $x, $y, $z);
 		return $this;
 	}
+
 }

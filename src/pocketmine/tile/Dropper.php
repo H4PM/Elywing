@@ -50,16 +50,13 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable{
 	public function __construct(Chunk $chunk, CompoundTag $nbt){
 		parent::__construct($chunk, $nbt);
 		$this->inventory = new DropperInventory($this);
-
 		if(!isset($this->namedtag->Items) or !($this->namedtag->Items instanceof ListTag)){
 			$this->namedtag->Items = new ListTag("Items", []);
 			$this->namedtag->Items->setTagType(NBT::TAG_Compound);
 		}
-
 		for($i = 0; $i < $this->getSize(); ++$i){
 			$this->inventory->setItem($i, $this->getItem($i));
 		}
-
 		$this->scheduleUpdate();
 	}
 
@@ -133,8 +130,6 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable{
 	public function setItem($index, Item $item){
 		$i = $this->getSlotIndex($index);
 
-		$d = $item->nbtSerialize($index);
-
 		if($item->getId() === Item::AIR or $item->getCount() <= 0){
 			if($i >= 0){
 				unset($this->namedtag->Items[$i]);
@@ -145,9 +140,9 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable{
 					break;
 				}
 			}
-			$this->namedtag->Items[$i] = $d;
+			$this->namedtag->Items[$i] = $item->nbtSerialize($index);
 		}else{
-			$this->namedtag->Items[$i] = $d;
+			$this->namedtag->Items[$i] = $item->nbtSerialize($index);
 		}
 
 		return true;
@@ -160,7 +155,7 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable{
 		return $this->inventory;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return isset($this->namedtag->CustomName) ? $this->namedtag->CustomName->getValue() : "Dropper";
 	}
 
@@ -235,8 +230,6 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable{
 					}
 			}
 
-			$itemTag = $needItem->nbtSerialize(null, "Item");
-
 			$nbt = new CompoundTag("", [
 				"Pos" => new ListTag("Pos", [
 					new DoubleTag("", $this->x + $motion[0] * 2 + 0.5),
@@ -253,7 +246,7 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable{
 					new FloatTag("", 0)
 				]),
 				"Health" => new ShortTag("Health", 5),
-				"Item" => $itemTag,
+				"Item" => $needItem->nbtSerialize(-1, "Item"),
 				"PickupDelay" => new ShortTag("PickupDelay", 10)
 			]);
 

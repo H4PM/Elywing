@@ -19,29 +19,23 @@
  *
 */
 
-namespace pocketmine\resourcepacks;
+namespace pocketmine\network\protocol;
 
-class ResourcePackInfoEntry{
-	protected $packId; //UUID
-	protected $version;
-	protected $uint64; // unknown
+#include <rules/DataPacket.h>
 
-	public function __construct(string $packId, string $version, $uint64){
-		$this->packId = $packId;
-		$this->version = $version;
-		$this->uint64 = $uint64;
+
+class ShowCreditsPacket extends DataPacket{
+	const NETWORK_ID = Info::SHOW_CREDITS_PACKET;
+
+	public $eid;
+
+	public function decode(){
+		$this->eid = $this->getEntityId(); //EntityRuntimeID
 	}
 
-	public function getPackId() : string{
-		return $this->packId;
-	}
-
-	public function getVersion() : string{
-		return $this->version;
-	}
-
-	public function getUint64(){
-		return $this->uint64;
+	public function encode(){
+		$this->reset();
+		$this->putEntityId($this->eid); //EntityRuntimeID
 	}
 
 }

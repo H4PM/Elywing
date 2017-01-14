@@ -33,6 +33,7 @@ class InteractPacket extends DataPacket{
 	const ACTION_MOUSEOVER = 4;
 
 	public $action;
+	public $eid;
 	public $target;
 
 	public function decode(){

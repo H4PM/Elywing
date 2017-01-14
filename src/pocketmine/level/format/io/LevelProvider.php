@@ -21,8 +21,9 @@
 
 declare(strict_types = 1);
 
-namespace pocketmine\level\format;
+namespace pocketmine\level\format\io;
 
+use pocketmine\level\format\Chunk;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 
@@ -185,7 +186,7 @@ interface LevelProvider{
 	public function setTime($value);
 
 	/**
-	 * @return int|string int, or the string numeric representation of a long in 32-bit systems
+	 * @return int
 	 */
 	public function getSeed();
 

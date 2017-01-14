@@ -203,12 +203,10 @@ class ListTag extends NamedTag implements \ArrayAccess, \Countable{
 				$tags[] = $tag;
 			}
 		}
-		$nbt->putInt(count($tags), $network);
+		$nbt->putInt(count($tags));
 		foreach($tags as $tag){
 			$tag->write($nbt, $network);
 		}
-
-		return true;
 	}
 
 	public function __toString(){

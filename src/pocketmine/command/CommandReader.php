@@ -92,7 +92,7 @@ class CommandReader extends Thread{
 
 	public function run(){
 		if($this->readline){
-			readline_callback_handler_install("Genisys> ", [$this, "readline_callback"]);
+			readline_callback_handler_install("Tesseract> ", [$this, "readline_callback"]);
 			$this->logger->setConsoleCallback("readline_redisplay");
 		}
 

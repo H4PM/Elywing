@@ -19,13 +19,16 @@
  *
 */
 
-namespace pocketmine\level\sound;
+namespace pocketmine\inventory;
 
-use pocketmine\math\Vector3;
-use pocketmine\network\protocol\LevelEventPacket;
+use pocketmine\utils\UUID;
 
-class AnvilBreakSound extends GenericSound{
-	public function __construct(Vector3 $pos, $pitch = 0){
-		parent::__construct($pos, LevelEventPacket::EVENT_SOUND_ANVIL_BREAK, $pitch);
+class MultiRecipe{
+
+	private $uuid;
+
+	public function __construct(UUID $uuid){
+		$this->uuid = $uuid;
 	}
+
 }

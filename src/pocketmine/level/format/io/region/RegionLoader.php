@@ -21,10 +21,10 @@
 
 declare(strict_types = 1);
 
-namespace pocketmine\level\format\region;
+namespace pocketmine\level\format\io\region;
 
-use pocketmine\level\format\generic\GenericChunk;
-use pocketmine\level\format\LevelProvider;
+use pocketmine\level\format\Chunk;
+use pocketmine\level\format\io\LevelProvider;
 use pocketmine\utils\Binary;
 use pocketmine\utils\ChunkException;
 use pocketmine\utils\MainLogger;
@@ -114,7 +114,7 @@ class RegionLoader{
 		}
 
 		$chunk = $this->levelProvider->nbtDeserialize(fread($this->filePointer, $length - 1));
-		if($chunk instanceof GenericChunk){
+		if($chunk instanceof Chunk){
 			return $chunk;
 		}else{
 			MainLogger::getLogger()->error("Corrupted chunk detected");
@@ -129,7 +129,7 @@ class RegionLoader{
 	protected function saveChunk(int $x, int $z, string $chunkData){
 		$length = strlen($chunkData) + 1;
 		if($length + 4 > self::MAX_SECTOR_LENGTH){
-			throw new ChunkException("Chunk is too big! " . ($length + 4) . " > " . self::MAX_SECTOR_LENGTH);
+			throw new ChunkException("Chunk is too big! ".($length + 4)." > ".self::MAX_SECTOR_LENGTH);
 		}
 		$sectors = (int) ceil(($length + 4) / 4096);
 		$index = self::getChunkOffset($x, $z);
@@ -159,7 +159,7 @@ class RegionLoader{
 		$this->locationTable[$index][1] = 0;
 	}
 
-	public function writeChunk(GenericChunk $chunk){
+	public function writeChunk(Chunk $chunk){
 		$this->lastUsed = time();
 		$chunkData = $this->levelProvider->nbtSerialize($chunk);
 		if($chunkData !== false){
@@ -288,9 +288,21 @@ class RegionLoader{
 
 	protected function createBlank(){
 		fseek($this->filePointer, 0);
-		ftruncate($this->filePointer, 8192); // this fills the file with the null byte
+		ftruncate($this->filePointer, 0);
 		$this->lastSector = 1;
-		$this->locationTable = array_fill(0, 1024, [0, 0, 0]);
+		$table = "";
+		for($i = 0; $i < 1024; ++$i){
+			$this->locationTable[$i] = [0, 0];
+			$table .= Binary::writeInt(0);
+		}
+
+		$time = time();
+		for($i = 0; $i < 1024; ++$i){
+			$this->locationTable[$i][2] = $time;
+			$table .= Binary::writeInt($time);
+		}
+
+		fwrite($this->filePointer, $table, 4096 * 2);
 	}
 
 	public function getX() : int{

@@ -27,16 +27,12 @@ use pocketmine\command\defaults\BanCommand;
 use pocketmine\command\defaults\BanIpByNameCommand;
 use pocketmine\command\defaults\BanIpCommand;
 use pocketmine\command\defaults\BanListCommand;
-use pocketmine\command\defaults\BiomeCommand;
-use pocketmine\command\defaults\CaveCommand;
-use pocketmine\command\defaults\ChunkInfoCommand;
 use pocketmine\command\defaults\DefaultGamemodeCommand;
 use pocketmine\command\defaults\DeopCommand;
 use pocketmine\command\defaults\DifficultyCommand;
 use pocketmine\command\defaults\DumpMemoryCommand;
 use pocketmine\command\defaults\EffectCommand;
 use pocketmine\command\defaults\EnchantCommand;
-use pocketmine\command\defaults\FillCommand;
 use pocketmine\command\defaults\GamemodeCommand;
 use pocketmine\command\defaults\GarbageCollectorCommand;
 use pocketmine\command\defaults\GiveCommand;
@@ -44,7 +40,6 @@ use pocketmine\command\defaults\HelpCommand;
 use pocketmine\command\defaults\KickCommand;
 use pocketmine\command\defaults\KillCommand;
 use pocketmine\command\defaults\ListCommand;
-use pocketmine\command\defaults\LvdatCommand;
 use pocketmine\command\defaults\MeCommand;
 use pocketmine\command\defaults\OpCommand;
 use pocketmine\command\defaults\PardonCommand;
@@ -73,6 +68,7 @@ use pocketmine\command\defaults\VersionCommand;
 use pocketmine\command\defaults\WeatherCommand;
 use pocketmine\command\defaults\WhitelistCommand;
 use pocketmine\command\defaults\XpCommand;
+use pocketmine\command\defaults\MakePharCommand;
 
 use pocketmine\event\TranslationContainer;
 use pocketmine\Player;
@@ -80,7 +76,7 @@ use pocketmine\Server;
 use pocketmine\utils\MainLogger;
 use pocketmine\utils\TextFormat;
 
-class SimpleCommandMap implements CommandMap {
+class SimpleCommandMap implements CommandMap{
 
 	/**
 	 * @var Command[]
@@ -110,13 +106,7 @@ class SimpleCommandMap implements CommandMap {
 		$this->register("pocketmine", new BanCidByNameCommand("bancidbyname"));
 		$this->register("pocketmine", new BanIpByNameCommand("banipbyname"));
 
-		$this->register("pocketmine", new LvdatCommand("lvdat"));
-		$this->register("pocketmine", new BiomeCommand("biome"));
-		$this->register("pocketmine", new CaveCommand("cave"));
-		$this->register("pocketmine", new ChunkInfoCommand("chunkinfo"));
-
 		$this->register("pocketmine", new VersionCommand("version"));
-		$this->register("pocketmine", new FillCommand("fill"));
 		$this->register("pocketmine", new PluginsCommand("plugins"));
 		$this->register("pocketmine", new SeedCommand("seed"));
 		$this->register("pocketmine", new HelpCommand("help"), null, true);

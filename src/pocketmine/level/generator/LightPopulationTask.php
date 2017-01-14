@@ -22,10 +22,11 @@
 namespace pocketmine\level\generator;
 
 use pocketmine\level\format\Chunk;
-use pocketmine\level\format\generic\GenericChunk;
 use pocketmine\level\Level;
+
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\Server;
+
 
 class LightPopulationTask extends AsyncTask{
 
@@ -39,7 +40,7 @@ class LightPopulationTask extends AsyncTask{
 
 	public function onRun(){
 		/** @var Chunk $chunk */
-		$chunk = GenericChunk::fastDeserialize($this->chunk);
+		$chunk = Chunk::fastDeserialize($this->chunk);
 		if($chunk === null){
 			//TODO error
 			return;
@@ -56,7 +57,7 @@ class LightPopulationTask extends AsyncTask{
 		$level = $server->getLevel($this->levelId);
 		if($level !== null){
 			/** @var Chunk $chunk */
-			$chunk = GenericChunk::fastDeserialize($this->chunk, $level->getProvider());
+			$chunk = Chunk::fastDeserialize($this->chunk, $level->getProvider());
 			if($chunk === null){
 				//TODO error
 				return;

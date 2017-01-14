@@ -51,5 +51,4 @@ class MoveEntityPacket extends DataPacket{
 		$this->putByte($this->yaw / (360.0 / 256));
 		$this->putByte($this->headYaw / (360.0 / 256));
 	}
-
 }

@@ -33,7 +33,7 @@ class BanIpByNameCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			"%pocketmine.command.banipbyname.description",
-			"%commands.banipbyname.usage"
+			"%pocketmine.command.banipbyname.usage"
 		);
 		$this->setPermission("pocketmine.command.banipbyname");
 	}

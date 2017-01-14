@@ -52,13 +52,12 @@ class Flat extends Generator{
 		return $this->options;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "flat";
 	}
 
 	public function __construct(array $options = []){
 		$this->preset = "2;7,2x3,2;1;";
-		//$this->preset = "2;7,59x1,3x3,2;1;spawn(radius=10 block=89),decoration(treecount=80 grasscount=45)";
 		$this->options = $options;
 		$this->chunk = null;
 
@@ -66,7 +65,7 @@ class Flat extends Generator{
 			$ores = new Ore();
 			$ores->setOreTypes([
 				new object\OreType(new CoalOre(), 20, 16, 0, 128),
-				new object\OreType(new IronOre(), 20, 8, 0, 64),
+				new object\OreType(New IronOre(), 20, 8, 0, 64),
 				new object\OreType(new RedstoneOre(), 8, 7, 0, 16),
 				new object\OreType(new LapisOre(), 1, 6, 0, 32),
 				new object\OreType(new GoldOre(), 2, 8, 0, 32),
@@ -77,9 +76,6 @@ class Flat extends Generator{
 			$this->populators[] = $ores;
 		}
 
-		/*if(isset($this->options["mineshaft"])){
-			$this->populators[] = new MineshaftPopulator(isset($this->options["mineshaft"]["chance"]) ? floatval($this->options["mineshaft"]["chance"]) : 0.01);
-		}*/
 	}
 
 	protected function parsePreset($preset, $chunkX, $chunkZ){

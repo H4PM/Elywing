@@ -34,6 +34,10 @@ use pocketmine\network\protocol\AdventureSettingsPacket;
 use pocketmine\network\protocol\AnimatePacket;
 use pocketmine\network\protocol\AvailableCommandsPacket;
 use pocketmine\network\protocol\BatchPacket;
+use pocketmine\network\protocol\BlockEntityDataPacket;
+use pocketmine\network\protocol\BlockEventPacket;
+use pocketmine\network\protocol\BossEventPacket;
+use pocketmine\network\protocol\ChangeDimensionPacket;
 use pocketmine\network\protocol\ChunkRadiusUpdatedPacket;
 use pocketmine\network\protocol\CommandStepPacket;
 use pocketmine\network\protocol\ContainerClosePacket;
@@ -43,57 +47,53 @@ use pocketmine\network\protocol\ContainerSetDataPacket;
 use pocketmine\network\protocol\ContainerSetSlotPacket;
 use pocketmine\network\protocol\CraftingDataPacket;
 use pocketmine\network\protocol\CraftingEventPacket;
-use pocketmine\network\protocol\ChangeDimensionPacket;
 use pocketmine\network\protocol\DataPacket;
+use pocketmine\network\protocol\DisconnectPacket;
 use pocketmine\network\protocol\DropItemPacket;
-use pocketmine\network\protocol\FullChunkDataPacket;
-use pocketmine\network\protocol\Info;
-use pocketmine\network\protocol\ItemFrameDropItemPacket;
-use pocketmine\network\protocol\RequestChunkRadiusPacket;
-use pocketmine\network\protocol\SetEntityLinkPacket;
-use pocketmine\network\protocol\BlockEntityDataPacket;
 use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\network\protocol\ExplodePacket;
+use pocketmine\network\protocol\FullChunkDataPacket;
 use pocketmine\network\protocol\HurtArmorPacket;
+use pocketmine\network\protocol\Info;
 use pocketmine\network\protocol\Info as ProtocolInfo;
 use pocketmine\network\protocol\InteractPacket;
 use pocketmine\network\protocol\InventoryActionPacket;
+use pocketmine\network\protocol\ItemFrameDropItemPacket;
 use pocketmine\network\protocol\LevelEventPacket;
 use pocketmine\network\protocol\LevelSoundEventPacket;
-use pocketmine\network\protocol\DisconnectPacket;
 use pocketmine\network\protocol\LoginPacket;
-use pocketmine\network\protocol\PlayStatusPacket;
-use pocketmine\network\protocol\TextPacket;
-use pocketmine\network\protocol\MoveEntityPacket;
-use pocketmine\network\protocol\MovePlayerPacket;
-use pocketmine\network\protocol\PlayerActionPacket;
 use pocketmine\network\protocol\MobArmorEquipmentPacket;
 use pocketmine\network\protocol\MobEquipmentPacket;
+use pocketmine\network\protocol\MoveEntityPacket;
+use pocketmine\network\protocol\MovePlayerPacket;
+use pocketmine\network\protocol\PlayStatusPacket;
+use pocketmine\network\protocol\PlayerActionPacket;
+use pocketmine\network\protocol\PlayerFallPacket;
+use pocketmine\network\protocol\PlayerInputPacket;
+use pocketmine\network\protocol\PlayerListPacket;
 use pocketmine\network\protocol\RemoveBlockPacket;
 use pocketmine\network\protocol\RemoveEntityPacket;
-use pocketmine\network\protocol\RemovePlayerPacket;
 use pocketmine\network\protocol\ReplaceItemInSlotPacket;
+use pocketmine\network\protocol\RequestChunkRadiusPacket;
 use pocketmine\network\protocol\ResourcePackClientResponsePacket;
 use pocketmine\network\protocol\ResourcePacksInfoPacket;
 use pocketmine\network\protocol\RespawnPacket;
 use pocketmine\network\protocol\SetCommandsEnabledPacket;
 use pocketmine\network\protocol\SetDifficultyPacket;
 use pocketmine\network\protocol\SetEntityDataPacket;
+use pocketmine\network\protocol\SetEntityLinkPacket;
 use pocketmine\network\protocol\SetEntityMotionPacket;
 use pocketmine\network\protocol\SetHealthPacket;
 use pocketmine\network\protocol\SetPlayerGameTypePacket;
 use pocketmine\network\protocol\SetSpawnPositionPacket;
 use pocketmine\network\protocol\SetTimePacket;
+use pocketmine\network\protocol\ShowCreditsPacket;
 use pocketmine\network\protocol\SpawnExperienceOrbPacket;
 use pocketmine\network\protocol\StartGamePacket;
 use pocketmine\network\protocol\TakeItemEntityPacket;
-use pocketmine\network\protocol\BlockEventPacket;
+use pocketmine\network\protocol\TextPacket;
 use pocketmine\network\protocol\UpdateBlockPacket;
-use pocketmine\network\protocol\PlayerFallPacket;
 use pocketmine\network\protocol\UseItemPacket;
-use pocketmine\network\protocol\PlayerListPacket;
-use pocketmine\network\protocol\PlayerInputPacket;
-//use pocketmine\network\protocol\ShowCreditsPacket;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\utils\BinaryStream;
@@ -231,19 +231,25 @@ class Network {
 				//prevent zlib_decode errors for incorrectly-decoded packets
 				throw new \InvalidArgumentException("BatchPacket payload is empty or packet decode error");
 			}
+
 			$str = zlib_decode($packet->payload, 1024 * 1024 * 64); //Max 64MB
 			$len = strlen($str);
+
 			if($len === 0){
 				throw new \InvalidStateException("Decoded BatchPacket payload is empty");
 			}
+
 			$stream = new BinaryStream($str);
+
 			while($stream->offset < $len){
 				$buf = $stream->getString();
 				if(($pk = $this->getPacket(ord($buf{0}))) !== null){
 					if($pk::NETWORK_ID === Info::BATCH_PACKET){
 						throw new \InvalidStateException("Invalid BatchPacket inside BatchPacket");
 					}
+
 					$pk->setBuffer($buf, 1);
+
 					$pk->decode();
 					assert($pk->feof(), "Still " . strlen(substr($pk->buffer, $pk->offset)) . " bytes unread in " . get_class($pk));
 					$p->handleDataPacket($pk);
@@ -252,8 +258,10 @@ class Network {
 		}catch(\Throwable $e){
 			if(\pocketmine\DEBUG > 1){
 				$logger = $this->server->getLogger();
-				$logger->debug("BatchPacket " . " 0x" . bin2hex($packet->payload));
-				$logger->logException($e);
+				if($logger instanceof MainLogger){
+					$logger->debug("BatchPacket " . " 0x" . bin2hex($packet->payload));
+					$logger->logException($e);
+				}
 			}
 		}
 	}
@@ -318,11 +326,11 @@ class Network {
 		$this->registerPacket(ProtocolInfo::ADD_PLAYER_PACKET, AddPlayerPacket::class);
 		$this->registerPacket(ProtocolInfo::ADVENTURE_SETTINGS_PACKET, AdventureSettingsPacket::class);
 		$this->registerPacket(ProtocolInfo::ANIMATE_PACKET, AnimatePacket::class);
-		$this->registerPacket(ProtocolInfo::INVENTORY_ACTION_PACKET, InventoryActionPacket::class);
 		$this->registerPacket(ProtocolInfo::AVAILABLE_COMMANDS_PACKET, AvailableCommandsPacket::class);
 		$this->registerPacket(ProtocolInfo::BATCH_PACKET, BatchPacket::class);
 		$this->registerPacket(ProtocolInfo::BLOCK_ENTITY_DATA_PACKET, BlockEntityDataPacket::class);
 		$this->registerPacket(ProtocolInfo::BLOCK_EVENT_PACKET, BlockEventPacket::class);
+		$this->registerPacket(ProtocolInfo::BOSS_EVENT_PACKET, BossEventPacket::class);
 		$this->registerPacket(ProtocolInfo::CHANGE_DIMENSION_PACKET, ChangeDimensionPacket::class);
 		$this->registerPacket(ProtocolInfo::CHUNK_RADIUS_UPDATED_PACKET, ChunkRadiusUpdatedPacket::class);
 		$this->registerPacket(ProtocolInfo::COMMAND_STEP_PACKET, CommandStepPacket::class);
@@ -337,9 +345,7 @@ class Network {
 		$this->registerPacket(ProtocolInfo::DROP_ITEM_PACKET, DropItemPacket::class);
 		$this->registerPacket(ProtocolInfo::ENTITY_EVENT_PACKET, EntityEventPacket::class);
 		$this->registerPacket(ProtocolInfo::EXPLODE_PACKET, ExplodePacket::class);
-		$this->registerPacket(ProtocolInfo::PLAYER_FALL_PACKET, PlayerFallPacket::class);
 		$this->registerPacket(ProtocolInfo::FULL_CHUNK_DATA_PACKET, FullChunkDataPacket::class);
-		$this->registerPacket(ProtocolInfo::SET_COMMANDS_ENABLED_PACKET, SetCommandsEnabledPacket::class);
 		$this->registerPacket(ProtocolInfo::HURT_ARMOR_PACKET, HurtArmorPacket::class);
 		$this->registerPacket(ProtocolInfo::INTERACT_PACKET, InteractPacket::class);
 		$this->registerPacket(ProtocolInfo::INVENTORY_ACTION_PACKET, InventoryActionPacket::class);
@@ -347,12 +353,12 @@ class Network {
 		$this->registerPacket(ProtocolInfo::LEVEL_EVENT_PACKET, LevelEventPacket::class);
 		$this->registerPacket(ProtocolInfo::LEVEL_SOUND_EVENT_PACKET, LevelSoundEventPacket::class);
 		$this->registerPacket(ProtocolInfo::LOGIN_PACKET, LoginPacket::class);
-		//$this->registerPacket(ProtocolInfo::SHOW_CREDITS_PACKET, ShowCreditsPacket::class);
 		$this->registerPacket(ProtocolInfo::MOB_ARMOR_EQUIPMENT_PACKET, MobArmorEquipmentPacket::class);
 		$this->registerPacket(ProtocolInfo::MOB_EQUIPMENT_PACKET, MobEquipmentPacket::class);
 		$this->registerPacket(ProtocolInfo::MOVE_ENTITY_PACKET, MoveEntityPacket::class);
 		$this->registerPacket(ProtocolInfo::MOVE_PLAYER_PACKET, MovePlayerPacket::class);
 		$this->registerPacket(ProtocolInfo::PLAYER_ACTION_PACKET, PlayerActionPacket::class);
+		$this->registerPacket(ProtocolInfo::PLAYER_FALL_PACKET, PlayerFallPacket::class);
 		$this->registerPacket(ProtocolInfo::PLAYER_INPUT_PACKET, PlayerInputPacket::class);
 		$this->registerPacket(ProtocolInfo::PLAYER_LIST_PACKET, PlayerListPacket::class);
 		$this->registerPacket(ProtocolInfo::PLAY_STATUS_PACKET, PlayStatusPacket::class);
@@ -372,12 +378,12 @@ class Network {
 		$this->registerPacket(ProtocolInfo::SET_PLAYER_GAME_TYPE_PACKET, SetPlayerGameTypePacket::class);
 		$this->registerPacket(ProtocolInfo::SET_SPAWN_POSITION_PACKET, SetSpawnPositionPacket::class);
 		$this->registerPacket(ProtocolInfo::SET_TIME_PACKET, SetTimePacket::class);
+		$this->registerPacket(ProtocolInfo::SHOW_CREDITS_PACKET, ShowCreditsPacket::class);
 		$this->registerPacket(ProtocolInfo::SPAWN_EXPERIENCE_ORB_PACKET, SpawnExperienceOrbPacket::class);
 		$this->registerPacket(ProtocolInfo::START_GAME_PACKET, StartGamePacket::class);
 		$this->registerPacket(ProtocolInfo::TAKE_ITEM_ENTITY_PACKET, TakeItemEntityPacket::class);
 		$this->registerPacket(ProtocolInfo::TEXT_PACKET, TextPacket::class);
 		$this->registerPacket(ProtocolInfo::UPDATE_BLOCK_PACKET, UpdateBlockPacket::class);
 		$this->registerPacket(ProtocolInfo::USE_ITEM_PACKET, UseItemPacket::class);
-		$this->registerPacket(ProtocolInfo::ITEM_FRAME_DROP_ITEM_PACKET, ItemFrameDropItemPacket::class);
 	}
 }

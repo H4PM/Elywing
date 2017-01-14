@@ -21,24 +21,16 @@
 
 declare(strict_types = 1);
 
-namespace pocketmine\level\format\region;
+namespace pocketmine\level\format\io\region;
 
 use pocketmine\level\format\Chunk;
-use pocketmine\level\format\generic\GenericChunk;
-use pocketmine\level\format\generic\SubChunk;
-use pocketmine\level\format\generic\BaseLevelProvider;
+use pocketmine\level\format\io\BaseLevelProvider;
+use pocketmine\level\format\SubChunk;
 use pocketmine\level\generator\Generator;
 use pocketmine\level\Level;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\{
-	ByteArrayTag,
-	ByteTag,
-	CompoundTag,
-	IntArrayTag,
-	IntTag,
-	ListTag,
-	LongTag,
-	StringTag
+	ByteArrayTag, ByteTag, CompoundTag, IntArrayTag, IntTag, ListTag, LongTag, StringTag
 };
 use pocketmine\Player;
 use pocketmine\utils\MainLogger;
@@ -50,15 +42,15 @@ class McRegion extends BaseLevelProvider{
 	/** @var RegionLoader[] */
 	protected $regions = [];
 
-	/** @var GenericChunk[] */
+	/** @var Chunk[] */
 	protected $chunks = [];
 
 	/**
-	 * @param GenericChunk $chunk
+	 * @param Chunk $chunk
 	 *
 	 * @return string
 	 */
-	public function nbtSerialize(GenericChunk $chunk) : string{
+	public function nbtSerialize(Chunk $chunk) : string{
 		$nbt = new CompoundTag("Level", []);
 		$nbt->xPos = new IntTag("xPos", $chunk->getX());
 		$nbt->zPos = new IntTag("zPos", $chunk->getZ());
@@ -92,7 +84,7 @@ class McRegion extends BaseLevelProvider{
 		$nbt->BlockLight = new ByteArrayTag("BlockLight", $blockLight);
 
 		$nbt->Biomes = new ByteArrayTag("Biomes", $chunk->getBiomeIdArray());
-		$nbt->HeightMap = new IntArrayTag("HeightMap", $chunk->getHeightMapArray());
+		$nbt->HeightMap = new ByteArrayTag("HeightMap", pack("C*", ...$chunk->getHeightMapArray()));
 
 		$entities = [];
 
@@ -127,7 +119,7 @@ class McRegion extends BaseLevelProvider{
 	/**
 	 * @param string $data
 	 *
-	 * @return GenericChunk|null
+	 * @return Chunk|null
 	 */
 	public function nbtDeserialize(string $data){
 		$nbt = new NBT(NBT::BIG_ENDIAN);
@@ -144,9 +136,9 @@ class McRegion extends BaseLevelProvider{
 
 			$subChunks = [];
 			$fullIds = isset($chunk->Blocks) ? $chunk->Blocks->getValue() : str_repeat("\x00", 32768);
-			$fullData = isset($chunk->Data) ? $chunk->Data->getValue() : (str_repeat("\x00", 16384));
+			$fullData = isset($chunk->Data) ? $chunk->Data->getValue() : ($half = str_repeat("\x00", 16384));
 			$fullSkyLight = isset($chunk->SkyLight) ? $chunk->SkyLight->getValue() : str_repeat("\xff", 16384);
-			$fullBlockLight = isset($chunk->BlockLight) ? $chunk->BlockLight->getValue() : (str_repeat("\x00", 16384));
+			$fullBlockLight = isset($chunk->BlockLight) ? $chunk->BlockLight->getValue() : $half;
 
 			for($y = 0; $y < 8; ++$y){
 				$offset = ($y << 4);
@@ -177,14 +169,23 @@ class McRegion extends BaseLevelProvider{
 			}
 
 			if(isset($chunk->BiomeColors)){
-				$biomeIds = GenericChunk::convertBiomeColours($chunk->BiomeColors->getValue()); //Convert back to PC format (RIP colours D:)
+				$biomeIds = Chunk::convertBiomeColours($chunk->BiomeColors->getValue()); //Convert back to PC format (RIP colours D:)
 			}elseif(isset($chunk->Biomes)){
 				$biomeIds = $chunk->Biomes->getValue();
 			}else{
 				$biomeIds = "";
 			}
 
-			$result = new GenericChunk(
+			$heightMap = [];
+			if(isset($chunk->HeightMap)){
+				if($chunk->HeightMap instanceof ByteArrayTag){
+					$heightMap = unpack("C*", $chunk->HeightMap->getValue());
+				}elseif($chunk->HeightMap instanceof IntArrayTag){
+					$heightMap = $chunk->HeightMap->getValue(); #blameshoghicp
+				}
+			}
+
+			$result = new Chunk(
 				$this,
 				$chunk["xPos"],
 				$chunk["zPos"],
@@ -192,7 +193,7 @@ class McRegion extends BaseLevelProvider{
 				isset($chunk->Entities) ? $chunk->Entities->getValue() : [],
 				isset($chunk->TileEntities) ? $chunk->TileEntities->getValue() : [],
 				$biomeIds,
-				isset($chunk->HeightMap) ? $chunk->HeightMap->getValue() : [] //this shouldn't exist in normal mcregion worlds anyway...
+				$heightMap
 			);
 			$result->setLightPopulated(isset($chunk->LightPopulated) ? ((bool) $chunk->LightPopulated->getValue()) : false);
 			$result->setPopulated(isset($chunk->TerrainPopulated) ? ((bool) $chunk->TerrainPopulated->getValue()) : false);
@@ -249,9 +250,9 @@ class McRegion extends BaseLevelProvider{
 			"initialized" => new ByteTag("initialized", 1),
 			"GameType" => new IntTag("GameType", 0),
 			"generatorVersion" => new IntTag("generatorVersion", 1), //2 in MCPE
-			"SpawnX" => new IntTag("SpawnX", 256),
+			"SpawnX" => new IntTag("SpawnX", 128),
 			"SpawnY" => new IntTag("SpawnY", 70),
-			"SpawnZ" => new IntTag("SpawnZ", 256),
+			"SpawnZ" => new IntTag("SpawnZ", 128),
 			"version" => new IntTag("version", 19133),
 			"DayTime" => new IntTag("DayTime", 0),
 			"LastPlayed" => new LongTag("LastPlayed", microtime(true) * 1000),
@@ -414,10 +415,10 @@ class McRegion extends BaseLevelProvider{
 	 * @param int $chunkX
 	 * @param int $chunkZ
 	 *
-	 * @return GenericChunk
+	 * @return Chunk
 	 */
 	public function getEmptyChunk(int $chunkX, int $chunkZ){
-		return GenericChunk::getEmptyChunk($chunkX, $chunkZ, $this);
+		return Chunk::getEmptyChunk($chunkX, $chunkZ, $this);
 	}
 
 	/**

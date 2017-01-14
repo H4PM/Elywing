@@ -36,7 +36,7 @@ class EnchantCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			"%pocketmine.command.enchant.description",
-			"%commands.enchant.usage"
+			"%pocketmine.command.enchant.usage"
 		);
 		$this->setPermission("pocketmine.command.enchant");
 	}

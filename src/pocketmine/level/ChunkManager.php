@@ -19,7 +19,7 @@
  *
 */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace pocketmine\level;
 
@@ -35,7 +35,7 @@ interface ChunkManager{
 	 *
 	 * @return int 0-255
 	 */
-	public function getBlockIdAt(int $x, int $y, int $z) : int;
+	public function getBlockIdAt(int $x, int $y, int $z): int;
 
 	/**
 	 * Sets the raw block id.
@@ -69,6 +69,36 @@ interface ChunkManager{
 	public function setBlockDataAt(int $x, int $y, int $z, int $data);
 
 	/**
+	 * Gets the raw block light level
+	 *
+	 * @param int $x
+	 * @param int $y
+	 * @param int $z
+	 *
+	 * @return int 0-15
+	 */
+	public function getBlockLightAt(int $x, int $y, int $z) : int;
+
+	/**
+	 * Updates the light around the block
+	 *
+	 * @param $x
+	 * @param $y
+	 * @param $z
+	 */
+	public function updateBlockLight(int $x, int $y, int $z);
+
+	/**
+	 * Sets the raw block light level.
+	 *
+	 * @param int $x
+	 * @param int $y
+	 * @param int $z
+	 * @param int $level 0-15
+	 */
+	public function setBlockLightAt(int $x, int $y, int $z, int $level);
+
+	/**
 	 * @param int $chunkX
 	 * @param int $chunkZ
 	 *
@@ -86,7 +116,7 @@ interface ChunkManager{
 	/**
 	 * Gets the level seed
 	 *
-	 * @return int
+	 * @return int|string
 	 */
 	public function getSeed();
 }

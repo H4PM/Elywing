@@ -54,5 +54,4 @@ class UseItemPacket extends DataPacket{
 	public function encode(){
 
 	}
-
 }
