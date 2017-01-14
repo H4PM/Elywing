@@ -27,8 +27,6 @@ namespace pocketmine\item;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\block\Block;
-use pocketmine\block\Fence;
-use pocketmine\block\Flower;
 use pocketmine\entity\CaveSpider;
 use pocketmine\entity\Entity;
 use pocketmine\entity\PigZombie;
@@ -37,7 +35,6 @@ use pocketmine\entity\Skeleton;
 use pocketmine\entity\Spider;
 use pocketmine\entity\Witch;
 use pocketmine\entity\Zombie;
-use pocketmine\inventory\CreativeItems;
 use pocketmine\inventory\Fuel;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\level\Level;
@@ -48,29 +45,29 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\nbt\tag\Tag;
 use pocketmine\utils\Config;
 
-class Item implements ItemIds{
+class Item implements ItemIds, \JsonSerializable{
+
 	/** @var NBT */
 	private static $cachedParser = null;
 
-	private static function parseCompoundTag(string $tag, bool $network = false) : CompoundTag{
+	private static function parseCompoundTag(string $tag) : CompoundTag{
 		if(self::$cachedParser === null){
 			self::$cachedParser = new NBT(NBT::LITTLE_ENDIAN);
 		}
 
-		self::$cachedParser->read($tag, $network);
+		self::$cachedParser->read($tag);
 		return self::$cachedParser->getData();
 	}
 
-	private static function writeCompoundTag(CompoundTag $tag, bool $network = false) : string{
+	private static function writeCompoundTag(CompoundTag $tag) : string{
 		if(self::$cachedParser === null){
 			self::$cachedParser = new NBT(NBT::LITTLE_ENDIAN);
 		}
 
 		self::$cachedParser->setData($tag);
-		return self::$cachedParser->write($network);
+		return self::$cachedParser->write();
 	}
 
 
@@ -94,14 +91,17 @@ class Item implements ItemIds{
 			//TODO: Sort this mess into some kind of order
 			self::$list = new \SplFixedArray(65536);
 			self::$list[self::SUGARCANE] = Sugarcane::class;
+			self::$list[self::ENDER_PEARL] = EnderPearl::class;
+			self::$list[self::EYE_OF_ENDER] = EyeOfEnder::class;
+			self::$list[self::DRAGONS_BREATH] = DragonsBreath::class;
+			self::$list[self::SHULKER_SHELL] = ShulkerShell::class;
+			self::$list[self::POPPED_CHORUS_FRUIT] = PoppedChorusFruit::class;
 			self::$list[self::WHEAT_SEEDS] = WheatSeeds::class;
 			self::$list[self::PUMPKIN_SEEDS] = PumpkinSeeds::class;
 			self::$list[self::MELON_SEEDS] = MelonSeeds::class;
 			self::$list[self::MUSHROOM_STEW] = MushroomStew::class;
 			self::$list[self::RABBIT_STEW] = RabbitStew::class;
 			self::$list[self::BEETROOT_SOUP] = BeetrootSoup::class;
-			self::$list[self::CARROT] = Carrot::class;
-			self::$list[self::POTATO] = Potato::class;
 			self::$list[self::BEETROOT_SEEDS] = BeetrootSeeds::class;
 			self::$list[self::SIGN] = Sign::class;
 			self::$list[self::WOODEN_DOOR] = WoodenDoor::class;
@@ -218,6 +218,10 @@ class Item implements ItemIds{
 			self::$list[self::COOKED_CHICKEN] = CookedChicken::class;
 			self::$list[self::GOLD_NUGGET] = GoldNugget::class;
 			self::$list[self::EMERALD] = Emerald::class;
+			self::$list[self::ITEM_FRAME] = ItemFrame::class;
+			self::$list[self::FLOWER_POT] = FlowerPot::class;
+			self::$list[self::CARROT] = Carrot::class;
+			self::$list[self::POTATO] = Potato::class;
 			self::$list[self::BAKED_POTATO] = BakedPotato::class;
 			self::$list[self::PUMPKIN_PIE] = PumpkinPie::class;
 			self::$list[self::NETHER_BRICK] = NetherBrick::class;
@@ -225,7 +229,6 @@ class Item implements ItemIds{
 			self::$list[self::BREWING_STAND] = BrewingStand::class;
 			self::$list[self::CAMERA] = Camera::class;
 			self::$list[self::BEETROOT] = Beetroot::class;
-			self::$list[self::FLOWER_POT] = FlowerPot::class;
 			self::$list[self::SKULL] = Skull::class;
 			self::$list[self::RAW_RABBIT] = RawRabbit::class;
 			self::$list[self::COOKED_RABBIT] = CookedRabbit::class;
@@ -236,7 +239,6 @@ class Item implements ItemIds{
 			self::$list[self::BLAZE_POWDER] = BlazePowder::class;
 			self::$list[self::MAGMA_CREAM] = MagmaCream::class;
 			self::$list[self::GLISTERING_MELON] = GlisteringMelon::class;
-			self::$list[self::ITEM_FRAME] = ItemFrame::class;
 			self::$list[self::ENCHANTED_BOOK] = EnchantedBook::class;
 			self::$list[self::REPEATER] = Repeater::class;
 			self::$list[self::CAULDRON] = Cauldron::class;
@@ -245,10 +247,11 @@ class Item implements ItemIds{
 			self::$list[self::RAW_MUTTON] = RawMutton::class;
 			self::$list[self::COOKED_MUTTON] = CookedMutton::class;
 			self::$list[self::HOPPER] = Hopper::class;
-			self::$list[self::PRISMARINE_SHARD] = PrismarineShard::class;
-			self::$list[self::PRISMARINE_CRYSTALS] = PrismarineCrystals::class;
-			self::$list[self::NETHER_STAR] = NetherStar::class;
 			self::$list[self::ELYTRA] = Elytra::class;
+			self::$list[self::NETHER_STAR] = NetherStar::class;
+			self::$list[self::CHORUS_FRUIT] = ChorusFruit::class;
+			self::$list[self::PRISMARINE_CRYSTALS] = PrismarineCrystals::class;
+			self::$list[self::PRISMARINE_SHARD] = PrismarineShard::class;
 
 			for($i = 0; $i < 256; ++$i){
 				if(Block::$list[$i] !== null){
@@ -257,36 +260,23 @@ class Item implements ItemIds{
 			}
 		}
 
-		self::initCreativeItems($readFromJson);
+		self::initCreativeItems();
 	}
 
 	private static $creative = [];
 
-	private static function initCreativeItems($readFromJson = false){
+	private static function initCreativeItems(){
 		self::clearCreativeItems();
-		if(!$readFromJson){
-			foreach(CreativeItems::ITEMS as $category){
-				foreach($category as $itemData){
-					if(!isset($itemData["meta"])){
-						$itemData["meta"] = 0;
-					}
-					$item = Item::get($itemData["id"], @$itemData["meta"]);
-					if(isset($itemData["ench"])){
-						//Support multiple enchantments. Unnecessary really but nice to have.
-						foreach($itemData["ench"] as $ench){
-							$item->addEnchantment(Enchantment::getEnchantment($ench["id"])->setLevel($ench["lvl"]));
-						}
-					}
-					self::addCreativeItem($item);
-				}
+
+		$creativeItems = new Config(Server::getInstance()->getFilePath() . "src/pocketmine/resources/creativeitems.json", Config::JSON, []);
+
+		foreach($creativeItems->getAll() as $data){
+			$item = Item::get($data["id"], $data["damage"], $data["count"], $data["nbt"]);
+			if($item->getName() === "Unknown"){
+				continue;
 			}
-		}else{
-			$creativeItems = new Config(Server::getInstance()->getFilePath() . "src/pocketmine/resources/creativeitems.json", Config::JSON, []);
-			foreach($creativeItems->getAll() as $item){
-				self::addCreativeItem(Item::get($item["ID"], $item["Damage"]));
-			}
+			self::addCreativeItem($item);
 		}
-		
 	}
 
 	public static function clearCreativeItems(){
@@ -298,8 +288,7 @@ class Item implements ItemIds{
 	}
 	
 	public static function addCreativeItem(Item $item){
-		//Doing it this way allows adding enchanted items to inventory, like enchanted books
-		Item::$creative[] = $item;
+		Item::$creative[] = clone $item;
 	}
 
 	public static function removeCreativeItem(Item $item){
@@ -337,7 +326,7 @@ class Item implements ItemIds{
 		return -1;
 	}
 
-	public static function get($id, $meta = 0, int $count = 1, $tags = "", bool $networkItem = false) : Item{
+	public static function get($id, $meta = 0, int $count = 1, $tags = "") : Item{
 		try{
 			if(is_string($id)){
 				$item = Item::fromString($id);
@@ -347,14 +336,14 @@ class Item implements ItemIds{
 			}
 			$class = self::$list[$id];
 			if($class === null){
-				return (new Item($id, $meta, $count))->setCompoundTag($tags/*, $networkItem*/);
+				return (new Item($id, $meta, $count))->setCompoundTag($tags);
 			}elseif($id < 256){
-				return (new ItemBlock(new $class($meta), $meta, $count))->setCompoundTag($tags/*, $networkItem*/);
+				return (new ItemBlock(new $class($meta), $meta, $count))->setCompoundTag($tags);
 			}else{
-				return (new $class($meta, $count))->setCompoundTag($tags, $networkItem);
+				return (new $class($meta, $count))->setCompoundTag($tags);
 			}
 		}catch(\RuntimeException $e){
-			return (new Item($id, $meta, $count))->setCompoundTag($tags/*, $networkItem*/);
+			return (new Item($id, $meta, $count))->setCompoundTag($tags);
 		}
 	}
 
@@ -771,7 +760,7 @@ class Item implements ItemIds{
 	public function getNamedTagEntry($name){
 		$tag = $this->getNamedTag();
 		if($tag !== null){
-			return $tag->{$name} ?? null;
+			return isset($tag->{$name}) ? $tag->{$name} : null;
 		}
 
 		return null;
@@ -809,7 +798,7 @@ class Item implements ItemIds{
 		$this->count = $count;
 	}
 
-	final public function getName(){
+	final public function getName() : string{
 		return $this->hasCustomName() ? $this->getCustomName() : $this->name;
 	}
 
@@ -1059,4 +1048,3 @@ class Item implements ItemIds{
 	}
 
 }
-

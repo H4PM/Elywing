@@ -33,7 +33,7 @@ class DeopCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			"%pocketmine.command.deop.description",
-			"%commands.deop.usage"
+			"%pocketmine.command.deop.usage"
 		);
 		$this->setPermission("pocketmine.command.op.take");
 	}

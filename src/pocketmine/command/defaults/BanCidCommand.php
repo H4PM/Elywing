@@ -33,7 +33,7 @@ class BanCidCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			"%pocketmine.command.bancid.description",
-			"%commands.bancid.usage"
+			"%pocketmine.command.bancid.usage"
 		);
 		$this->setPermission("pocketmine.command.bancid");
 	}

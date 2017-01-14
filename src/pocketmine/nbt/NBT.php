@@ -29,18 +29,18 @@ use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\EndTag;
-use pocketmine\nbt\tag\FloatTag;
-use pocketmine\nbt\tag\IntArrayTag;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\IntArrayTag;
 use pocketmine\nbt\tag\LongTag;
-use pocketmine\nbt\tag\NamedTag;
+use pocketmine\nbt\tag\NamedTAG;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\Tag;
-
 #ifndef COMPILE
 use pocketmine\utils\Binary;
+
 #endif
 
 
@@ -133,6 +133,19 @@ class NBT{
 		}
 
 		return true;
+	}
+
+	public static function combineCompoundTags(CompoundTag $tag1, CompoundTag $tag2, bool $override = false) : CompoundTag{
+		$tag1 = clone $tag1;
+		foreach($tag2 as $k => $v){
+			if(!($v instanceof Tag)){
+				continue;
+			}
+			if(!isset($tag1->{$k}) or (isset($tag1->{$k}) and $override)){
+				$tag1->{$k} = clone $v;
+			}
+		}
+		return $tag1;
 	}
 
 	public static function parseJSON($data, &$offset = 0){
@@ -289,7 +302,7 @@ class NBT{
 					throw new \Exception("Syntax error: invalid quote at offset $offset");
 				}
 			}elseif($c === "\\"){
-				$value .= $data{$offset + 1} ?? "";
+				$value .= isset($data{$offset + 1}) ? $data{$offset + 1} : "";
 				++$offset;
 			}elseif($c === "{" and !$inQuotes){
 				if($value !== ""){
@@ -533,7 +546,7 @@ class NBT{
 
 	public function writeTag(Tag $tag, bool $network = false){
 		$this->putByte($tag->getType());
-		if($tag instanceof NamedTag){
+		if($tag instanceof NamedTAG){
 			$this->putString($tag->getName(), $network);
 		}
 		$tag->write($this, $network);
@@ -611,7 +624,6 @@ class NBT{
 	public function getArray(){
 		$data = [];
 		self::toArray($data, $this->data);
-		return $data;
 	}
 
 	private static function toArray(array &$data, Tag $tag){

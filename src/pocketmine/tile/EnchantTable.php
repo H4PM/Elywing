@@ -21,9 +21,7 @@
 
 namespace pocketmine\tile;
 
-use pocketmine\inventory\EnchantInventory;
-use pocketmine\inventory\InventoryHolder;
-use pocketmine\item\Item;
+
 use pocketmine\level\format\Chunk;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
@@ -35,7 +33,7 @@ class EnchantTable extends Spawnable implements Nameable{
 		parent::__construct($chunk, $nbt);
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return $this->hasName() ? $this->namedtag->CustomName->getValue() : "Enchanting Table";
 	}
 

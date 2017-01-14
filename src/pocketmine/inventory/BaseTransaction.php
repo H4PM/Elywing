@@ -217,7 +217,7 @@ class BaseTransaction implements Transaction{
 					$source->getFloatingInventory()->removeItem($change["in"]);
 				}
 			}
-			$this->getInventory()->setItem($this->getSlot(), $this->getTargetItem());
+			$this->getInventory()->setItem($this->getSlot(), $this->getTargetItem(), false);
 		}
 		
 		/* Process transaction achievements, like getting iron from a furnace */

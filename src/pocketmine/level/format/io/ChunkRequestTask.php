@@ -19,7 +19,7 @@
  *
 */
 
-namespace pocketmine\level\format\generic;
+namespace pocketmine\level\format\io;
 
 use pocketmine\level\format\Chunk;
 use pocketmine\level\Level;
@@ -59,9 +59,9 @@ class ChunkRequestTask extends AsyncTask{
 	}
 
 	public function onRun(){
-		$chunk = GenericChunk::fastDeserialize($this->chunk);
+		$chunk = Chunk::fastDeserialize($this->chunk);
 
-		$ordered = $chunk->networkSerialize();
+		$ordered = $chunk->networkSerialize() . $this->tiles;
 
 		$this->setResult($ordered, false);
 	}

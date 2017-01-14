@@ -24,7 +24,6 @@ namespace pocketmine\tile;
 use pocketmine\inventory\BrewingInventory;
 use pocketmine\inventory\InventoryHolder;
 use pocketmine\item\Item;
-use pocketmine\item\Fish;
 use pocketmine\level\format\Chunk;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\CompoundTag;
@@ -61,28 +60,24 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 	];
 
 	public function __construct(Chunk $chunk, CompoundTag $nbt){
+		if(!isset($nbt->CookedTime) or !($nbt->CookedTime instanceof ShortTag)){
+			$nbt->CookedTime = new ShortTag("CookedTime", 0);
+		}
 		parent::__construct($chunk, $nbt);
 		$this->inventory = new BrewingInventory($this);
-
 		if(!isset($this->namedtag->Items) or !($this->namedtag->Items instanceof ListTag)){
 			$this->namedtag->Items = new ListTag("Items", []);
 			$this->namedtag->Items->setTagType(NBT::TAG_Compound);
 		}
-
 		for($i = 0; $i < $this->getSize(); ++$i){
 			$this->inventory->setItem($i, $this->getItem($i));
 		}
-
-		if(!isset($this->namedtag->CookedTime)){
-			$this->namedtag->CookedTime = new ShortTag("CookedTime", 0);
-		}
-
 		/*if($this->namedtag["CookTime"] < self::MAX_BREW_TIME){
 			$this->scheduleUpdate();
 		}*/
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return $this->hasName() ? $this->namedtag->CustomName->getValue() : "Brewing Stand";
 	}
 
@@ -100,7 +95,7 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 	}
 
 	public function close(){
-		if($this->closed === false){
+		if(!$this->closed){
 			foreach($this->getInventory()->getViewers() as $player){
 				$player->removeWindow($this->getInventory());
 			}
@@ -165,8 +160,6 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 	public function setItem($index, Item $item){
 		$i = $this->getSlotIndex($index);
 
-		$d = $item->nbtSerialize($index);
-
 		if($item->getId() === Item::AIR or $item->getCount() <= 0){
 			if($i >= 0){
 				unset($this->namedtag->Items[$i]);
@@ -177,9 +170,9 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 					break;
 				}
 			}
-			$this->namedtag->Items[$i] = $d;
+			$this->namedtag->Items[$i] = $item->nbtSerialize($index);
 		}else{
-			$this->namedtag->Items[$i] = $d;
+			$this->namedtag->Items[$i] = $item->nbtSerialize($index);
 		}
 
 		return true;
@@ -203,11 +196,7 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 
 	public function updateSurface(){
 		$this->saveNBT();
-		$this->spawnToAll();
-		if($this->chunk){
-			$this->chunk->setChanged();
-			$this->level->clearChunkCache($this->chunk->getX(), $this->chunk->getZ());
-		}
+		$this->onChanged();
 	}
 
 	public function onUpdate(){
@@ -230,7 +219,7 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 			}
 		}
 
-		if($ingredient->getId() !== Item::AIR and $ingredient->getCount() > 0){//有原料
+		if($ingredient->getId() !== Item::AIR and $ingredient->getCount() > 0){
 			if($canBrew){
 				if(!$this->checkIngredient($ingredient)){
 					$canBrew = false;

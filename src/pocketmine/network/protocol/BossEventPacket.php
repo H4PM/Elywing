@@ -22,12 +22,12 @@
 namespace pocketmine\network\protocol;
 
 #include <rules/DataPacket.h>
+use pocketmine\utils\Binary;
 
-
-class ReplaceSelectedItemPacket extends DataPacket{
-	const NETWORK_ID = Info::REPLACE_SELECTED_ITEM_PACKET;
-
-	public $item;
+class BossEventPacket extends DataPacket{
+	const NETWORK_ID = Info::BOSS_EVENT_PACKET;
+  	public $eid;
+	public $type;
 
 	public function decode(){
 
@@ -35,7 +35,7 @@ class ReplaceSelectedItemPacket extends DataPacket{
 
 	public function encode(){
 		$this->reset();
-		$this->putSlot($this->item);
+		$this->putVarInt($this->eid);
+		$this->putUnsignedVarInt($this->type);
 	}
-
 }

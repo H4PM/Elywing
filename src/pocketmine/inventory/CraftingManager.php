@@ -56,7 +56,6 @@ class CraftingManager{
 		// load recipes from src/pocketmine/resources/recipes.json
 		$recipes = new Config(Server::getInstance()->getFilePath() . "src/pocketmine/resources/recipes.json", Config::JSON, []);
 
-		MainLogger::getLogger()->info("Loading recipes...");
 		foreach($recipes->getAll() as $recipe){
 			switch($recipe["type"]){
 				case 0:
@@ -322,7 +321,7 @@ class CraftingManager{
 			foreach($v as $item){
 				if($item !== null){
 					/** @var Item $item */
-					$hash .= $item->getId() . ":" . ($item->hasAnyDamageValue() ? "?" : $item->getDamage()) . "x" . $item->getCount() . ",";
+					$hash .= $item->getId() . ":" . ($item->hasAnyDamageValue()  ? "?" : $item->getDamage()) . "x" . $item->getCount() . ",";
 				}
 			}
 			$hash .= ";";
@@ -350,7 +349,7 @@ class CraftingManager{
 	 */
 	public function registerFurnaceRecipe(FurnaceRecipe $recipe){
 		$input = $recipe->getInput();
-		$this->furnaceRecipes[$input->getId() . ":" . ($input->hasAnyDamageValue() ? "?" : $input->getDamage())] = $recipe;
+		$this->furnaceRecipes[$input->getId() . ":" . ($input->hasAnyDamageValue()  ? "?" : $input->getDamage())] = $recipe;
 	}
 
 	/**
@@ -374,7 +373,7 @@ class CraftingManager{
 		$ingredients = $recipe->getIngredientList();
 		usort($ingredients, [$this, "sort"]);
 		foreach($ingredients as $item){
-			$hash .= $item->getId() . ":" . ($item->hasAnyDamageValue() ? "?" : $item->getDamage()) . "x" . $item->getCount() . ",";
+			$hash .= $item->getId() . ":" . ($item->hasAnyDamageValue()  ? "?" : $item->getDamage()) . "x" . $item->getCount() . ",";
 		}
 		if(isset($this->recipeLookup[$idx][$hash])){
 			return true;
@@ -389,7 +388,7 @@ class CraftingManager{
 				foreach($ingredients as $item){
 					$amount = $item->getCount();
 					foreach($checkInput as $k => $checkItem){
-						if($checkItem->equals($item, !$checkItem->hasAnyDamageValue(), $checkItem->hasCompoundTag())){
+						if($checkItem->equals($item, $checkItem->getDamage() === null ? false : true, $checkItem->getCompoundTag() === null ? false : true)){
 							$remove = min($checkItem->getCount(), $amount);
 							$checkItem->setCount($checkItem->getCount() - $remove);
 							if($checkItem->getCount() === 0){

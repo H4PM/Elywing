@@ -21,7 +21,7 @@
 
 namespace pocketmine\tile;
 
-use pocketmine\block\Block;
+
 use pocketmine\entity\Entity;
 use pocketmine\inventory\DispenserInventory;
 use pocketmine\inventory\InventoryHolder;
@@ -34,13 +34,6 @@ use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\entity\Item as ItemEntity;
-use pocketmine\entity\Egg;
-use pocketmine\entity\ThrownExpBottle;
-use pocketmine\entity\ThrownPotion;
-use pocketmine\entity\Arrow;
-use pocketmine\entity\Snowball;
-
-
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\IntTag;
@@ -55,25 +48,18 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 	public function __construct(Chunk $chunk, CompoundTag $nbt){
 		parent::__construct($chunk, $nbt);
 		$this->inventory = new DispenserInventory($this);
-
 		if(!isset($this->namedtag->Items) or !($this->namedtag->Items instanceof ListTag)){
 			$this->namedtag->Items = new ListTag("Items", []);
 			$this->namedtag->Items->setTagType(NBT::TAG_Compound);
 		}
-
 		for($i = 0; $i < $this->getSize(); ++$i){
 			$this->inventory->setItem($i, $this->getItem($i));
 		}
-
 		$this->scheduleUpdate();
 	}
 
 	public function close(){
 		if($this->closed === false){
-			foreach($this->getInventory()->getViewers() as $player){
-				$player->removeWindow($this->getInventory());
-			}
-
 			foreach($this->getInventory()->getViewers() as $player){
 				$player->removeWindow($this->getInventory());
 			}
@@ -138,8 +124,6 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 	public function setItem($index, Item $item){
 		$i = $this->getSlotIndex($index);
 
-		$d = $item->nbtSerialize($index);
-
 		if($item->getId() === Item::AIR or $item->getCount() <= 0){
 			if($i >= 0){
 				unset($this->namedtag->Items[$i]);
@@ -150,9 +134,9 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 					break;
 				}
 			}
-			$this->namedtag->Items[$i] = $d;
+			$this->namedtag->Items[$i] = $item->nbtSerialize($index);
 		}else{
-			$this->namedtag->Items[$i] = $d;
+			$this->namedtag->Items[$i] = $item->nbtSerialize($index);
 		}
 
 		return true;
@@ -165,7 +149,7 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 		return $this->inventory;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return isset($this->namedtag->CustomName) ? $this->namedtag->CustomName->getValue() : "Dispenser";
 	}
 
@@ -223,158 +207,51 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 			$motion = $this->getMotion();
 			$needItem = Item::get($item->getId(), $item->getDamage());
 			$f = 1.5;
+			$nbt = new CompoundTag("", [
+				"Pos" => new ListTag("Pos", [
+							new DoubleTag("", $this->x + $motion[0] * 2 + 0.5),
+							new DoubleTag("", $this->y + ($motion[1] > 0 ? $motion[1] : 0.5)),
+							new DoubleTag("", $this->z + $motion[2] * 2 + 0.5)
+						]),
+						"Motion" => new ListTag("Motion", [
+							new DoubleTag("", $motion[0]),
+							new DoubleTag("", $motion[1]),
+							new DoubleTag("", $motion[2])
+						]),
+						"Rotation" => new ListTag("Rotation", [
+							new FloatTag("", lcg_value() * 360),
+							new FloatTag("", 0)
+						]),
+			]);
 			switch($needItem->getId()){
 				case Item::ARROW:
-					$nbt = new CompoundTag("", [
-						"Pos" => new ListTag("Pos", [
-							new DoubleTag("", $this->x + $motion[0] * 2 + 0.5),
-							new DoubleTag("", $this->y + ($motion[1] > 0 ? $motion[1] : 0.5)),
-							new DoubleTag("", $this->z + $motion[2] * 2 + 0.5)
-						]),
-						"Motion" => new ListTag("Motion", [
-							new DoubleTag("", $motion[0]),
-							new DoubleTag("", $motion[1]),
-							new DoubleTag("", $motion[2])
-						]),
-						"Rotation" => new ListTag("Rotation", [
-							new FloatTag("", lcg_value() * 360),
-							new FloatTag("", 0)
-						]),
-						"Fire" => new ShortTag("Fire", 0)
-					]);
-
-					$arrow = Entity::createEntity("Arrow", $this->chunk, $nbt);
-
-					$arrow->setMotion($arrow->getMotion()->multiply($f));
-					$arrow->spawnToAll();
-
+					$nbt->Fire = new ShortTag("Fire", 0);
+					$entity = Entity::createEntity("Arrow", $this->chunk, $nbt);
 					break;
 				case Item::SNOWBALL:
-					$nbt = new CompoundTag("", [
-						"Pos" => new ListTag("Pos", [
-							new DoubleTag("", $this->x + $motion[0] * 2 + 0.5),
-							new DoubleTag("", $this->y + ($motion[1] > 0 ? $motion[1] : 0.5)),
-							new DoubleTag("", $this->z + $motion[2] * 2 + 0.5)
-						]),
-						"Motion" => new ListTag("Motion", [
-							new DoubleTag("", $motion[0]),
-							new DoubleTag("", $motion[1]),
-							new DoubleTag("", $motion[2])
-						]),
-						"Rotation" => new ListTag("Rotation", [
-							new FloatTag("", lcg_value() * 360),
-							new FloatTag("", 0)
-						]),
-					]);
-
-					$snowball = Entity::createEntity("Snowball", $this->chunk, $nbt);
-
-					$snowball->setMotion($snowball->getMotion()->multiply($f));
-					$snowball->spawnToAll();
-
+					$entity = Entity::createEntity("Snowball", $this->chunk, $nbt);
 					break;
 				case Item::EGG:
-					$nbt = new CompoundTag("", [
-						"Pos" => new ListTag("Pos", [
-							new DoubleTag("", $this->x + $motion[0] * 2 + 0.5),
-							new DoubleTag("", $this->y + ($motion[1] > 0 ? $motion[1] : 0.5)),
-							new DoubleTag("", $this->z + $motion[2] * 2 + 0.5)
-						]),
-						"Motion" => new ListTag("Motion", [
-							new DoubleTag("", $motion[0]),
-							new DoubleTag("", $motion[1]),
-							new DoubleTag("", $motion[2])
-						]),
-						"Rotation" => new ListTag("Rotation", [
-							new FloatTag("", lcg_value() * 360),
-							new FloatTag("", 0)
-						]),
-					]);
-
-					$egg = Entity::createEntity("Egg", $this->chunk, $nbt);
-
-					$egg->setMotion($egg->getMotion()->multiply($f));
-					$egg->spawnToAll();
-
+					$entity = Entity::createEntity("Egg", $this->chunk, $nbt);
 					break;
 				case Item::SPLASH_POTION:
-					$nbt = new CompoundTag("", [
-						"Pos" => new ListTag("Pos", [
-							new DoubleTag("", $this->x + $motion[0] * 2 + 0.5),
-							new DoubleTag("", $this->y + ($motion[1] > 0 ? $motion[1] : 0.5)),
-							new DoubleTag("", $this->z + $motion[2] * 2 + 0.5)
-						]),
-						"Motion" => new ListTag("Motion", [
-							new DoubleTag("", $motion[0]),
-							new DoubleTag("", $motion[1]),
-							new DoubleTag("", $motion[2])
-						]),
-						"Rotation" => new ListTag("Rotation", [
-							new FloatTag("", lcg_value() * 360),
-							new FloatTag("", 0)
-						]),
-						"PotionId" => new ShortTag("PotionId", $item->getDamage()),
-					]);
-
-					$thrownPotion = Entity::createEntity("ThrownPotion", $this->chunk, $nbt);
-
-					$thrownPotion->setMotion($thrownPotion->getMotion()->multiply($f));
-					$thrownPotion->spawnToAll();
-
+					$nbt->PotionId = new ShortTag("PotionId", $item->getDamage());
+					$entity = Entity::createEntity("ThrownPotion", $this->chunk, $nbt);
 					break;
 				case Item::ENCHANTING_BOTTLE:
-					$nbt = new CompoundTag("", [
-						"Pos" => new ListTag("Pos", [
-							new DoubleTag("", $this->x + $motion[0] * 2 + 0.5),
-							new DoubleTag("", $this->y + ($motion[1] > 0 ? $motion[1] : 0.5)),
-							new DoubleTag("", $this->z + $motion[2] * 2 + 0.5)
-						]),
-						"Motion" => new ListTag("Motion", [
-							new DoubleTag("", $motion[0]),
-							new DoubleTag("", $motion[1]),
-							new DoubleTag("", $motion[2])
-						]),
-						"Rotation" => new ListTag("Rotation", [
-							new FloatTag("", lcg_value() * 360),
-							new FloatTag("", 0)
-						]),
-					]);
-
-					$thrownExpBottle = Entity::createEntity("ThrownExpBottle", $this->chunk, $nbt);
-
-					$thrownExpBottle->setMotion($thrownExpBottle->getMotion()->multiply($f));
-					$thrownExpBottle->spawnToAll();
-
+					$entity = Entity::createEntity("ThrownExpBottle", $this->chunk, $nbt);
 					break;
 				default:
-					$itemTag = $needItem->nbtSerialize(null, "Item");
-
-					$nbt = new CompoundTag("", [
-						"Pos" => new ListTag("Pos", [
-							new DoubleTag("", $this->x + $motion[0] * 2 + 0.5),
-							new DoubleTag("", $this->y + ($motion[1] > 0 ? $motion[1] : 0.5)),
-							new DoubleTag("", $this->z + $motion[2] * 2 + 0.5)
-						]),
-						"Motion" => new ListTag("Motion", [
-							new DoubleTag("", $motion[0]),
-							new DoubleTag("", $motion[1]),
-							new DoubleTag("", $motion[2])
-						]),
-						"Rotation" => new ListTag("Rotation", [
-							new FloatTag("", lcg_value() * 360),
-							new FloatTag("", 0)
-						]),
-						"Health" => new ShortTag("Health", 5),
-						"Item" => $itemTag,
-						"PickupDelay" => new ShortTag("PickupDelay", 10)
-					]);
-
+					$nbt->Health = new ShortTag("Health", 5);
+					$nbt->Item = $needItem->nbtSerialize(-1, "Item");
+					$nbt->PickupDelay = new ShortTag("PickupDelay", 10);
 					$f = 0.3;
-					$itemEntity = new ItemEntity($this->chunk, $nbt, $this);
-					$itemEntity->setMotion($itemEntity->getMotion()->multiply($f));
-					$itemEntity->spawnToAll();
+					$entity = new ItemEntity($this->chunk, $nbt, $this);
 					break;
 			}
+
+			$entity->setMotion($entity->getMotion()->multiply($f));
+			$entity->spawnToAll();
 
 			for($i = 1; $i < 10; $i++){
 				$this->getLevel()->addParticle(new SmokeParticle($this->add($motion[0] * $i * 0.3 + 0.5, $motion[1] == 0 ? 0.5 : $motion[1] * $i * 0.3, $motion[2] * $i * 0.3 + 0.5)));

@@ -22,7 +22,7 @@
 namespace pocketmine\level\sound;
 
 use pocketmine\math\Vector3;
-use pocketmine\network\protocol\LevelSoundEventPacket;
+use pocketmine\network\protocol\BlockEventPacket;
 
 class NoteblockSound extends GenericSound{
 	protected $instrument;
@@ -41,13 +41,13 @@ class NoteblockSound extends GenericSound{
 	}
 
 	public function encode(){
-		$pk = new LevelSoundEventPacket();
-		$pk->sound = LevelSoundEventPacket::SOUND_NOTE;
+		$pk = new BlockEventPacket();
 		$pk->x = $this->x;
 		$pk->y = $this->y;
 		$pk->z = $this->z;
-		$pk->extraData = $this->instrument;
-		$pk->pitch = $this->pitch;
+		$pk->case1 = $this->instrument;
+		$pk->case2 = $this->pitch;
+
 		return $pk;
 	}
 }
