@@ -96,6 +96,7 @@ use pocketmine\inventory\ShapedRecipe;
 use pocketmine\inventory\ShapelessRecipe;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
+use pocketmine\item\Elytra;
 use pocketmine\level\ChunkLoader;
 use pocketmine\level\format\Chunk;
 use pocketmine\level\Level;
@@ -493,6 +494,13 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 		$this->sendSettings();
 	}
 
+	public function usingElytra() {
+ 		if ($this->getInventory()->getChestplate() instanceof Elytra) {
+ 			return true;
+ 		}
+ 		return false;
+ 	}
+ 
 	public function getAllowFlight() : bool{
 		return $this->allowFlight;
 	}
@@ -1912,7 +1920,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 						}
 						$this->inAirTicks = 0;
 					}else{
-						if(!$this->allowFlight and $this->inAirTicks > 10 and !$this->isSleeping() and !$this->isImmobile()){
+						if(!$this->usingElytra() and !$this->allowFlight and $this->inAirTicks > 10 and !$this->isSleeping() and !$this->isImmobile()){
 							//expectedVelocity here is not calculated correctly
 							//This causes players to fall too fast when bouncing on slime when antiFly is enabled
 							$expectedVelocity = (-$this->gravity) / $this->drag - ((-$this->gravity) / $this->drag) * exp(-$this->drag * ($this->inAirTicks - $this->startAirTicks));
