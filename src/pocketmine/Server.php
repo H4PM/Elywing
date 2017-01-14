@@ -44,11 +44,10 @@ use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\enchantment\EnchantmentLevelTable;
 use pocketmine\item\Item;
 use pocketmine\lang\BaseLang;
-use pocketmine\level\format\leveldb\LevelDB;
-use pocketmine\level\format\LevelProviderManager;
-use pocketmine\level\format\region\Anvil;
-use pocketmine\level\format\region\McRegion;
-use pocketmine\level\format\region\PMAnvil;
+use pocketmine\level\format\io\LevelProviderManager;
+use pocketmine\level\format\io\region\Anvil;
+use pocketmine\level\format\io\region\McRegion;
+use pocketmine\level\format\io\region\PMAnvil;
 use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\generator\Flat;
 use pocketmine\level\generator\Void;
@@ -1847,10 +1846,6 @@ class Server{
 			LevelProviderManager::addProvider(Anvil::class);
 			LevelProviderManager::addProvider(McRegion::class);
 			LevelProviderManager::addProvider(PMAnvil::class);
-			if(extension_loaded("leveldb")){
-				$this->logger->debug($this->getLanguage()->translateString("pocketmine.debug.enable"));
-				LevelProviderManager::addProvider(LevelDB::class);
-			}
 
 
 			Generator::addGenerator(Flat::class, "flat");
