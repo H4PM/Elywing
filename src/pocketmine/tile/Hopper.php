@@ -46,7 +46,7 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable{
 
 	public function __construct(Chunk $chunk, CompoundTag $nbt){
 		if(!isset($nbt->TransferCooldown) or !($nbt->TransferCooldown instanceof IntTag)){
-			$this->namedtag->TransferCooldown = new IntTag("TransferCooldown", 0);
+			$nbt->TransferCooldown = new IntTag("TransferCooldown", 0);
 		}
 		parent::__construct($chunk, $nbt);
 		$this->inventory = new HopperInventory($this);
