@@ -880,10 +880,19 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 		$level = $level === null ? $this->level : $level;
 		$index = Level::chunkHash($x, $z);
 		if(isset($this->usedChunks[$index])){
-			foreach($level->getChunkEntities($x, $z) as $entity){
+			$chunk = $level->getChunk($x, $z);
+			foreach($chunk->getEntities() as $entity){
 				if($entity !== $this){
 					$entity->despawnFrom($this);
 				}
+			}
+			
+			if($level !== $this->level){
+				$pk = new FullChunkDataPacket();
+				$pk->chunkX = $x;
+				$pk->chunkZ = $z;
+				$pk->data = chr($chunk->getSubChunkSendCount());
+				$this->dataPacket($pk);
 			}
 
 			unset($this->usedChunks[$index]);
@@ -1615,6 +1624,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 
 		if($this->server->checkMovement){
 			if(($distanceSquared / ($tickDiff ** 2)) > 200){
+				$this->server->getLogger()->warning($this->getName() . " moved too fast, reverting movement");
 				$revert = true;
 			}else{
 				if($this->chunk === null or !$this->chunk->isGenerated()){
@@ -1662,15 +1672,6 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 			}
 
 			$diff = ($diffX ** 2 + $diffY ** 2 + $diffZ ** 2) / ($tickDiff ** 2);
-
-			if($this->isSurvival()){
-				if(!$revert and !$this->isSleeping()){
-					if($diff > 0.06){
-						$revert = true;
-						$this->server->getLogger()->warning($this->getServer()->getLanguage()->translateString("pocketmine.player.invalidMove", [$this->getName()]));
-					}
-				}
-			}
 
 			if($diff > 0){
 				$this->x = $newPos->x;
