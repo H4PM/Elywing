@@ -2658,7 +2658,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 						}else{
 							$thrownPotion->spawnToAll();
 						}
-					}elseif($item->getId() === Item::ENDERPEARL){
+					}elseif($item->getId() === Item::ENDER_PEARL){
 						$nbt = new CompoundTag("", [
 							"Pos" => new ListTag("Pos", [
 								new DoubleTag("", $this->x),
