@@ -1,4 +1,5 @@
 <?php
+
 /*
  *
  *  ____            _        _   __  __ _                  __  __ ____  
@@ -17,13 +18,17 @@
  * 
  *
 */
+
 namespace pocketmine\utils;
+
 #include <rules/DataPacket.h>
 #ifndef COMPILE
 #endif
+
 use pocketmine\item\Item;
 
 class BinaryStream extends \stdClass{
+
 	public $offset;
 	public $buffer;
 
@@ -122,8 +127,8 @@ class BinaryStream extends \stdClass{
 		$this->buffer .= Binary::writeShort($v);
 	}
 
-	public function getFloat(){
-		return Binary::readFloat($this->get(4));
+	public function getFloat(int $accuracy = -1){
+		return Binary::readFloat($this->get(4), $accuracy);
 	}
 
 	public function putFloat($v){
@@ -138,8 +143,8 @@ class BinaryStream extends \stdClass{
 		$this->buffer .= Binary::writeLShort($v);
 	}
 
-	public function getLFloat(){
-		return Binary::readLFloat($this->get(4));
+	public function getLFloat(int $accuracy = -1){
+		return Binary::readLFloat($this->get(4), $accuracy);
 	}
 
 	public function putLFloat($v){
@@ -281,20 +286,20 @@ class BinaryStream extends \stdClass{
 
 	public function getBlockCoords(&$x, &$y, &$z){
 		$x = $this->getVarInt();
-		$y = $this->getByte();
+		$y = $this->getUnsignedVarInt();
 		$z = $this->getVarInt();
 	}
 
 	public function putBlockCoords($x, $y, $z){
 		$this->putVarInt($x);
-		$this->putByte($y);
+		$this->putUnsignedVarInt($y);
 		$this->putVarInt($z);
 	}
 	
 	public function getVector3f(&$x, &$y, &$z){
-		$x = $this->getLFloat();
-		$y = $this->getLFloat();
-		$z = $this->getLFloat();
+		$x = $this->getLFloat(4);
+		$y = $this->getLFloat(4);
+		$z = $this->getLFloat(4);
 	}
 	
 	public function putVector3f($x, $y, $z){
