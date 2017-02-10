@@ -117,7 +117,9 @@ class Binary{
 					break;
 				case Entity::DATA_TYPE_POS:
 					//TODO: change this implementation (use objects)
-					$stream->putBlockCoords($d[1][0], $d[1][1], $d[1][2]); //x, y, z
+					$stream->putVarInt($d[1][0]); //x
+					$stream->putVarInt($d[1][1]); //y (SIGNED)
+					$stream->putVarInt($d[1][2]); //z
 					break;
 				case Entity::DATA_TYPE_LONG:
 					$stream->putVarInt($d[1]); //TODO: varint64 support
@@ -166,14 +168,17 @@ class Binary{
 					break;
 				case Entity::DATA_TYPE_SLOT:
 					//TODO: use objects directly
+					$value = [];
 					$item = $stream->getSlot();
 					$value[0] = $item->getId();
 					$value[1] = $item->getCount();
 					$value[2] = $item->getDamage();
 					break;
 				case Entity::DATA_TYPE_POS:
-					$value = [0, 0, 0];
-					$stream->getBlockCoords($value[0], $value[1], $value[2]);
+					$value = [];
+					$value[0] = $stream->getVarInt(); //x
+					$value[1] = $stream->getVarInt(); //y (SIGNED)
+					$value[2] = $stream->getVarInt(); //z
 					break;
 				case Entity::DATA_TYPE_LONG:
 					$value = $stream->getVarInt(); //TODO: varint64 proper support
@@ -482,15 +487,16 @@ class Binary{
 	public static function writeUnsignedVarInt($value){
 		$buf = "";
 		for($i = 0; $i < 10; ++$i){
- 			if(($value >> 7) !== 0){
- 				$buf .= chr($value | 0x80); //Let chr() take the last byte of this, it's faster than adding another & 0x7f.
- 			}else{
- 				$buf .= chr($value & 0x7f);
- 				return $buf;
+			if(($value >> 7) !== 0){
+				$buf .= chr($value | 0x80); //Let chr() take the last byte of this, it's faster than adding another & 0x7f.
+			}else{
+				$buf .= chr($value & 0x7f);
+				return $buf;
 			}
-		$value = (($value >> 7) & (PHP_INT_MAX >> 6)); //PHP really needs a logical right-shift operator
+
+			$value = (($value >> 7) & (PHP_INT_MAX >> 6)); //PHP really needs a logical right-shift operator
 		}
+
 		throw new \InvalidArgumentException("Value too large to be encoded as a varint");
 	}
 }
-
