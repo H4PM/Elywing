@@ -39,6 +39,7 @@ class LoginPacket extends DataPacket{
 	public $clientId;
 	public $identityPublicKey;
 	public $serverAddress;
+	public $deviceModel;
 
 	public $skinId = null;
 	public $skin = null;
@@ -101,6 +102,9 @@ class LoginPacket extends DataPacket{
 		}
 		if(isset($skinToken["SkinId"])){
 			$this->skinId = $skinToken["SkinId"];
+		}
+		if(isset($skinToken["DeviceModel"])){
+			$this->deviceModel = $skinToken["DeviceModel"];
 		}
 		if($verified){
 			$this->identityPublicKey = $chainKey;
