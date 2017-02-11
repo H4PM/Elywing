@@ -258,7 +258,7 @@ class Block extends Position implements BlockIds, Metadatable{
 			self::$list[self::NETHER_BRICK_FENCE] = NetherBrickFence::class;
 			self::$list[self::POWERED_RAIL] = PoweredRail::class;
 			self::$list[self::RAIL] = Rail::class;
-			//self::$list[self::ENDER_CHEST] = EnderChest::class;
+			self::$list[self::ENDER_CHEST] = EnderChest::class;
 			self::$list[self::WOODEN_PRESSURE_PLATE] = WoodenPressurePlate::class;
 			self::$list[self::STONE_PRESSURE_PLATE] = StonePressurePlate::class;
 			self::$list[self::LIGHT_WEIGHTED_PRESSURE_PLATE] = LightWeightedPressurePlate::class;
