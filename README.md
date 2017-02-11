@@ -1,5 +1,5 @@
 # ![PocketMine-MP](http://image.noelshack.com/fichiers/2016/43/1477490625-elybanner.png)
-###Elywing is now updated for MC:PE 1.0 [Windows 10 + PocketEdition] 
+###Elywing is now updated for MC:PE 1.0 [Windows 10 + Pocket Edition] 
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Lesser General Public License as published by
@@ -25,6 +25,7 @@
 
 __Elywing is a free, open-source software that creates Minecraft: Pocket Edition servers and allows extending its functionalities__
 
+__Elywing no longer supports MCRegion worlds, as they are deprecated.__
 
 ### Elywing, a fork of PocketMine-MP, modified by
 
@@ -40,6 +41,7 @@ __Elywing is a free, open-source software that creates Minecraft: Pocket Edition
 
 ### [Twitter @XenialDan/@thebigsmileXD](https://twitter.com/xenialdan/)
 
+### [Twitter @AppleDevelops](https://twitter.com/AppleDevelops/)
 
 ### [Elywing's Twitter](https://twitter.com/elywing_h4pm/)
 
