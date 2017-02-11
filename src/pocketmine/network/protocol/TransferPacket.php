@@ -30,8 +30,8 @@ class TransferPacket extends DataPacket{
 	public $port = 19132;
 	
 	public function decode(){
-		
 	}
+	
 	public function encode(){
 		$this->reset();
 		$this->putString($this->address);
