@@ -225,6 +225,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	protected $username;
 	protected $iusername;
 	protected $displayName;
+	protected $deviceModel;
 	protected $startAction = -1;
 	/** @var Vector3 */
 	protected $sleeping = null;
@@ -444,6 +445,10 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	 */
 	public function getClientId(){
 		return $this->randomClientId;
+	}
+	
+	public function getDeviceModel(){
+		return $this->deviceModel;
 	}
 
 	public function getClientSecret(){
@@ -2142,7 +2147,8 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 			$this->level->getName(),
 			round($this->x, 4),
 			round($this->y, 4),
-			round($this->z, 4)
+			round($this->z, 4),
+			TextFormat::YELLOW . $this->deviceModel . TextFormat::WHITE,
 		]));
 		/*if($this->isOp()){
 			$this->setRemoveFormat(false);
@@ -2244,6 +2250,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				$this->setNameTag($this->username);
 				$this->iusername = strtolower($this->username);
 				$this->protocol = $packet->protocol;
+				$this->deviceModel = $packet->deviceModel;
 
 				if($this->server->getConfigBoolean("online-mode", false) && $packet->identityPublicKey === null){
 					$this->kick("disconnectionScreen.notAuthenticated", false);
