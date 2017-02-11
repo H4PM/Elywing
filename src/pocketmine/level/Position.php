@@ -1,28 +1,11 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
- *
-*/
+
 
 namespace pocketmine\level;
 
 use pocketmine\math\Vector3;
-use pocketmine\utils\LevelException;
+use pocketmine\utils\MainLogger;
 
 class Position extends Vector3{
 
@@ -58,16 +41,34 @@ class Position extends Vector3{
 	 * @return Level
 	 */
 	public function getLevel(){
+		if($this->level !== null and $this->level->isClosed()){
+			MainLogger::getLogger()->debug("Position was holding a reference to an unloaded Level");
+			$this->level = null;
+		}
+ 
 		return $this->level;
 	}
 
-	public function setLevel(Level $level){
+	/**
+	 * Sets the target Level of the position.
+	 *
+	 * @param Level|null $level
+	 *
+	 * @return $this
+	 *
+	 * @throws \InvalidArgumentException if the specified Level has been closed
+	 */
+	public function setLevel(Level $level = null){
+		if($level !== null and $level->isClosed()){
+			throw new \InvalidArgumentException("Specified level has been unloaded and cannot be used");
+		}
+ 
 		$this->level = $level;
 		return $this;
 	}
 
 	/**
-	 * Checks if this object has a valid reference to a Level
+	 * Checks if this object has a valid reference to a loaded Level
 	 *
 	 * @return bool
 	 */

@@ -1,36 +1,20 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
- *
-*/
+
 
 declare(strict_types = 1);
 
 namespace pocketmine\level\format\io\region;
 
 use pocketmine\level\format\Chunk;
+use pocketmine\level\format\io\ChunkException;
+use pocketmine\level\format\io\ChunkUtils;
 use pocketmine\level\format\SubChunk;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\{
 	ByteArrayTag, ByteTag, CompoundTag, IntArrayTag, IntTag, ListTag, LongTag
 };
 use pocketmine\Player;
-use pocketmine\utils\ChunkException;
 use pocketmine\utils\MainLogger;
 
 
@@ -58,10 +42,10 @@ class Anvil extends McRegion{
 			}
 			$nbt->Sections[++$subChunks] = new CompoundTag(null, [
 				"Y"          => new ByteTag("Y", $y),
-				"Blocks"     => new ByteArrayTag("Blocks", Chunk::reorderByteArray($subChunk->getBlockIdArray())), //Generic in-memory chunks are currently always XZY
-				"Data"       => new ByteArrayTag("Data", Chunk::reorderNibbleArray($subChunk->getBlockDataArray())),
-				"SkyLight"   => new ByteArrayTag("SkyLight", Chunk::reorderNibbleArray($subChunk->getSkyLightArray())),
-				"BlockLight" => new ByteArrayTag("BlockLight", Chunk::reorderNibbleArray($subChunk->getBlockLightArray()))
+				"Blocks"     => new ByteArrayTag("Blocks", ChunkUtils::reorderByteArray($subChunk->getBlockIdArray())), //Generic in-memory chunks are currently always XZY
+				"Data"       => new ByteArrayTag("Data", ChunkUtils::reorderNibbleArray($subChunk->getBlockDataArray())),
+				"SkyLight"   => new ByteArrayTag("SkyLight", ChunkUtils::reorderNibbleArray($subChunk->getSkyLightArray(), "\xff")),
+				"BlockLight" => new ByteArrayTag("BlockLight", ChunkUtils::reorderNibbleArray($subChunk->getBlockLightArray()))
 			]);
 		}
 
@@ -116,17 +100,17 @@ class Anvil extends McRegion{
 				foreach($chunk->Sections as $subChunk){
 					if($subChunk instanceof CompoundTag){
 						$subChunks[$subChunk->Y->getValue()] = new SubChunk(
-							Chunk::reorderByteArray($subChunk->Blocks->getValue()),
-							Chunk::reorderNibbleArray($subChunk->Data->getValue()),
-							Chunk::reorderNibbleArray($subChunk->SkyLight->getValue()),
-							Chunk::reorderNibbleArray($subChunk->BlockLight->getValue())
+							ChunkUtils::reorderByteArray($subChunk->Blocks->getValue()),
+							ChunkUtils::reorderNibbleArray($subChunk->Data->getValue()),
+							ChunkUtils::reorderNibbleArray($subChunk->SkyLight->getValue(), "\xff"),
+							ChunkUtils::reorderNibbleArray($subChunk->BlockLight->getValue())
 						);
 					}
 				}
 			}
 
 			if(isset($chunk->BiomeColors)){
-				$biomeIds = Chunk::convertBiomeColours($chunk->BiomeColors->getValue()); //Convert back to PC format (RIP colours D:)
+				$biomeIds = ChunkUtils::convertBiomeColors($chunk->BiomeColors->getValue()); //Convert back to PC format (RIP colours D:)
 			}elseif(isset($chunk->Biomes)){
 				$biomeIds = $chunk->Biomes->getValue();
 			}else{
