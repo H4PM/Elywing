@@ -26,6 +26,7 @@ namespace pocketmine\command\defaults;
 
 use pocketmine\network\protocol\TransferPacket;
 use pocketmine\command\CommandSender;
+use pocketmine\event\TranslationContainer;
 use pocketmine\command\Command;
 use pocketmine\Server;
 use pocketmine\Player;
