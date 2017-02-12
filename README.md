@@ -1,5 +1,5 @@
 # ![PocketMine-MP](http://image.noelshack.com/fichiers/2016/43/1477490625-elybanner.png)
-###Elywing is now updated for MC:PE 1.0 [Windows 10 + Pocket Edition] 
+###Elywing is now updated for MC:PE 1.0.3 [Windows 10 + Pocket Edition] 
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Lesser General Public License as published by
