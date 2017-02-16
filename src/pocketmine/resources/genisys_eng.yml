@@ -63,6 +63,8 @@ server:
  allow-splash-potion: true
  #Set if Advanced Command Selector is enabled
  advanced-command-selector: false
+ 
+ allow-instabreak: false
 
 enchantment:
  #Choose if anvils are enabled

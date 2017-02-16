@@ -63,6 +63,7 @@ server:
  allow-splash-potion: true
  #Bật/tắt nếu muốn thêm Lệnh Nâng Cao (mặc định: false) (true/false)
  advanced-command-selector: false
+ allow-instabreak: false
  
 enchantment:
  #Bật/tắt nếu muốn kích hoạt Cái Đe

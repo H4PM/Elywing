@@ -63,6 +63,7 @@ server:
  allow-splash-potion: true
  #고급 명령어 선택기를 활성화 하는 경우 설정하세요
  advanced-command-selector: false
+ allow-instabreak: false
 
 enchantment:
  #모루가 허용된 경우 고르세요
