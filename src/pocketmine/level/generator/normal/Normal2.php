@@ -30,6 +30,7 @@ use pocketmine\block\Gravel;
 use pocketmine\block\IronOre;
 use pocketmine\block\LapisOre;
 use pocketmine\block\RedstoneOre;
+use pocketmine\block\Stone;
 use pocketmine\level\ChunkManager;
 use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\generator\biome\BiomeSelector;
@@ -56,6 +57,16 @@ class Normal2 extends Normal{
 	private $noiseRiver;
 
 	private $heightOffset;
+
+    /** @var Random */
+    private $random;
+    /** @var Populator[] */
+    private $generationPopulators = [];
+    /** @var Populator[] */
+    private $populators = [];
+    /** @var BiomeSelector */
+    private $selector;
+	private $level;
 
 	private $seaHeight = 62;
 	private $seaFloorHeight = 48;
@@ -123,21 +134,24 @@ class Normal2 extends Normal{
 
 		$ores = new Ore();
 		$ores->setOreTypes([
-			new OreType(new CoalOre(), 20, 16, 0, 128),
-			new OreType(new IronOre(), 20, 8, 0, 64),
-			new OreType(new RedstoneOre(), 8, 7, 0, 16),
-			new OreType(new LapisOre(), 1, 6, 0, 32),
-			new OreType(new GoldOre(), 2, 8, 0, 32),
-			new OreType(new DiamondOre(), 1, 7, 0, 16),
-			new OreType(new Dirt(), 20, 32, 0, 128),
-			new OreType(new Gravel(), 10, 16, 0, 128)
+			new OreType(new CoalOre(), 20, 17, 0, 128),
+			new OreType(new IronOre(), 20, 9, 0, 64),
+			new OreType(new RedstoneOre(), 8, 8, 0, 16),
+			new OreType(new LapisOre(), 1, 7, 0, 16),
+			new OreType(new GoldOre(), 2, 9, 0, 32),
+			new OreType(new DiamondOre(), 1, 8, 0, 16),
+			new OreType(new Dirt(), 10, 33, 0, 128),
+			new OreType(new Gravel(), 8, 33, 0, 128),
+			new OreType(new Stone(Stone::GRANITE), 10, 33, 0, 80),
+			new OreType(new Stone(Stone::DIORITE), 10, 33, 0, 80),
+			new OreType(new Stone(Stone::ANDESITE), 10, 33, 0, 80)
 		]);
 		$this->populators[] = $ores;
 	}
 
 
 	public function generateChunk($chunkX, $chunkZ){
-		$this->random->setSeed(0xdeadbeef ^ ($chunkX << 8) ^ $chunkZ ^ $this->level->getSeed());
+		$this->random->setSeed(0xdeadbeef ^ $chunkX ^ $chunkZ ^ $this->level->getSeed());
 
 		$seaFloorNoise = Generator::getFastNoise2D($this->noiseSeaFloor, 16, 16, 4, $chunkX * 16, 0, $chunkZ * 16);
 		$landNoise = Generator::getFastNoise2D($this->noiseLand, 16, 16, 4, $chunkX * 16, 0, $chunkZ * 16);
@@ -247,20 +261,20 @@ class Normal2 extends Normal{
 
 		//populator chunk
 		foreach($this->generationPopulators as $populator){
-			$populator->populate($this->level, $chunkX, $chunkZ, $this->random);
+			$populator->populate($this->level, ($chunkX << 16), ($chunkZ << 16), $this->random);
 		}
 
 	}
 
 
 	public function populateChunk($chunkX, $chunkZ){
-		$this->random->setSeed(0xdeadbeef ^ ($chunkX << 8) ^ $chunkZ ^ $this->level->getSeed());
+		$this->random->setSeed(0xdeadbeef ^ $chunkX ^ $chunkZ ^ $this->level->getSeed());
 		foreach($this->populators as $populator){
 			$populator->populate($this->level, $chunkX, $chunkZ, $this->random);
 		}
 
 		$chunk = $this->level->getChunk($chunkX, $chunkZ);
-		$biome = Biome::getBiome($chunk->getBiomeId(7, 7));
+		$biome = Biome::getBiome($chunk->getBiomeId(7, 7)); // same as Normal Generator.
 		$biome->populateChunk($this->level, $chunkX, $chunkZ, $this->random);
 	}
 

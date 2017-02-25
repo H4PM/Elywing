@@ -30,6 +30,7 @@ use pocketmine\block\Gravel;
 use pocketmine\block\IronOre;
 use pocketmine\block\LapisOre;
 use pocketmine\block\RedstoneOre;
+use pocketmine\block\Stone;
 use pocketmine\level\ChunkManager;
 use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\generator\biome\BiomeSelector;
@@ -140,20 +141,23 @@ class Normal extends Generator{
 
 		$ores = new Ore();
 		$ores->setOreTypes([
-			new OreType(new CoalOre(), 20, 16, 0, 128),
-			new OreType(New IronOre(), 20, 8, 0, 64),
-			new OreType(new RedstoneOre(), 8, 7, 0, 16),
-			new OreType(new LapisOre(), 1, 6, 0, 32),
-			new OreType(new GoldOre(), 2, 8, 0, 32),
-			new OreType(new DiamondOre(), 1, 7, 0, 16),
-			new OreType(new Dirt(), 20, 32, 0, 128),
-			new OreType(new Gravel(), 10, 16, 0, 128)
+			new OreType(new CoalOre(), 20, 17, 0, 128),
+			new OreType(new IronOre(), 20, 9, 0, 64),
+			new OreType(new RedstoneOre(), 8, 8, 0, 16),
+			new OreType(new LapisOre(), 1, 7, 0, 16),
+			new OreType(new GoldOre(), 2, 9, 0, 32),
+			new OreType(new DiamondOre(), 1, 8, 0, 16),
+			new OreType(new Dirt(), 10, 33, 0, 128),
+			new OreType(new Gravel(), 8, 33, 0, 128),
+			new OreType(new Stone(Stone::GRANITE), 10, 33, 0, 80),
+			new OreType(new Stone(Stone::DIORITE), 10, 33, 0, 80),
+			new OreType(new Stone(Stone::ANDESITE), 10, 33, 0, 80)
 		]);
 		$this->populators[] = $ores;
 	}
 
 	public function generateChunk($chunkX, $chunkZ){
-		$this->random->setSeed(0xdeadbeef ^ ($chunkX << 8) ^ $chunkZ ^ $this->level->getSeed());
+		$this->random->setSeed(0xdeadbeef ^ $chunkX ^ $chunkZ ^ $this->level->getSeed());
 
 		$noise = Generator::getFastNoise3D($this->noiseBase, 16, 128, 16, 4, 8, 4, $chunkX * 16, 0, $chunkZ * 16);
 
@@ -199,7 +203,7 @@ class Normal extends Generator{
 				$smoothHeight = ($maxSum - $minSum) / 2;
 
 				for($y = 0; $y < 128; ++$y){
-					if($y === 129){
+					if($y === 0){
 						$chunk->setBlockId($x, $y, $z, Block::BEDROCK);
 						continue;
 					}
@@ -220,13 +224,13 @@ class Normal extends Generator{
 	}
 
 	public function populateChunk($chunkX, $chunkZ){
-		$this->random->setSeed(0xdeadbeef ^ ($chunkX << 8) ^ $chunkZ ^ $this->level->getSeed());
+		$this->random->setSeed(0xdeadbeef ^ ($chunkX << 16) ^ ($chunkZ << 16) ^ $this->level->getSeed());
 		foreach($this->populators as $populator){
-			$populator->populate($this->level, $chunkX, $chunkZ, $this->random);
+			$populator->populate($this->level, ($chunkX << 16), ($chunkZ << 16), $this->random);
 		}
 
 		$chunk = $this->level->getChunk($chunkX, $chunkZ);
-		$biome = Biome::getBiome($chunk->getBiomeId(7, 7));
+		$biome = Biome::getBiome($chunk->getBiomeId(7, 7)); // This is incorrect. Here need add one mt_rand with all biomes and delete temperature & rainfall method.
 		$biome->populateChunk($this->level, $chunkX, $chunkZ, $this->random);
 	}
 

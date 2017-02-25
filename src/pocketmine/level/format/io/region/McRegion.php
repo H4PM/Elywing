@@ -1,15 +1,32 @@
 <?php
 
-
+/*
+ *
+ *  ____            _        _   __  __ _                  __  __ ____
+ * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
+ * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
+ * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
+ * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * @author PocketMine Team
+ * @link http://www.pocketmine.net/
+ *
+ *
+*/
 
 declare(strict_types = 1);
 
 namespace pocketmine\level\format\io\region;
 
 use pocketmine\level\format\Chunk;
+use pocketmine\level\format\io\BaseLevelProvider;
 use pocketmine\level\format\io\ChunkException;
 use pocketmine\level\format\io\ChunkUtils;
-use pocketmine\level\format\io\BaseLevelProvider;
 use pocketmine\level\format\SubChunk;
 use pocketmine\level\generator\Generator;
 use pocketmine\level\Level;
@@ -154,7 +171,7 @@ class McRegion extends BaseLevelProvider{
 			}
 
 			if(isset($chunk->BiomeColors)){
-				$biomeIds = ChunkUtils::convertBiomeColors($chunk->BiomeColors->getValue()); //Convert back to PC format (RIP colours D:)
+				$biomeIds = ChunkUtils::convertBiomeColors($chunk->BiomeColors->getValue()); //Convert back to original format
 			}elseif(isset($chunk->Biomes)){
 				$biomeIds = $chunk->Biomes->getValue();
 			}else{
@@ -164,7 +181,7 @@ class McRegion extends BaseLevelProvider{
 			$heightMap = [];
 			if(isset($chunk->HeightMap)){
 				if($chunk->HeightMap instanceof ByteArrayTag){
-					$heightMap = unpack("C*", $chunk->HeightMap->getValue());
+					$heightMap = array_values(unpack("C*", $chunk->HeightMap->getValue()));
 				}elseif($chunk->HeightMap instanceof IntArrayTag){
 					$heightMap = $chunk->HeightMap->getValue(); #blameshoghicp
 				}
@@ -235,9 +252,9 @@ class McRegion extends BaseLevelProvider{
 			"initialized" => new ByteTag("initialized", 1),
 			"GameType" => new IntTag("GameType", 0),
 			"generatorVersion" => new IntTag("generatorVersion", 1), //2 in MCPE
-			"SpawnX" => new IntTag("SpawnX", 128),
+			"SpawnX" => new IntTag("SpawnX", 256),
 			"SpawnY" => new IntTag("SpawnY", 70),
-			"SpawnZ" => new IntTag("SpawnZ", 128),
+			"SpawnZ" => new IntTag("SpawnZ", 256),
 			"version" => new IntTag("version", 19133),
 			"DayTime" => new IntTag("DayTime", 0),
 			"LastPlayed" => new LongTag("LastPlayed", microtime(true) * 1000),
@@ -258,7 +275,7 @@ class McRegion extends BaseLevelProvider{
 	}
 
 	public function getGenerator() : string{
-		return $this->levelData["generatorName"];
+		return (string) $this->levelData["generatorName"];
 	}
 
 	public function getGeneratorOptions() : array{
@@ -317,8 +334,10 @@ class McRegion extends BaseLevelProvider{
 		}
 		$regionX = $regionZ = null;
 		self::getRegionIndex($chunkX, $chunkZ, $regionX, $regionZ);
+		/** @noinspection PhpStrictTypeCheckingInspection */
 		$this->loadRegion($regionX, $regionZ);
 		$this->level->timings->syncChunkLoadDataTimer->startTiming();
+		/** @noinspection PhpStrictTypeCheckingInspection */
 		$chunk = $this->getRegion($regionX, $regionZ)->readChunk($chunkX - $regionX * 32, $chunkZ - $regionZ * 32);
 		if($chunk === null and $create){
 			$chunk = $this->getEmptyChunk($chunkX, $chunkZ);
