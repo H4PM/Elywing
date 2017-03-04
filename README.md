@@ -27,7 +27,7 @@ __Elywing is a free, open-source software that creates Minecraft: Pocket Edition
 
 __Elywing no longer supports MCRegion worlds, as they are deprecated.__
 
-### Elywing, a fork of PocketMine-MP, modified by
+### Elywing, a spoon/fusion's experience of PocketMine-MP and Genisys, modified by
 
 ### [Twitter @SuperMaXAleX](https://twitter.com/SuperMaXAleX/)
 
