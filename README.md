@@ -1,6 +1,6 @@
 # ![PocketMine-MP](http://image.noelshack.com/fichiers/2016/43/1477490625-elybanner.png)
 ###Elywing is now updated for MC:PE 1.0.4 [Windows 10 + Pocket Edition] 
-###Elywing is rarely being maintained and the future of it is unknown. Stick around for details.
+###Elywing is dead, feel free to use the alt [TESSERACT](https://github.com/TesseractTeam/Tesseract)
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Lesser General Public License as published by
